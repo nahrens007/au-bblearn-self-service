@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>View Users</title>
+
+    <!-- load css pages -->
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'learn/main.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'learn/viewUsers.css' %}" />
+
+    <script type="text/javascript" href="{% static 'learn/main.js' %}"> </script>
+
+  </head>
+
+  <body id="body">
+
+    <!-- Contains Everything in the Purple Header -->
+    <div id="heading">
+      <div id="titleContainer">
+        <div id="title">
+          <span>Self Service Tool 1000</span>
+        </div>
+        <div id="subTitle">
+          <span>Ashland University</span>
+        </div>
+      </div>
+      <div id="signOutBackground">
+        <div id="signOutContainer">
+          <span>Hello, {{name}} </span>
+          <br />
+          <a href="{% url 'index' %}" id="signOut"> Sign out</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contains everything below the header, it includes footer. -->
+    <div id="midSection">
+      <div id="viewUsersContainer">
+        <div id="viewUsersLabelBackground">
+          <div id="viewUsersLabelContainer">
+            <span id="viewUsersLabel">Select one or more users to remove from Guest or TA Position</span>
+          </div>
+        </div>
+
+        <table class="userTable">
+          <tr>
+            <th></th>
+            <th>User Name</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>User ID</th>
+          </tr>
+          <tr>
+            <td><input type="checkbox" ></td>
+            <td>cclayton</td>
+            <td>Carr</td>
+            <td>Clayton</td>
+            <td>1234567</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" ></td>
+            <td>eberger3</td>
+            <td>Erich</td>
+            <td>Berger</td>
+            <td>9999999</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" ></td>
+            <td>nahrens</td>
+            <td>Nathan</td>
+            <td>Ahrens</td>
+            <td>8888888</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" ></td>
+            <td>nahrens</td>
+            <td>Nathan</td>
+            <td>Ahrens</td>
+            <td>8888888</td>
+          </tr>
+          <tr id="submitRow">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><input id="submit" type="button" value="Submit"></td>
+          </tr>
+        </table>
+
+
+      </div>
+    </div>
+
+    <div id="footer">
+      <span id="footerText">For Assistance Call: 419.289.5405</span>
+    </div>
+  </body>
+
+</html>

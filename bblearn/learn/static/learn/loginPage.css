@@ -106,3 +106,9 @@ input[type=text], input[type=password], select {
   border-color: grey;
 
 }
+
+#submit:hover{
+
+  border-color: black;
+  transform: scale(1.01);
+}

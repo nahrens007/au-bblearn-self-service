@@ -19,7 +19,7 @@ class AuthToken():
             'grant_type':'client_credentials'
         }
 
-        self.TOKEN = ''
+        self.TOKEN = None
         self.target_url = URL
         self.EXPIRES_AT = ''
 
@@ -29,38 +29,39 @@ class AuthToken():
     def getSecret(self):
         return self.SECRET
 
-    def setNewToken(self):
+    def setToken(self):
+
         oauth_path = '/learn/api/public/v1/oauth2/token'
         OAUTH_URL = self.target_url + oauth_path
 
-        session = requests.session()
 
-        # Authenticate
-        r = session.post(OAUTH_URL, data=self.PAYLOAD, auth=(self.KEY, self.SECRET), verify=False)
 
-        if r.status_code == 200:
-            parsed_json = json.loads(r.text)
-            self.TOKEN = parsed_json['access_token']
-            self.EXPIRES = parsed_json['expires_in']
-            m, s = divmod(self.EXPIRES, 60)
+        if self.TOKEN is None:
+            session = requests.session()
 
-            self.NOW = datetime.datetime.now()
-            self.EXPIRES_AT = self.NOW + datetime.timedelta(seconds = s, minutes = m)
+            # Authenticate
+            r = session.post(OAUTH_URL, data=self.PAYLOAD, auth=(self.KEY, self.SECRET), verify=False)
 
-        return r.status_code
+            if r.status_code == 200:
+                parsed_json = json.loads(r.text)
+                self.TOKEN = parsed_json['access_token']
+                self.EXPIRES = parsed_json['expires_in']
+                m, s = divmod(self.EXPIRES, 60)
 
-    def setToken(self):
-        if self.setNewToken() == 200:
-            if self.isExpired(self.EXPIRES_AT):
-                self.setToken()
+                self.NOW = datetime.datetime.now()
+                self.EXPIRES_AT = self.NOW + datetime.timedelta(seconds = s, minutes = m)
 
+                #there is the possibility the reaquired token may expire
+                #before we are done so perform expiration sanity check...
+                if self.isExpired(self.EXPIRES_AT):
+                    self.setToken()
+
+            else:
+                # Auth error!!!
+                pass
         else:
-            # Auth error!!!
-            self.EXPIRES = 0
-            m, s = divmod(self.EXPIRES, 60)
-
-            self.NOW = datetime.datetime.now()
-            self.EXPIRES_AT = self.NOW + datetime.timedelta(seconds = s, minutes = m)
+            # Token already set!
+            pass
 
     def getToken(self):
         #if token time is less than a one second then
@@ -102,8 +103,10 @@ class AuthToken():
 
     def isExpired(self, expiration_datetime):
         expired = False
+        #print ("[auth:isExpired()] Token Expires at " + expiration_datetime.strftime("%H:%M:%S"))
 
         time_left = (expiration_datetime - datetime.datetime.now()).total_seconds()
+        #print ("[auth:isExpired()] Time Left on Token (in seconds): " + str(time_left))
         if time_left < 1:
             expired = True
 

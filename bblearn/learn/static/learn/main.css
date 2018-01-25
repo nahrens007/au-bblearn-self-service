@@ -99,6 +99,12 @@ Styles the sign out text
   text-decoration: underline;
   color: white;
 }
+
+#signOut:hover{
+
+  border-color: black;
+  transform: scale(1.1);
+}
 /*
 End for everything in the Header
 */
