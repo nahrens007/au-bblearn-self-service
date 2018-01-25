@@ -19,7 +19,7 @@ class AuthToken():
             'grant_type':'client_credentials'
         }
 
-        self.TOKEN = None
+        self.TOKEN = ''
         self.target_url = URL
         self.EXPIRES_AT = ''
 

@@ -8,12 +8,12 @@ import json
 #key = '31496793-121b-4ab5-a068-83a9c20faed4'
 
 # Desktop
-#key = "0de73b0f-68e7-48cc-b1e9-0fbefe209b74"
-#secret = "2Fz6vO82Y035LfoYxlQrY7xyV21SAYPK"
+key = "0de73b0f-68e7-48cc-b1e9-0fbefe209b74"
+secret = "2Fz6vO82Y035LfoYxlQrY7xyV21SAYPK"
 
 # Laptop
-key = "45ff63ad-e072-42fb-b6af-3c33bff846b4"
-secret = "cQXOMrwe0pxMaTQbnozmUvjCxzeGSbKM"
+#key = "45ff63ad-e072-42fb-b6af-3c33bff846b4"
+#secret = "cQXOMrwe0pxMaTQbnozmUvjCxzeGSbKM"
 
 server = 'https://localhost:9877'
 
@@ -44,6 +44,10 @@ def courses(request):
             return render(request, 'learn/error.html', { 'error' : 'Error 403: You are not authorized!' })
         elif r.status_code == 400:
             return render(request, 'learn/error.html', { 'error' : 'Error 400: There was an error communicating with Blackboard!' })
+        elif r.status_code == 401:
+            return render(request, 'learn/error.html', { 'error' : 'Error 401: There was an error authenticating this app with Blackboard Learn!' })
+        else:
+            print("[DEBUG] r.status_code for courses get(): " + str(r.status_code))
     else:
         # How did we get this far? Should have had a post request with the username.
         return render(request, 'learn/error.html', { 'error' : 'No POST request!' })
@@ -74,7 +78,7 @@ def courses(request):
         name_data = res['name']
         name += name_data['given'] + " " + name_data['family']
 
-    print("Token expires: " + str(interface.getTokenExpires()))
+    print("[DEBUG] Token expires: " + str(interface.getTokenExpires()))
 
     context ={
         'name': name,
