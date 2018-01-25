@@ -1,0 +1,131 @@
+
+#body{
+  margin: 0;
+  background-color: #F9F1FD;
+}
+
+/*
+Start for everything in the Header
+*/
+#heading{
+
+  background-color: #66137c;
+  width: 100%;
+  height: 150px;
+  overflow: visible;
+
+}
+
+/*
+Styles the black background for the title and subTitle
+*/
+#titleContainer{
+
+  position: absolute;
+  width: 350px;
+  height: 75px;
+  top:0px;
+  left: 0px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-bottom-right-radius: 25px;
+}
+
+/*
+Styles the Main Title
+*/
+#title{
+
+  position: absolute;
+  width: 550px;
+  height: 35px;
+  top:15px;
+  left: 15px;
+  color: #E2C536;
+  font-size: 33px;
+  font-weight: bold;
+}
+
+/*
+Styles the Ashland University that Appears under the Main Title
+*/
+#subTitle{
+
+  position: absolute;
+  width: 160px;
+  height: 24px;
+  top:50px;
+  left: 40%;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/*
+Styles the black background for Sign out
+*/
+#signOutBackground{
+
+  position: absolute;
+  width: auto;
+  height: 50px;
+  top:0px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+/*
+Styles the sign out text
+*/
+#signOutContainer{
+
+   float:left;
+   height: 24px;
+   text-align: center;
+   margin-left: 10px;
+   margin-right: 10px;
+   line-height: 24px;
+   vertical-align: center;
+   white-space: nowrap;
+   color: white;
+}
+
+#signOut{
+
+  float: right;
+  margin-right: 5px;
+  text-decoration: underline;
+  color: white;
+}
+/*
+End for everything in the Header
+*/
+
+/*
+Start for everything After the Header
+*/
+#midSection{
+
+  top: 150px;
+  width: 100%;
+}
+
+#footer{
+
+  position: fixed;
+  bottom: 0px;
+  background-color: rgba(90, 29, 118, 0.67);
+  width: 100%;
+  height: 20px;
+}
+
+#footerText{
+
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  color: white;
+  width: 223px;
+}

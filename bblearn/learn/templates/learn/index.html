@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+
+
+    <!-- load css pages -->
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'learn/main.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'learn/loginPage.css' %}" />
+
+
+    <script type="text/javascript" href="{% static 'learn/main.js' %}"> </script>
+  </head>
+
+  <body id="body">
+
+    <!-- Contains Everything in the Purple Header -->
+    <div id="heading">
+      <div id="titleContainer">
+        <div id="title">
+          <span>Self Service Tool 1000</span>
+        </div>
+        <div id="subTitle">
+          <span>Ashland University</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contains everything below the header, it includes footer. -->
+    <div id="midSection">
+      <div id="loginContainer">
+        <div id="loginLabelBackground">
+          <div id="loginLabelContainer">
+            <span id="loginLabel">Login</span>
+          </div>
+        </div>
+        <div id="loginInformation">
+          <form id="login" action="{% url 'courses' %}" method="post">{% csrf_token %}
+            <label class="formLabel" for="username">Username</label>
+            <input id="userName" type="text" name="username" placeholder="username" />
+              <hr />
+            <label class="formLabel" for="password">Password</label>
+            <input id="password" type="password" name="password" placeholder="password" />
+            <hr />
+            <input id = "submit" type="submit" name="submit" value="Submit" />
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div id="footer">
+      <span id="footerText">For Assistance Call: 419.289.5405</span>
+    </div>
+  </body>
+
+</html>

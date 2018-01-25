@@ -1,0 +1,108 @@
+
+/*
+End for everything in the Header
+*/
+
+/*
+Start for everything After the Header
+*/
+#loginInformation{
+
+  height: 223px;
+}
+
+#login{
+
+  height: 100%;
+}
+#loginLabelBackground{
+
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 210px;
+  height: 35px;
+  top:0px;
+  left: 0px;
+  background-color: #66137c;
+
+}
+
+#loginLabelContainer{
+
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+#loginLabel{
+
+  display: block;
+  text-align: center;
+  font-size: 30px;
+  font-style: italic;
+  color: white;
+
+}
+
+
+#loginContainer{
+
+
+  display: block;
+  top:35;
+  margin-left: auto;
+  margin-right: auto;
+  width: 210px;
+  height: 255px;
+  border: solid;
+  border-color: #4C3059;
+  border-top: none;
+
+}
+
+input[type=text], input[type=password], select {
+
+    position: relative;
+    left: 10px;
+    width: 90%;
+    padding: 8px 8px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 13px;
+    line-height: 10px;
+    border-bottom: solid;
+
+}
+
+#userName{
+
+  margin-bottom: 15px;
+}
+
+.formLabel{
+
+  position: relative;
+  left: 10px;
+  font-size: 20px;
+
+}
+
+#submit{
+
+  -webkit-border-radius: 5px;
+  position: relative;
+  display: inline-block;
+  bottom: 3px;
+  left: 25px;
+  width: 75%;
+  height: 25px;
+  background-color: white;
+  border-style: solid;
+  border-width: thin;
+  border-color: grey;
+
+}
