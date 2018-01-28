@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+
+    <!-- load css pages -->
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'learn/main.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'learn/courses.css' %}" />
+
+    <script type="text/javascript" href="{% static 'learn/main.js' %}"> </script>
+
+  </head>
+
+  <body id="body">
+
+    <!-- Contains Everything in the Purple Header -->
+    <div id="heading">
+      <div id="titleContainer">
+        <div id="title">
+          <span>Self Service Tool 1000</span>
+        </div>
+        <div id="subTitle">
+          <span>Ashland University</span>
+        </div>
+      </div>
+      <div id="signOutBackground">
+        <div id="signOutContainer">
+          <span>Hello, {{name}} </span>
+          <br />
+          <a href="{% url 'index' %}" id="signOut"> Sign out</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contains everything below the header, it includes footer. -->
+    <div id="midSection">
+
+      <h2>An error has been encountered!</h2>
+      <h3>{{ message }}</h3>
+
+    </div>
+
+    <div id="footer">
+      <span id="footerText">For Assistance Call: 419.289.5405</span>
+    </div>
+  </body>
+
+</html>
