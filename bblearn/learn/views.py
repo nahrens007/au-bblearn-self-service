@@ -96,3 +96,9 @@ def viewUsers(request):
 
     }
     return render(request, 'learn/viewUsers.html', context)
+
+def addUsers(request):
+    context = {
+
+    }
+    return render(request, 'learn/addUsers.html', context)
