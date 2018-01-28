@@ -30,13 +30,18 @@ def courses(request):
             return render(request, 'learn/error.html', { 'error' : 'Error Connecting: The server could not connect to Blackboard!' })
         elif r.status_code == 200:
             #Success!
+
+            isInstructor = False
+
             if r.text:
                 res = json.loads(r.text)
 
                 results = res['results']
 
+
                 for resu in results:
                     if resu['courseRoleId'] == 'Instructor':
+                        isInstructor = True
                         path = '/learn/api/public/v1/courses/' + resu['courseId']
                         r1 = interface.get(path)
                         if r1.text:
@@ -58,10 +63,18 @@ def courses(request):
 
             print("Token expires: " + str(interface.getTokenExpires()))
 
+            if not isInstructor:
+                context = {
+                    'name':name,
+                    'message':"I'm sorry, you are not an instructor in any course. You do not have access to this tool.",
+                }
+                return render(request, 'learn/notInstructor.html', context)
+
             context ={
                 'name': name,
                 'classes': class_list,
             }
+
             return render(request, 'learn/courses.html', context)
         elif r.status_code == 404:
             return render(request, 'learn/error.html', { 'error' : 'Error 404: The username you entered is not valid!' })
