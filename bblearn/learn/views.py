@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from django.template import loader, engines, Template
 from BlackboardLearn import LearnInterface
-import static
+import keys
 import json
 
-interface = LearnInterface(static.server, static.key, static.secret)
+interface = LearnInterface(keys.server, keys.key, keys.secret)
 
 #Create your views here.
 
