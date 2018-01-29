@@ -98,17 +98,6 @@ class AuthToken():
             # revoke token
             r = session.post(revoke_URL, data=self.PAYLOAD, auth=(self.KEY, self.SECRET), verify=False)
 
-            if r.status_code == 200:
-                # successful revoke
-                pass
-            else:
-                # could not revoke
-                pass
-        else:
-            # Token is not currently set
-            pass
-
-
     def isExpired(self, expiration_datetime):
         expired = False
 
