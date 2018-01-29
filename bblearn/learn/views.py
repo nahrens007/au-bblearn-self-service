@@ -76,6 +76,7 @@ def courses(request):
             }
 
             return render(request, 'learn/courses.html', context)
+            
         elif r.status_code == 404:
             return render(request, 'learn/error.html', { 'error' : 'Error 404: The username you entered is not valid!' })
         elif r.status_code == 403:
