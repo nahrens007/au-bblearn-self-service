@@ -7,13 +7,10 @@ End for everything in the Header
 Start for everything After the Header
 */
 #loginInformation{
-
-  height: 223px;
 }
 
 #login{
-
-  height: 100%;
+    padding: 5px 0px 5px 0px;
 }
 #loginLabelBackground{
 
@@ -54,7 +51,6 @@ Start for everything After the Header
   margin-left: auto;
   margin-right: auto;
   width: 210px;
-  height: 255px;
   border: solid;
   border-color: #4C3059;
   border-top: none;
@@ -113,6 +109,9 @@ input[type=text], input[type=password], select {
   transform: scale(1.01);
 }
 
-div.error {
+#error_message {
     color: red;
+    display: block;
+    margin: 5px;
+    text-align: center;
 }
