@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from django.template import loader, engines, Template
 from BlackboardLearn import LearnInterface
-import static
+import keys
 import json
 
-interface = LearnInterface(static.server, static.key, static.secret)
+interface = LearnInterface(keys.server, keys.key, keys.secret)
 
 #Create your views here.
 
@@ -66,6 +66,7 @@ def index(request):
             }
 
             return render(request, 'learn/courses.html', context)
+            
         elif r.status_code == 404:
             return render(request, 'learn/error.html', { 'error' : 'Error 404: The username you entered is not valid!' })
         elif r.status_code == 403:
