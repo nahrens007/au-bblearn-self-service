@@ -36,9 +36,7 @@ def index(request):
                         r1 = interface.get(path)
                         if r1.text:
                             res1 = json.loads(r1.text)
-                            #html += "<a href='course.py?courseId=" + resu['courseId'] + "'>" + courseId + "</a><br/>"
-                            class_list += '<label class="container"><input type="checkbox"><button class="checkMark" name="course" type="submit" value="' + resu['courseId'] + '">' + res1['name'] + '</button></label>'
-
+                            class_list += '<tr><td><input class="userCheckbox" type="checkbox" ></td><td><button class="checkMark" name="course" type="submit" value="' + resu['courseId'] + '">' + res1['name'] + '</button></tr>'
             # Get the user's name
             path = '/learn/api/public/v1/users/userName:' + user_name
             r = interface.get(path)
