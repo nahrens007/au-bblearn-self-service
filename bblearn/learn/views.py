@@ -9,19 +9,8 @@ interface = LearnInterface(static.server, static.key, static.secret)
 #Create your views here.
 
 def index(request):
-    template = loader.get_template('learn/index.html')
-    context ={
-
-    }
-    return render(request, 'learn/index.html', context)
-
-def courses(request):
-    user_name =''
-    class_list =''
-    r = None
-
-
     if request.method == "POST":
+
         user_name = request.POST.get('username')
         path = '/learn/api/public/v1/users/userName:' + user_name + '/courses'
         r = interface.get(path)
@@ -31,6 +20,7 @@ def courses(request):
         elif r.status_code == 200:
             #Success!
 
+            class_list = ''
             isInstructor = False
 
             if r.text:
@@ -86,10 +76,12 @@ def courses(request):
             return render(request, 'learn/error.html', { 'error' : 'Error 401: There was an error authenticating this app with Blackboard Learn!' })
         else:
             print("[DEBUG] r.status_code for courses get(): " + str(r.status_code))
-    else:
-        # How did we get this far? Should have had a post request with the username.
-        return render(request, 'learn/error.html', { 'error' : 'No POST request!' })
+    else: # regular index : sign in page
+        template = loader.get_template('learn/index.html')
+        context ={
 
+        }
+        return render(request, 'learn/index.html', context)
 
 def viewUsers(request):
     context = {

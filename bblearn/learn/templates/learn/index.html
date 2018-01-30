@@ -37,7 +37,7 @@
           </div>
         </div>
         <div id="loginInformation">
-          <form id="login" action="{% url 'courses' %}" method="post">{% csrf_token %}
+          <form id="login" action="{% url 'index' %}" method="post">{% csrf_token %}
             <label class="formLabel" for="username">Username</label>
             <input id="userName" type="text" name="username" placeholder="username" />
               <hr />
