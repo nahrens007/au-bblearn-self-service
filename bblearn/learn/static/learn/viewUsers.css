@@ -59,21 +59,6 @@
   font-size: 25px;
 }
 
-table{
-  width: 100%;
-  border-collapse: collapse;
-}
-
-table,th{
-
-    border: solid;
-    border-width: 2px;
-}
-table,th,td{
-
-
-  text-align: center;
-}
 
 #submitRow{
 
@@ -81,7 +66,6 @@ table,th,td{
   border-width: 2px;
   border-bottom: none;
 }
-
 
 #submit{
 
