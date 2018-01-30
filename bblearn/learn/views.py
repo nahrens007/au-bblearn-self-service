@@ -55,10 +55,9 @@ def index(request):
 
             if not isInstructor:
                 context = {
-                    'name':name,
-                    'message':"I'm sorry, you are not an instructor in any course. You do not have access to this tool.",
+                    'error_message':"You are not an instructor in any course.",
                 }
-                return render(request, 'learn/notInstructor.html', context)
+                return render(request, 'learn/index.html', context)
 
             context ={
                 'name': name,
@@ -66,21 +65,20 @@ def index(request):
             }
 
             return render(request, 'learn/courses.html', context)
-            
+
         elif r.status_code == 404:
-            return render(request, 'learn/error.html', { 'error' : 'Error 404: The username you entered is not valid!' })
+            return render(request, 'learn/index.html', { 'error_message' : 'That username is not valid!' })
         elif r.status_code == 403:
-            return render(request, 'learn/error.html', { 'error' : 'Error 403: You are not authorized!' })
+            return render(request, 'learn/index.html', { 'error_message' : 'You are not authorized!' })
         elif r.status_code == 400:
-            return render(request, 'learn/error.html', { 'error' : 'Error 400: There was an error communicating with Blackboard!' })
+            return render(request, 'learn/index.html', { 'error_message' : 'Blackboard is not available!' })
         elif r.status_code == 401:
-            return render(request, 'learn/error.html', { 'error' : 'Error 401: There was an error authenticating this app with Blackboard Learn!' })
+            return render(request, 'learn/index.html', { 'error_message' : 'There was a Blackboard authentication error!' })
         else:
             print("[DEBUG] r.status_code for courses get(): " + str(r.status_code))
     else: # regular index : sign in page
-        template = loader.get_template('learn/index.html')
         context ={
-
+            'error_message' : ''
         }
         return render(request, 'learn/index.html', context)
 

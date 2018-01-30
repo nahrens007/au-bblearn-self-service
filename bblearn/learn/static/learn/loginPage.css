@@ -112,3 +112,7 @@ input[type=text], input[type=password], select {
   border-color: black;
   transform: scale(1.01);
 }
+
+div.error {
+    color: red;
+}
