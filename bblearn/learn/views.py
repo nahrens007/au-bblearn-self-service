@@ -55,7 +55,7 @@ def index(request):
 
             if not isInstructor:
                 context = {
-                    'error_message':"You are not an instructor in any course.",
+                    'error_message':"You must be an instructor!",
                 }
                 return render(request, 'learn/index.html', context)
 

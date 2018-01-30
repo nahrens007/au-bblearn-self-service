@@ -39,7 +39,7 @@
         <div id="loginInformation">
           <form id="login" action="{% url 'index' %}" method="post">{% csrf_token %}
             <label class="formLabel" for="username">Username</label>
-            <div class="error">{{ error_message }}</div>
+            <span id="error_message">{{ error_message }}</span>
             <input id="userName" type="text" name="username" placeholder="username" />
               <hr />
             <label class="formLabel" for="password">Password</label>
