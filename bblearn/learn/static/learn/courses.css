@@ -119,18 +119,11 @@ input[type=checkbox] {
     vertical-align: middle;
 }
 
-.checkMark{
+.courseListing{
 
-    -webkit-border-radius: 5px;
-    display: inline;
     vertical-align: middle;
-    margin-left: 2px;
-    width: auto;
     height: 25px;
-    background-color: white;
-    border-style: solid;
-    border-width: thin;
-    border-color: grey;
+
 }
 
 .checkMark:hover{
@@ -143,14 +136,12 @@ table{
   width: 100%;
   border-collapse: collapse;
 }
+td{
 
-table,th{
-
-    border: solid;
-    border-width: 2px;
+  border-bottom: solid;
+  border-width: thin;
 }
-table,th,td{
 
-
-  text-align: center;
+td#checkBoxCell{
+  width: 30px;
 }
