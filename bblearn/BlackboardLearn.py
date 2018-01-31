@@ -39,10 +39,6 @@ class AuthToken():
         r = None
         try:
             r = session.post(OAUTH_URL, data=self.PAYLOAD, auth=(self.KEY, self.SECRET), verify=False)
-        except (ConnectionAbortedError, ConnectionError, AttributeError) as e:
-            print("[DEBUG] Error setting the token!")
-            print(e)
-            return -1
         except BaseException as e:
             print("[DEBUG] Something broke - couldn't set the token!")
             print(e)
