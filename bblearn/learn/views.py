@@ -83,7 +83,7 @@ def index(request):
 def viewUsers(request):
     context = {
 
-    }
+    } 
     return render(request, 'learn/viewUsers.html', context)
 
 def addUsers(request):
