@@ -42,7 +42,7 @@
             <span id="viewUsersLabel"> Search for one or more users to add to a Guest or TA Position</span>
           </div>
         </div>
-
+        {{error_message}}
         <table class="userTable">
           <tr>
             <th></th>
@@ -52,38 +52,8 @@
             <th>E-mail</th>
             <th>User ID</th>
           </tr>
-          <tr>
-            <td><input class="userCheckbox" type="checkbox" ></td>
-            <td>cclayton</td>
-            <td>Carr</td>
-            <td>Clayton</td>
-            <td>carr@help.edu</td>
-            <td>1234567</td>
-          </tr>
-          <tr>
-            <td><input class="userCheckbox" type="checkbox" ></td>
-            <td>eberger3</td>
-            <td>Erich</td>
-            <td>Berger</td>
-            <td>erich@help.edu</td>
-            <td>9999999</td>
-          </tr>
-          <tr>
-            <td><input class="userCheckbox" type="checkbox" ></td>
-            <td>nahrens</td>
-            <td>Nathan</td>
-            <td>Ahrens</td>
-            <td>nate2@help.edu</td>
-            <td>8888888</td>
-          </tr>
-          <tr>
-            <td><input class="userCheckbox" type="checkbox" ></td>
-            <td>nahrens</td>
-            <td>Nathan</td>
-            <td>Ahrens</td>
-            <td>nate@help.edu</td>
-            <td>8888888</td>
-          </tr>
+
+          {{ userList | safe }}
           <tr id="pagingRow">
             <td></td>
             <td></td>
