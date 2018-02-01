@@ -16,7 +16,7 @@ def index(request):
         r = interface.get(path)
         if r == None:
             #This could be caused when either the server url is incorrect or Python can't connect to Bb at all
-            return render(request, 'learn/error.html', { 'error' : 'Error Connecting: The server could not connect to Blackboard!' })
+            return render(request, 'learn/index.html', { 'error_message' : 'Could not connect to Blackboard!' })
         elif r.status_code == 200:
             #Success!
 
@@ -83,7 +83,7 @@ def index(request):
 def viewUsers(request):
     context = {
 
-    } 
+    }
     return render(request, 'learn/viewUsers.html', context)
 
 def addUsers(request):
