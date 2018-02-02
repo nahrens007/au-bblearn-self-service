@@ -36,35 +36,37 @@
 
     <!-- Contains everything below the header, it includes footer. -->
     <div id="midSection">
-      <div id="homePageContainer">
-        <div id="homePageLabelBackground">
-          <div id="homePageLabelContainer">
-            <span id="homePageLabel">Select one or more courses to add or remove a Teaching Assistant or Guest from a course or courses</span>
+        <form id='course_selection' method='post' action='{% url "course" %}'>{% csrf_token %}
+          <div id="homePageContainer">
+            <div id="homePageLabelBackground">
+              <div id="homePageLabelContainer">
+                <span id="homePageLabel">Select one or more courses to add or remove a Teaching Assistant or Guest from a course or courses</span>
+              </div>
+            </div>
+            <div id="courseActionsContainer">
+              <div class="selectdiv">
+                <label>
+                  <select>
+                    <option selected value="None">Select Action</option>
+                    <option value='addUsers'>Add Users</option>
+                    <option value='removeUsers'>Remove Users</option>
+                    <option value='viewUsers'>View Users</option>
+                  </select>
+                </label>
+              </div>
+              <input id ="submit" type="submit" name="submit">
+            </div>
+
+
+            <div id="coursesContainer">
+              <table class="userTable">
+
+              {{classes | safe}}
+
+              </table>
+            </div>
           </div>
-        </div>
-        <div id="courseActionsContainer">
-          <div class="selectdiv">
-            <label>
-              <select>
-                <option selected>Select Action</option>
-                <option>Add Users</option>
-                <option>Remove Users</option>
-                <option>View Users</option>
-              </select>
-            </label>
-          </div>
-          <input id ="submit" type="button" name="submit" value="Submit">
-        </div>
-
-
-        <div id="coursesContainer">
-          <table class="userTable">
-
-          {{classes | safe}}
-
-          </table>
-        </div>
-      </div>
+        </form>
     </div>
 
     <div id="footer">

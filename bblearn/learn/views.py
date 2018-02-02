@@ -36,7 +36,14 @@ def index(request):
                         r1 = interface.get(path)
                         if r1.text:
                             res1 = json.loads(r1.text)
-                            class_list += '<tr><td id="checkBoxCell"><input class="userCheckbox" type="checkbox" ></td><td><span class="courseListing" name="course" value="' + resu['courseId'] + '">' + res1['name'] + '</span><td></td></tr>'
+                            class_list += '''<tr>
+                                <td id="checkBoxCell">
+                                    <input class="userCheckbox" type="checkbox" value="''' + resu['courseId'] + '''">
+                                </td>
+                                <td>
+                                    <span class="courseListing" name="course">''' + res1['name'] + '''</span>
+                                </td>
+                            </tr>'''
             # Get the user's name
             path = '/learn/api/public/v1/users/userName:' + user_name
             r = interface.get(path)
@@ -88,7 +95,7 @@ def viewUsers(request):
 
 def addUsers(request):
 
-    #if request.method == "POST":
+
     if True:
         #courses = request.POST.get('courses') # returns None if courses was not posted
         #search = request.POST.get('search') # contain searchKey and searchString
@@ -171,3 +178,8 @@ def addUsers(request):
 
     }
     return render(request, 'learn/addUsers.html', context)
+def course(request):
+    if request.method == "POST":
+        print(request.POST)
+
+    return viewUsers(request)
