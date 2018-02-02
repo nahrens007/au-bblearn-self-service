@@ -122,11 +122,8 @@ def addUsers(request):
                 for user in users:
                     if 'availability' in user and user['availability']['available'] == 'Yes' and searchString in user[searchKey]:
                         userList += '<tr>'
-                        userList += '<td><input class="userCheckbox" type="checkbox" ></td>'
-                        if 'userName' in user:
-                            userList += '<td>' + user['userName'] + '</td>'
-                        else:
-                            userList += '<td></td>'
+                        userList += '<td><input class="userCheckbox" type="checkbox" name="user" value="' + user['userName'] + '"></td>'
+                        userList += '<td>' + user['userName'] + '</td>'
                         if 'name' in user:
                             userList += '<td>' + user['name']['given'] + '</td>'
                             userList += '<td>' + user['name']['family'] + '</td>'
