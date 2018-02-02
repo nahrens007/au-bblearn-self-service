@@ -38,7 +38,7 @@ def index(request):
                             res1 = json.loads(r1.text)
                             class_list += '''<tr>
                                 <td id="checkBoxCell">
-                                    <input class="userCheckbox" type="checkbox" value="''' + resu['courseId'] + '''">
+                                    <input class="userCheckbox" type="checkbox" name="course" value="''' + resu['courseId'] + '''">
                                 </td>
                                 <td>
                                     <span class="courseListing" name="course">''' + res1['name'] + '''</span>
@@ -95,12 +95,13 @@ def viewUsers(request):
 
 def addUsers(request):
 
-
+    #will be:   once we get POST working...
+    #if request.method == 'POST':
     if True:
         #courses = request.POST.get('courses') # returns None if courses was not posted
         #search = request.POST.get('search') # contain searchKey and searchString
         #will replace with data from search
-        searchKey = 'userName'
+        searchKey = 'userName' # if searchKey is name (first/last), further configuration will be needed.
         searchString = 'ba'.lower()
 
         path = '/learn/api/public/v1/users?fields=userName,name,contact,studentId,availability'
