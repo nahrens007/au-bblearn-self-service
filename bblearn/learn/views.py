@@ -19,6 +19,7 @@ def index(request):
             return render(request, 'learn/index.html', { 'error_message' : 'Could not connect to Blackboard!' })
         elif r.status_code == 200:
             #Success!
+            #user exists, log in:
 
             class_list = ''
             isInstructor = False
@@ -93,91 +94,111 @@ def viewUsers(request):
     }
     return render(request, 'learn/viewUsers.html', context)
 
-def addUsers(request):
-
-    #will be:   once we get POST working...
-    #if request.method == 'POST':
-    if True:
-        #courses = request.POST.get('courses') # returns None if courses was not posted
-        #search = request.POST.get('search') # contain searchKey and searchString
-        #will replace with data from search
-        searchKey = 'userName' # if searchKey is name (first/last), further configuration will be needed.
-        searchString = 'ba'.lower()
-
-        path = '/learn/api/public/v1/users?fields=userName,name,contact,studentId,availability'
-        r = interface.get(path)
-        if r == None:
-            #This could be caused when either the server url is incorrect or Python can't connect to Bb at all
-            return render(request, 'learn/addUsers.html', { 'error_message' : 'Could not connect to Blackboard!' })
-        elif r.status_code == 200:
-            #Success!
-
-            userList = ''
-            if r.text:
-                res = json.loads(r.text)
-
-                users = res['results']
-
-                # build list of users to display
-                for user in users:
-                    if 'availability' in user and user['availability']['available'] == 'Yes' and searchString in user[searchKey]:
-                        userList += '<tr>'
-                        userList += '<td><input class="userCheckbox" type="checkbox" name="user" value="' + user['userName'] + '"></td>'
-                        userList += '<td>' + user['userName'] + '</td>'
-                        if 'name' in user:
-                            userList += '<td>' + user['name']['given'] + '</td>'
-                            userList += '<td>' + user['name']['family'] + '</td>'
-                        else:
-                            userList += '<td></td>'
-                            userList += '<td></td>'
-                        if 'contact' in user:
-                            userList += '<td>' + user['contact']['email'] + '</td>'
-                        else:
-                            userList += '<td></td>'
-                        if 'studentId' in user: #guests don't have studentId
-                            userList += '<td>' + user['studentId'] + '</td>'
-                        else:
-                            userList += '<td></td>'
-                        userList += '</tr>'
-
-            if userList == '':
-                context = {
-                    'name': 'From Cookies',
-                    'error_message':"No users found!",
-                    'userList': '',
-                }
-                return render(request, 'learn/addUsers.html', context)
-
-            context ={
-                'name': 'From Cookies',
-                'error_message': '',
-                'userList': userList,
-            }
-
-            return render(request, 'learn/addUsers.html', context)
-
-        elif r.status_code == 403:
-            return render(request, 'learn/addUsers.html', { 'error_message' : 'You are not authorized!' })
-        elif r.status_code == 400:
-            return render(request, 'learn/addUsers.html', { 'error_message' : 'Bad request!' })
-        elif r.status_code == 401:
-            return render(request, 'learn/addUsers.html', { 'error_message' : 'There was a Blackboard authentication error!' })
-        else:
-            print("[DEBUG] r.status_code for courses get(): " + str(r.status_code))
-    else: # regular index : sign in page
-        context ={
-            'name': 'From Cookies',
-            'error_message': '',
-            'userList': '',
-        }
-        return render(request, 'learn/addUsers.html', context)
-
+def removeUsers(request):
     context = {
 
     }
-    return render(request, 'learn/addUsers.html', context)
-def course(request):
-    if request.method == "POST":
-        print(request.POST)
+    return render(request, 'learn/removeUsers.html', context)
 
-    return viewUsers(request)
+def addUsers(request):
+    '''
+    request.POST contains:
+        course - dict with list of courses selected to add users to (as guest or TA)
+            Must not be empty
+        user - dict with list of users to add to said courses.
+            If empty: display empty list with search results (if search isn't empty)
+            Else: create course memebership to add user to course as either guest or TA
+        search - dict with a searchKey and searchString, to determine which user we're searching for.
+            If empty: display empty list with no search results
+        action - dict with the specified action (addUsers, viewUsers, removeUsers)
+    '''
+
+    # NO NEED TO CHECK if request.method == 'POST' BECAUSE THE ONLY
+    # WAY WE GET HERE IS FROM THE update() VIEW, WHICH VERIFIES POST
+    user = request.POST.getlist('user')
+    course = request.POST.getlist('course')
+    search = request.POST.getlist('search')
+
+    print()
+    print(user)
+    print(course)
+    print(search)
+    print()
+    #search = request.POST.get('search') # contain searchKey and searchString
+    #will replace with data from search
+    searchKey = 'userName' # if searchKey is name (first/last), further configuration will be needed.
+    searchString = 'ba'.lower()
+
+    path = '/learn/api/public/v1/users?fields=userName,name,contact,studentId,availability'
+    r = interface.get(path)
+    if r == None:
+        #This could be caused when either the server url is incorrect or Python can't connect to Bb at all
+        return render(request, 'learn/addUsers.html', { 'error_message' : 'Could not connect to Blackboard!' })
+    elif r.status_code == 200:
+        #Success!
+
+        userList = ''
+        if r.text:
+            res = json.loads(r.text)
+
+            users = res['results']
+
+            # build list of users to display
+            for user in users:
+                if 'availability' in user and user['availability']['available'] == 'Yes' and searchString in user[searchKey]:
+                    userList += '<tr>'
+                    userList += '<td><input class="userCheckbox" type="checkbox" name="user" value="' + user['userName'] + '"></td>'
+                    userList += '<td>' + user['userName'] + '</td>'
+                    if 'name' in user:
+                        userList += '<td>' + user['name']['given'] + '</td>'
+                        userList += '<td>' + user['name']['family'] + '</td>'
+                    else:
+                        userList += '<td></td>'
+                        userList += '<td></td>'
+                    if 'contact' in user:
+                        userList += '<td>' + user['contact']['email'] + '</td>'
+                    else:
+                        userList += '<td></td>'
+                    if 'studentId' in user: #guests don't have studentId
+                        userList += '<td>' + user['studentId'] + '</td>'
+                    else:
+                        userList += '<td></td>'
+                    userList += '</tr>'
+
+        if userList == '':
+            context = {
+                'name': 'From Cookies',
+                'error_message':"No users found!",
+                'userList': '',
+            }
+            return render(request, 'learn/addUsers.html', context)
+
+        context ={
+            'name': 'From Cookies',
+            'error_message': '',
+            'userList': userList,
+        }
+
+        return render(request, 'learn/addUsers.html', context)
+
+    elif r.status_code == 403:
+        return render(request, 'learn/addUsers.html', { 'error_message' : 'You are not authorized!' })
+    elif r.status_code == 400:
+        return render(request, 'learn/addUsers.html', { 'error_message' : 'Bad request!' })
+    elif r.status_code == 401:
+        return render(request, 'learn/addUsers.html', { 'error_message' : 'There was a Blackboard authentication error!' })
+    else:
+        print("[DEBUG] r.status_code for courses get(): " + str(r.status_code))
+
+def update(request):
+    if request.method == "POST":
+
+        action = request.POST.get('action')
+        if action == 'addUsers':
+            return addUsers(request)
+        elif action == 'viewUsers':
+            return viewUsers(request)
+        elif action == 'removeUsers':
+            return removeUsers(request)
+
+    return render(request, 'learn/courses.html', {'error_message':'Must select an action!'}) # will have to change

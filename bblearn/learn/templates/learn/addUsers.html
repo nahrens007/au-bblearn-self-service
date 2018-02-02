@@ -43,7 +43,8 @@
           </div>
         </div>
         <span class='error_message'>{{error_message}}</span>
-          <form method="post" action="{% url 'addUsers' %}">
+          <form method="post" action="{% url 'update' %}">{% csrf_token %}
+            <input style='display: none;' name='action' value='addUsers' />
             <table class="userTable">
               <tr>
                 <th></th>
@@ -74,7 +75,7 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td><input id="submit" type="button" value="Add"></td>
+                <td><input id="submit" type="submit" value="Add" /></td>
               </tr>
             </table>
         </form>
