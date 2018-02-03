@@ -44,33 +44,57 @@
         </div>
         <span class='error_message'>{{error_message}}</span>
           <form method="post" action="{% url 'update' %}">{% csrf_token %}
+            <table id="searchTable">
+              <tr>
+                <td>
+                  <label>
+                    <select name='action'>
+                      <option selected value="None">-Search By-</option>
+                      <option value='firstName'>User Name</option>
+                      <option value='lastName'>First Name</option>
+                      <option value='userName'>Last Name</option>
+                      <option value='E-Mail'>E-Mail</option>
+                      <option value='ID Number'>ID Number</option>
+                    </select>
+                  </label>
+                </td>
+                <td><input id="searchBar" type="text" name="searchBar" placeholder="Search..." /></td>
+                <td><input id ="submit" type="submit" value="Search" /></td>
+              </tr>
+            </table>
+          </form>
+          <form method="post" action="{% url 'update' %}">{% csrf_token %}
             <input style='display: none;' name='action' value='addUsers' />
             <table class="userTable">
-              <tr>
-                <th></th>
+              <tr id="tableHeader">
+                <th><input id="checkAll" type="checkbox" onclick="check()" ></th>
                 <th>User Name</th>
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>E-mail</th>
                 <th>User ID</th>
               </tr>
-
               {{ userList | safe }}
               <tr id="pagingRow">
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
-                <td id="pagingListCell">Move Pages</td>
-                <td id="pagingCell">
-                  <div class="paging">
-                    <a href="#">❮</a>
-                    <a href="#">❯</a>
-                  </div>
+                <td></td>
+                <td>
+                  <table>
+                    <td id="pagingListCell">Page: 1</td>
+                    <td id="pagingCell">
+                      <div class="paging">
+                        <a href="#">❯</a>
+                        <a href="#">❮</a>
+                      </div>
+                    </td>
+                  </table>
                 </td>
               </tr>
               <tr>
-                <td><input id="checkAll" type="checkbox" onclick="check()" ></td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>

@@ -60,7 +60,7 @@ and Remove button.*/
 
 
   left: 25px;
-  width: 70px;
+  width: 100%;
   height: 20px;
   background-color: white;
   border: solid;
@@ -69,6 +69,11 @@ and Remove button.*/
   border-radius: 5px;
   font-size: 15px;
   line-height: 15px;
+}
+
+#submit:hover{
+  transform: scale(1.01);
+  border-color: black;
 }
 
 .paging a {
@@ -108,6 +113,16 @@ input[type=checkbox] {
 table{
   width: 100%;
   border-collapse: collapse;
+}
+
+table#searchTable{
+  width: 40%;
+}
+
+#tableHeader{
+  border-top: solid;
+  border-bottom: solid;
+  border-color: black
 }
 
 td{
