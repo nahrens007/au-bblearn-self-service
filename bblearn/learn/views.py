@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from django.template import loader, engines, Template
-from BlackboardLearn import LearnInterface
+from BlackboardLearn import interface
 import keys
 import json
+import learn.manipulate as manipulate
 
-interface = LearnInterface(keys.server, keys.key, keys.secret)
+
 
 #Create your views here.
 
@@ -88,17 +89,6 @@ def index(request):
         }
         return render(request, 'learn/index.html', context)
 
-def viewUsers(request):
-    context = {
-
-    }
-    return render(request, 'learn/viewUsers.html', context)
-
-def removeUsers(request):
-    context = {
-
-    }
-    return render(request, 'learn/removeUsers.html', context)
 
 def addUsers(request):
     '''
@@ -197,8 +187,8 @@ def update(request):
         if action == 'addUsers':
             return addUsers(request)
         elif action == 'viewUsers':
-            return viewUsers(request)
+            return manipulate.viewUsers(request)
         elif action == 'removeUsers':
-            return removeUsers(request)
+            return manipulate.removeUsers(request)
 
     return render(request, 'learn/courses.html', {'error_message':'Must select an action!'}) # will have to change

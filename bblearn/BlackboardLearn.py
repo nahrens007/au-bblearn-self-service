@@ -133,3 +133,5 @@ class LearnInterface:
 
     def getTokenExpires(self):
         return self.auth_instance.getTokenExpires()
+import keys
+interface = LearnInterface(keys.server, keys.key, keys.secret)
