@@ -3,13 +3,12 @@
 #viewUsersContainer{
 
   display: block;
-  top:35;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 17px;
   width: 710px;
   border: solid;
   border-color: #4C3059;
-  overflow:none;
   height: 10%;
 }
 

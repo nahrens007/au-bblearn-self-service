@@ -14,7 +14,6 @@
   </head>
 
   <body id="body">
-
     <!-- Contains Everything in the Purple Header -->
     <div id="heading">
       <div id="titleContainer">
@@ -98,7 +97,7 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td></td>
+                <td><input id="checkIt" type="checkbox" ></td>
                 <td><input id="submit" type="submit" value="Add" /></td>
               </tr>
             </table>
@@ -109,6 +108,27 @@
     <div id="footer">
       <span id="footerText">For Assistance Call: 419.289.5405</span>
     </div>
+
+
+        <script type="text/javascript">
+          function check() {
+
+            isChecked = document.getElementById('checkAll').checked;
+
+            if(isChecked){
+              document.getElementsByTagName('input').checked = true;
+              console.log("Checked")
+              console.log(document.getElementsByClassName('userCheckbox').checked);
+            }
+
+            else {
+              document.getElementsByClassName('userCheckbox').checked = false;
+              console.log("Not Checked")
+
+              console.log(document.getElementsByClassName('userCheckbox').checked);
+            }
+          }
+        </script>
   </body>
 
 </html>
