@@ -43,11 +43,12 @@
         </div>
         <span class='error_message'>{{error_message}}</span>
           <form method="post" action="{% url 'update' %}">{% csrf_token %}
+              <input style='display: none;' name='action' value='addUsers' />
             <table id="searchTable">
               <tr>
                 <td>
                   <label>
-                    <select name='action'>
+                    <select name='searchBy'>
                       <option selected value="None">-Search By-</option>
                       <option value='firstName'>User Name</option>
                       <option value='lastName'>First Name</option>
@@ -127,25 +128,6 @@
                 x[i].checked = false;
               }
             }
-            /*
-            if(isChecked){
-              for (var i = 0; i < 3; i++) {
-                document.getElementById('userCheckbox' + i).checked = true;
-              }
-              console.log("Checked")
-              console.log(isChecked + 'isChecked')
-              console.log(document.getElementsByClassName('userCheckbox').checked);
-            }
-
-            else {
-              for (var i = 0; i < 3; i++) {
-                document.getElementById('userCheckbox' + i).checked = false;
-              }
-              console.log("Not Checked")
-              console.log(isChecked + 'isChecked')
-              console.log(document.getElementsByClassName('userCheckbox').checked);
-            }
-            */
           }
         </script>
   </body>
