@@ -118,9 +118,9 @@ def addUsers(request):
     #search = request.POST.get('search') # contain searchKey and searchString
     #will replace with data from search
     searchKey = 'userName' # if searchKey is name (first/last), further configuration will be needed.
-    searchString = 'ba'.lower()
+    searchString = 'b'.lower()
 
-    path = '/learn/api/public/v1/users?fields=userName,name,contact,studentId,availability'
+    path = '/learn/api/public/v1/users?fields=userName,name.given,contact,studentId,availability'
     r = interface.get(path)
     if r == None:
         #This could be caused when either the server url is incorrect or Python can't connect to Bb at all
@@ -137,17 +137,15 @@ def addUsers(request):
             # build list of users to display
             for user in users:
                 if 'availability' in user and user['availability']['available'] == 'Yes':
-                    if searchString in user[searchKey]:
-                        buildList(user)
-                        continue
-                    if searchString in user['name'][searchKey]:
-                        buildList(user)
-                        continue
-                    if searchString in user['contact'][searchKey]:
-                        buildList(user)
-                        continue
-                    else:
-                        continue
+
+                    if searchString in user['name']['given']:
+                         userList += buildList(user)
+                         continue
+                    #if searchString in user['contact'][searchKey]:
+                    #     userList = buildList(user)
+                    #     continue
+                    # else:
+                        #continue
 
 
         if userList == '':
@@ -187,14 +185,16 @@ def update(request):
             return manipulate.removeUsers(request)
 
     return render(request, 'learn/courses.html', {'error_message':'Must select an action!'}) # will have to change
+
 def buildList(user):
 
+        userList = ''
         userList += '<tr>'
         userList += '<td><input class="userCheckbox" type="checkbox" name="user" value="' + user['userName'] + '"></td>'
         userList += '<td>' + user['userName'] + '</td>'
         if 'name' in user:
             userList += '<td>' + user['name']['given'] + '</td>'
-            userList += '<td>' + user['name']['family'] + '</td>'
+            #userList += '<td>' + user['name']['family'] + '</td>'
         else:
             userList += '<td></td>'
             userList += '<td></td>'
@@ -207,3 +207,5 @@ def buildList(user):
         else:
             userList += '<td></td>'
         userList += '</tr>'
+
+        return userList
