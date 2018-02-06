@@ -98,9 +98,8 @@ def addUsers(request):
         user - dict with list of users to add to said courses.
             If empty: display empty list with search results (if search isn't empty)
             Else: create course memebership to add user to course as either guest or TA
-        search - dict with a searchKey and searchString, to determine which user we're searching for.
-            If empty: display empty list with no search results
-            - searchKey = 'userName', 'studentId', 'firstName', 'lastName', 'email'
+        searchBy - string with category to search by
+        searchBar - string with searchString
         action - dict with the specified action (addUsers, viewUsers, removeUsers)
     '''
 
@@ -108,12 +107,14 @@ def addUsers(request):
     # WAY WE GET HERE IS FROM THE update() VIEW, WHICH VERIFIES POST
     user = request.POST.getlist('user')
     course = request.POST.getlist('course')
-    search = request.POST.getlist('search')
+    searchBy = request.POST.getlist('searchBy')
+    searchBar = request.POST.getlist('searchBar')
 
     print()
-    print(user)
-    print(course)
-    print(search)
+    print('user: ' + str(user))
+    print('course: ' + str(course))
+    print('searchBy: ' + str(searchBy))
+    print('searchBar: ' + str(searchBar))
     print()
     #search = request.POST.get('search') # contain searchKey and searchString
     #will replace with data from search
@@ -176,7 +177,9 @@ def addUsers(request):
 
 def update(request):
     if request.method == "POST":
-
+        print("update:\n")
+        print(request.POST)
+        print()
         action = request.POST.get('action')
         if action == 'addUsers':
             return addUsers(request)
