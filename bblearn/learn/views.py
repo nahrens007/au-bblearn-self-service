@@ -121,7 +121,7 @@ def addUsers(request):
 
     searchString = ''.lower()
 
-    path = '/learn/api/public/v1/users?fields=userName,name.given,contact,studentId,availability'
+    path = '/learn/api/public/v1/users?fields=userName,name.given,name.family,contact.email,studentId,availability'
     r = interface.get(path)
     if r == None:
         #This could be caused when either the server url is incorrect or Python can't connect to Bb at all
