@@ -117,7 +117,7 @@ def addUsers(request):
     #search = request.POST.get('search') # contain searchKey and searchString
     #will replace with data from search
     searchKey = 'userName' # if searchKey is name (first/last), further configuration will be needed.
-    searchString = ''.lower()
+    searchString = 'ba'.lower()
 
     path = '/learn/api/public/v1/users?fields=userName,name,contact,studentId,availability'
     r = interface.get(path)
@@ -135,25 +135,18 @@ def addUsers(request):
 
             # build list of users to display
             for user in users:
-                if 'availability' in user and user['availability']['available'] == 'Yes' and searchString in user[searchKey]:
-                    userList += '<tr>'
-                    userList += '<td><input class="userCheckbox" type="checkbox" name="user" value="' + user['userName'] + '"></td>'
-                    userList += '<td>' + user['userName'] + '</td>'
-                    if 'name' in user:
-                        userList += '<td>' + user['name']['given'] + '</td>'
-                        userList += '<td>' + user['name']['family'] + '</td>'
+                if 'availability' in user and user['availability']['available'] == 'Yes':
+                    if searchString in user[searchKey]:
+                        buildList(user)
+                        continue
+                    if searchString in user['name'][searchKey]:
+                        buildList(user)
+                        continue
+                    if searchString in user['contact'][searchKey]:
+                        buildList(user)
+                        continue
                     else:
-                        userList += '<td></td>'
-                        userList += '<td></td>'
-                    if 'contact' in user:
-                        userList += '<td>' + user['contact']['email'] + '</td>'
-                    else:
-                        userList += '<td></td>'
-                    if 'studentId' in user: #guests don't have studentId
-                        userList += '<td>' + user['studentId'] + '</td>'
-                    else:
-                        userList += '<td></td>'
-                    userList += '</tr>'
+                        continue
 
 
         if userList == '':
@@ -193,3 +186,23 @@ def update(request):
             return manipulate.removeUsers(request)
 
     return render(request, 'learn/courses.html', {'error_message':'Must select an action!'}) # will have to change
+def buildList(user):
+
+        userList += '<tr>'
+        userList += '<td><input class="userCheckbox" type="checkbox" name="user" value="' + user['userName'] + '"></td>'
+        userList += '<td>' + user['userName'] + '</td>'
+        if 'name' in user:
+            userList += '<td>' + user['name']['given'] + '</td>'
+            userList += '<td>' + user['name']['family'] + '</td>'
+        else:
+            userList += '<td></td>'
+            userList += '<td></td>'
+        if 'contact' in user:
+            userList += '<td>' + user['contact']['email'] + '</td>'
+        else:
+            userList += '<td></td>'
+        if 'studentId' in user: #guests don't have studentId
+            userList += '<td>' + user['studentId'] + '</td>'
+        else:
+            userList += '<td></td>'
+        userList += '</tr>'
