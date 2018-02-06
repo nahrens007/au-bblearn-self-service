@@ -40,7 +40,7 @@ def index(request):
                             res1 = json.loads(r1.text)
                             class_list += '''<tr>
                                 <td id="checkBoxCell">
-                                    <input class="userCheckbox" type="checkbox" name="course" value="''' + resu['courseId'] + '''">
+                                    <input id="userCheckbox" type="checkbox" name="course" value="''' + resu['courseId'] + '''">
                                 </td>
                                 <td>
                                     <span class="courseListing" name="course">''' + res1['name'] + '''</span>
@@ -117,7 +117,7 @@ def addUsers(request):
     #search = request.POST.get('search') # contain searchKey and searchString
     #will replace with data from search
     searchKey = 'userName' # if searchKey is name (first/last), further configuration will be needed.
-    searchString = ''.lower()
+    searchString = 'ba'.lower()
 
     path = '/learn/api/public/v1/users?fields=userName,name,contact,studentId,availability'
     r = interface.get(path)
@@ -154,6 +154,7 @@ def addUsers(request):
                     else:
                         userList += '<td></td>'
                     userList += '</tr>'
+
 
         if userList == '':
             context = {
