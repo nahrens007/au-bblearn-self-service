@@ -117,7 +117,7 @@ def addUsers(request):
     print()
     #search = request.POST.get('search') # contain searchKey and searchString
     #will replace with data from search
-    searchKey = 'userName' # if searchKey is name (first/last), further configuration will be needed.
+    searchKey = search # if searchKey is name (first/last), further configuration will be needed.
     searchString = 'ba'.lower()
 
     path = '/learn/api/public/v1/users?fields=userName,name,contact,studentId,availability'
