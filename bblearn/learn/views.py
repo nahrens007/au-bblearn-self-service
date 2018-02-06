@@ -100,6 +100,7 @@ def addUsers(request):
             Else: create course memebership to add user to course as either guest or TA
         search - dict with a searchKey and searchString, to determine which user we're searching for.
             If empty: display empty list with no search results
+            - searchKey = 'userName', 'studentId', 'firstName', 'lastName', 'email'
         action - dict with the specified action (addUsers, viewUsers, removeUsers)
     '''
 
