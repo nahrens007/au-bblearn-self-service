@@ -43,22 +43,23 @@
         </div>
         <span class='error_message'>{{error_message}}</span>
           <form method="post" action="{% url 'update' %}">{% csrf_token %}
+              <input style='display: none;' name='action' value='addUsers' />
             <table id="searchTable">
               <tr>
                 <td>
                   <label>
-                    <select name='action'>
+                    <select name='searchBy'>
                       <option selected value="None">-Search By-</option>
-                      <option value='firstName'>User Name</option>
-                      <option value='lastName'>First Name</option>
-                      <option value='userName'>Last Name</option>
-                      <option value='E-Mail'>E-Mail</option>
-                      <option value='ID Number'>ID Number</option>
+                      <option value='userName'>User Name</option>
+                      <option value='firstName'>First Name</option>
+                      <option value='lastName'>Last Name</option>
+                      <option value='contact'>E-Mail</option>
+                      <option value='studentId'>ID Number</option>
                     </select>
                   </label>
                 </td>
                 <td><input id="searchBar" type="text" name="searchBar" placeholder="Search..." /></td>
-                <td><input id ="submit" type="submit" value="Search" /></td>
+                <td><input id="submit" type="submit" value="Search" /></td>
               </tr>
             </table>
           </form>
@@ -127,25 +128,6 @@
                 x[i].checked = false;
               }
             }
-            /*
-            if(isChecked){
-              for (var i = 0; i < 3; i++) {
-                document.getElementById('userCheckbox' + i).checked = true;
-              }
-              console.log("Checked")
-              console.log(isChecked + 'isChecked')
-              console.log(document.getElementsByClassName('userCheckbox').checked);
-            }
-
-            else {
-              for (var i = 0; i < 3; i++) {
-                document.getElementById('userCheckbox' + i).checked = false;
-              }
-              console.log("Not Checked")
-              console.log(isChecked + 'isChecked')
-              console.log(document.getElementsByClassName('userCheckbox').checked);
-            }
-            */
           }
         </script>
   </body>

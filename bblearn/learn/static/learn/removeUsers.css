@@ -100,10 +100,6 @@ table{
   border-collapse: collapse;
 }
 
-#tableHeader{
-  border-bottom: solid;
-}
-
 td{
   text-align: center;
 }
