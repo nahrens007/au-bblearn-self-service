@@ -30,9 +30,9 @@ def addUsers(request):
     print()
     #search = request.POST.get('search') # contain searchKey and searchString
     #will replace with data from search
-    searchKey = 'userName' # if searchKey is name (first/last), further configuration will be needed.
+    searchKey = 'firstname' # if searchKey is name (first/last), further configuration will be needed.
 
-    searchString = ''.lower()
+    searchString = 'zxy'.lower()
 
     path = '/learn/api/public/v1/users?fields=userName,name.given,name.family,contact.email,studentId,availability'
     r = interface.get(path)
@@ -52,14 +52,23 @@ def addUsers(request):
             for user in users:
                 if 'availability' in user and user['availability']['available'] == 'Yes':
 
-                    if searchString in user['name']['given']:
-                         userList += buildList(user)
-                         continue
-                    #if searchString in user['contact'][searchKey]:
-                    #     userList = buildList(user)
-                    #     continue
-                    # else:
-                        #continue
+                    if searchKey == 'firstname' and searchString in user['name']['given']:
+                        userList += buildList(user)
+                        continue
+                    elif searchKey == 'email' and searchString in user['contact']['email']:
+                        userList += buildList(user)
+                        continue
+                    elif searchKey == 'lastname' and searchString in user['name']['family']:
+                        userList += buildList(user)
+                        continue
+                    elif searchKey == 'username' and searchString in user['userName']:
+                        userList += buildList(user)
+                        continue
+                    elif searchKey == 'idnumber' and searchString in user['studentId']:
+                        userList += buildList(user)
+                        continue
+                    else:
+                        continue
 
 
         if userList == '':
@@ -96,7 +105,7 @@ def buildList(user):
     userList += '<td>' + user['userName'] + '</td>'
     if 'name' in user:
         userList += '<td>' + user['name']['given'] + '</td>'
-        #userList += '<td>' + user['name']['family'] + '</td>'
+        userList += '<td>' + user['name']['family'] + '</td>'
     else:
         userList += '<td></td>'
         userList += '<td></td>'
