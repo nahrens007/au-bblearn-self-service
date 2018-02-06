@@ -97,7 +97,7 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td><input id="checkIt" type="checkbox" ></td>
+                <td><input id="userCheckbox" type="checkbox" ></td>
                 <td><input id="submit" type="submit" value="Add" /></td>
               </tr>
             </table>
@@ -112,21 +112,40 @@
 
         <script type="text/javascript">
           function check() {
-
+            var x = document.getElementsByClassName('userCheckbox');
             isChecked = document.getElementById('checkAll').checked;
 
             if(isChecked){
-              document.getElementsByTagName('input').checked = true;
+              for (var i = 0; i < x.length; i++) {
+                x[i].checked = true;
+              }
+
+            }
+
+            else {
+              for (var i = 0; i < x.length; i++) {
+                x[i].checked = false;
+              }
+            }
+            /*
+            if(isChecked){
+              for (var i = 0; i < 3; i++) {
+                document.getElementById('userCheckbox' + i).checked = true;
+              }
               console.log("Checked")
+              console.log(isChecked + 'isChecked')
               console.log(document.getElementsByClassName('userCheckbox').checked);
             }
 
             else {
-              document.getElementsByClassName('userCheckbox').checked = false;
+              for (var i = 0; i < 3; i++) {
+                document.getElementById('userCheckbox' + i).checked = false;
+              }
               console.log("Not Checked")
-
+              console.log(isChecked + 'isChecked')
               console.log(document.getElementsByClassName('userCheckbox').checked);
             }
+            */
           }
         </script>
   </body>

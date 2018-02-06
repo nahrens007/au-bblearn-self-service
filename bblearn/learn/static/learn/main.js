@@ -5,10 +5,15 @@ function check() {
   isChecked = document.getElementById('checkAll').checked;
   print("working");
   if(isChecked){
-    document.getElementsByClassName('userCheckbox').checked = true;
+    for (var i = 0; i < array.length; i++) {
+      document.getElementById('userCheckbox' + i).checked = true;
+    }
+
   }
 
   else {
-      document.getElementsByClassName('userCheckbox').checked = false;
+    for (var i = 0; i < array.length; i++) {
+      document.getElementById('userCheckbox' + i).checked = false;
+    }
   }
 }
