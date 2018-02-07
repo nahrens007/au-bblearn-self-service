@@ -48,7 +48,7 @@
               <tr>
                 <td>
                   <label>
-                    <select name='searchBy'>
+                    <select id="searchOptions" name='searchBy'>
                       <option selected value="None">-Search By-</option>
                       <option value='userName'>User Name</option>
                       <option value='firstName'>First Name</option>
@@ -112,6 +112,9 @@
 
 
         <script type="text/javascript">
+
+          document.getElementById('searchOptions').selectedIndex ={{ optionIndex | safe}};
+
           function check() {
             var x = document.getElementsByClassName('userCheckbox');
             isChecked = document.getElementById('checkAll').checked;

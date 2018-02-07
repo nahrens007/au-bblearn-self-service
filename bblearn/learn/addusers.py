@@ -52,25 +52,32 @@ def addUsers(request):
             users = res['results']
 
             # build list of users to display
+            index = 0
             for user in users:
                 if 'availability' in user and user['availability']['available'] == 'Yes':
 
                     if searchKey == 'None':
-                        userList += buildList(user)
-                        continue
-                    elif searchKey == 'firstName' and searchString in user['name']['given'] and 'name' in user:
-                        userList += buildList(user)
-                        continue
-                    elif searchKey == 'contact' and 'contact' in user and searchString in user['contact']['email']:
-                        userList += buildList(user)
-                        continue
-                    elif searchKey == 'lastName' and searchString in user['name']['family']  and 'name' in user:
+                        index = 0
                         userList += buildList(user)
                         continue
                     elif searchKey == 'userName' and searchString in user['userName'] and 'userName' in user:
+                        index = 1
+                        userList += buildList(user)
+                        continue
+                    elif searchKey == 'firstName' and searchString in user['name']['given'] and 'name' in user:
+                        index = 2
+                        userList += buildList(user)
+                        continue
+                    elif searchKey == 'lastName' and searchString in user['name']['family']  and 'name' in user:
+                        index = 3
+                        userList += buildList(user)
+                        continue
+                    elif searchKey == 'contact' and 'contact' in user and searchString in user['contact']['email']:
+                        index = 4
                         userList += buildList(user)
                         continue
                     elif searchKey == 'studentId' and 'studentId' in user and searchString in user['studentId']:
+                        index = 5
                         userList += buildList(user)
                         continue
                     else:
@@ -82,6 +89,7 @@ def addUsers(request):
                 'name':request.session['instructor_name'],
                 'error_message':"No users found!",
                 'userList': '',
+                'optionIndex': index,
             }
             return render(request, 'learn/addUsers.html', context)
 
@@ -89,6 +97,7 @@ def addUsers(request):
             'name': request.session['instructor_name'],
             'error_message': '',
             'userList': userList,
+            'optionIndex': index,
         }
 
         return render(request, 'learn/addUsers.html', context)
