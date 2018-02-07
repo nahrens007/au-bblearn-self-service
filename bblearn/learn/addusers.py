@@ -18,13 +18,13 @@ def addUsers(request):
     # NO NEED TO CHECK if request.method == 'POST' BECAUSE THE ONLY
     # WAY WE GET HERE IS FROM THE update() VIEW, WHICH VERIFIES POST
     user = request.POST.getlist('user')
-    course = request.POST.getlist('course')
+    courses = request.POST.getlist('course')
     #searchBy = request.POST.getlist('searchBy')
     #searchBar = request.POST.getlist('searchBar')
     searchKey = str(request.POST.get('searchBy')) # if searchKey is name (first/last), further configuration will be needed.
     searchString = str(request.POST.get('searchBar')).lower()
 
-    if not course:
+    if not courses:
         # no courses selected!
         return redirect('index')
 
