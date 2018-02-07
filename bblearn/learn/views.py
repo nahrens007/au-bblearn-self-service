@@ -7,7 +7,8 @@ from learn import manipulate, addusers
 #Create your views here.
 def index(request):
     if request.method == "POST":
-        #make sure cookies are enabled
+        #make sure cookies are enabled - which they will be if we get this for,
+        #since the CSRF token cookie will have been set.
         if request.session.test_cookie_worked():
             request.session.delete_test_cookie()
         else:
@@ -22,10 +23,10 @@ def index(request):
         elif r.status_code == 200:
             #Success!
             #user exists, log in:
-            request.session['instructor_username'] = user_name
 
             class_list = ''
             isInstructor = False
+            courses = {'courses':[]}
 
             if r.text:
                 res = json.loads(r.text)
@@ -36,6 +37,7 @@ def index(request):
                 for resu in results:
                     if resu['courseRoleId'] == 'Instructor':
                         isInstructor = True
+                        courses['courses'].append(resu['courseId'])
                         path = '/learn/api/public/v1/courses/' + resu['courseId']
                         r1 = interface.get(path)
                         if r1.text:
@@ -48,8 +50,15 @@ def index(request):
                                     <span class="courseListing" name="course">''' + res1['name'] + '''</span>
                                 </td>
                             </tr>'''
+
+                        # If user is not an instructor in any course in Blackboard, don't allow the user to log in!
+                        if not isInstructor:
+                            context = {
+                            'error_message':"You must be an instructor!",
+                            }
+                            return render(request, 'learn/index.html', context)
             # Get the user's name
-            path = '/learn/api/public/v1/users/userName:' + user_name
+            path = '/learn/api/public/v1/users/userName:' + user_name + '?fields=name.given,name.family'
             r = interface.get(path)
 
             name = ''
@@ -57,22 +66,18 @@ def index(request):
             if r.text:
                 res = json.loads(r.text)
 
-                name_data = res['name']
-                name += name_data['given'] + " " + name_data['family']
+                name += res['name']['given'] + " " + res['name']['family']
 
-            print("Token expires: " + str(interface.getTokenExpires()))
-
-            if not isInstructor:
-                context = {
-                    'error_message':"You must be an instructor!",
-                }
-                return render(request, 'learn/index.html', context)
 
             context ={
                 'name': name,
                 'classes': class_list,
             }
 
+            # set the session data
+            request.session['instructor_username'] = user_name
+            request.session['instructor_name'] = name
+            request.session['instructor_courses'] = courses
             return render(request, 'learn/courses.html', context)
 
         elif r.status_code == 404:

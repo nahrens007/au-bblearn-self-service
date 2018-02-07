@@ -24,10 +24,7 @@ def addUsers(request):
     searchKey = str(request.POST.get('searchBy')).lower() # if searchKey is name (first/last), further configuration will be needed.
     searchString = str(request.POST.get('searchBar')).lower()
     print()
-    print('user: ' + str(user))
-    print('course: ' + str(course))
-    print('searchKey: ' + searchKey)
-    print('searchString: ' + searchString)
+    print(request.POST)
     print()
     #search = request.POST.get('search') # contain searchKey and searchString
     #will replace with data from search
@@ -39,7 +36,7 @@ def addUsers(request):
     r = interface.get(path)
     if r == None:
         #This could be caused when either the server url is incorrect or Python can't connect to Bb at all
-        return render(request, 'learn/addUsers.html', { 'error_message' : 'Could not connect to Blackboard!' })
+        return render(request, 'learn/addUsers.html', { 'error_message' : 'Could not connect to Blackboard!', 'name':request.session['instructor_name'] })
     elif r.status_code == 200:
         #Success!
 
@@ -74,14 +71,14 @@ def addUsers(request):
 
         if userList == '':
             context = {
-                'name': 'From Cookies',
+                'name':request.session['instructor_name'],
                 'error_message':"No users found!",
                 'userList': '',
             }
             return render(request, 'learn/addUsers.html', context)
 
         context ={
-            'name': 'From Cookies',
+            'name': request.session['instructor_name'],
             'error_message': '',
             'userList': userList,
         }
@@ -89,11 +86,11 @@ def addUsers(request):
         return render(request, 'learn/addUsers.html', context)
 
     elif r.status_code == 403:
-        return render(request, 'learn/addUsers.html', { 'error_message' : 'You are not authorized!' })
+        return render(request, 'learn/addUsers.html', { 'error_message' : 'You are not authorized!', 'name': request.session['instructor_name'] })
     elif r.status_code == 400:
-        return render(request, 'learn/addUsers.html', { 'error_message' : 'Bad request!' })
+        return render(request, 'learn/addUsers.html', { 'error_message' : 'Bad request!', 'name': request.session['instructor_name'] })
     elif r.status_code == 401:
-        return render(request, 'learn/addUsers.html', { 'error_message' : 'There was a Blackboard authentication error!' })
+        return render(request, 'learn/addUsers.html', { 'error_message' : 'There was a Blackboard authentication error!', 'name': request.session['instructor_name'] })
     else:
         print("[DEBUG] r.status_code for courses get(): " + str(r.status_code))
 
