@@ -57,26 +57,31 @@ def addUsers(request):
                         index = 0
                         userList += buildList(user)
                         continue
-                    elif searchKey == 'userName' and searchString in user['userName'] and 'userName' in user:
+                    elif searchKey == 'userName':
                         index = 1
-                        userList += buildList(user)
-                        continue
-                    elif searchKey == 'firstName' and searchString in user['name']['given'] and 'name' in user:
+                        if('userName' in user and searchString in user['userName'].lower()):
+                            userList += buildList(user)
+                            continue
+                    elif searchKey == 'firstName':
                         index = 2
-                        userList += buildList(user)
-                        continue
-                    elif searchKey == 'lastName' and searchString in user['name']['family']  and 'name' in user:
+                        if('name' in user and searchString in user['name']['given'].lower()):
+                            userList += buildList(user)
+                            continue
+                    elif searchKey == 'lastName':
                         index = 3
-                        userList += buildList(user)
-                        continue
-                    elif searchKey == 'contact' and 'contact' in user and searchString in user['contact']['email']:
+                        if('name' in user and searchString in user['name']['family'].lower()):
+                            userList += buildList(user)
+                            continue
+                    elif searchKey == 'contact':
                         index = 4
-                        userList += buildList(user)
-                        continue
-                    elif searchKey == 'studentId' and 'studentId' in user and searchString in user['studentId']:
+                        if('contact' in user and searchString in user['contact']['email'].lower()):
+                            userList += buildList(user)
+                            continue
+                    elif searchKey == 'studentId':
                         index = 5
-                        userList += buildList(user)
-                        continue
+                        if('studentId' in user and searchString in user['studentId']):
+                            userList += buildList(user)
+                            continue
                     else:
                         continue
 
