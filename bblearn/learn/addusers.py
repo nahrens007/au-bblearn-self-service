@@ -24,13 +24,10 @@ def addUsers(request):
     searchKey = str(request.POST.get('searchBy')) # if searchKey is name (first/last), further configuration will be needed.
     searchString = str(request.POST.get('searchBar')).lower()
 
-<<<<<<< HEAD
     if not course:
         # no courses selected!
         return redirect('index')
 
-=======
->>>>>>> 2c320ab3d9a5050bcfe6da7b28ba16028aa74979
     print()
     print(request.POST)
     print()
