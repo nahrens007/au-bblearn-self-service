@@ -144,6 +144,14 @@ def index(request):
 
 def update(request):
     if request.method == "POST":
+        courses = None
+        if 'selected_courses' not in request.session:
+            courses = request.POST.getlist('course')
+            #no courses selected!
+            if not courses:
+                return redirect('index')
+            request.session['selected_courses'] = courses
+
         action = request.POST.get('action')
         if action == 'addUsers':
             return addusers.addUsers(request)
