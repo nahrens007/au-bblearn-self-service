@@ -5,23 +5,22 @@ import json
 def addUsers(request):
     '''
     request.POST contains:
-        course - dict with list of courses selected to add users to (as guest or TA)
-            Must not be empty
+        course - list of courses selected to add users to (as guest or TA)
+            Must not be empty!
         user - dict with list of users to add to said courses.
             If empty: display empty list with search results (if search isn't empty)
             Else: create course memebership to add user to course as either guest or TA
         searchBy - string with category to search by
         searchBar - string with searchString
-        action - dict with the specified action (addUsers, viewUsers, removeUsers)
+        action - dict with the specified action (addUsers, viewUsers, removeUsers) (handled in views.update())
     '''
 
     # NO NEED TO CHECK if request.method == 'POST' BECAUSE THE ONLY
     # WAY WE GET HERE IS FROM THE update() VIEW, WHICH VERIFIES POST
     user = request.POST.getlist('user')
     courses = request.POST.getlist('course')
-    #searchBy = request.POST.getlist('searchBy')
-    #searchBar = request.POST.getlist('searchBar')
-    searchKey = str(request.POST.get('searchBy')) # if searchKey is name (first/last), further configuration will be needed.
+
+    searchKey = str(request.POST.get('searchBy'))
     searchString = str(request.POST.get('searchBar')).lower()
 
     if not courses:
@@ -31,11 +30,6 @@ def addUsers(request):
     print()
     print(request.POST)
     print()
-    #search = request.POST.get('search') # contain searchKey and searchString
-    #will replace with data from search
-    #searchKey = 'email' # if searchKey is name (first/last), further configuration will be needed.
-
-    #searchString = 'ba'.lower()
 
     path = '/learn/api/public/v1/users?fields=userName,name.given,name.family,contact.email,studentId,availability'
     r = interface.get(path)
@@ -119,8 +113,14 @@ def buildList(user):
     userList += '<td><input class="userCheckbox" type="checkbox" name="user" value="' + user['userName'] + '"></td>'
     userList += '<td>' + user['userName'] + '</td>'
     if 'name' in user:
-        userList += '<td>' + user['name']['given'] + '</td>'
-        userList += '<td>' + user['name']['family'] + '</td>'
+        if 'given' in user['name']:
+            userList += '<td>' + user['name']['given'] + '</td>'
+        else:
+            userList += '<td></td>'
+        if 'family' in user['name']:
+            userList += '<td>' + user['name']['family'] + '</td>'
+        else:
+            userList += '<td></td>'
     else:
         userList += '<td></td>'
         userList += '<td></td>'
