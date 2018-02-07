@@ -21,8 +21,9 @@ def addUsers(request):
     course = request.POST.getlist('course')
     #searchBy = request.POST.getlist('searchBy')
     #searchBar = request.POST.getlist('searchBar')
-    searchKey = str(request.POST.get('searchBy')).lower() # if searchKey is name (first/last), further configuration will be needed.
+    searchKey = str(request.POST.get('searchBy')) # if searchKey is name (first/last), further configuration will be needed.
     searchString = str(request.POST.get('searchBar')).lower()
+
     print()
     print('user: ' + str(user))
     print('course: ' + str(course))
@@ -53,19 +54,22 @@ def addUsers(request):
             for user in users:
                 if 'availability' in user and user['availability']['available'] == 'Yes':
 
-                    if searchKey == 'firstname' and searchString in user['name']['given'] and 'firstname' in user:
+                    if searchKey == 'None':
                         userList += buildList(user)
                         continue
-                    elif searchKey == 'email' and searchString in user['contact']['email'] and 'email' in user:
+                    elif searchKey == 'firstName' and searchString in user['name']['given'] and 'name' in user:
                         userList += buildList(user)
                         continue
-                    elif searchKey == 'lastname' and searchString in user['name']['family']  and 'lastname' in user:
+                    elif searchKey == 'contact' and 'contact' in user and searchString in user['contact']['email']:
                         userList += buildList(user)
                         continue
-                    elif searchKey == 'username' and searchString in user['userName'] and 'username' in user:
+                    elif searchKey == 'lastName' and searchString in user['name']['family']  and 'name' in user:
                         userList += buildList(user)
                         continue
-                    elif searchKey == 'idnumber' and searchString in user['studentId'] and 'studentId' in user:
+                    elif searchKey == 'userName' and searchString in user['userName'] and 'userName' in user:
+                        userList += buildList(user)
+                        continue
+                    elif searchKey == 'studentId' and 'studentId' in user and searchString in user['studentId']:
                         userList += buildList(user)
                         continue
                     else:
