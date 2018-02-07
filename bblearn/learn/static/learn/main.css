@@ -56,11 +56,11 @@ img{
 
 #titleContainer{
 
-  display: inline-block;
+  position: relative;
   width: 350px;
   height:50px;
-  text-align: center;
-  margin-right: 9%;
+  left: 15px;
+  margin: auto;
   background-color: rgba(0, 0, 0, 0.4);
   border-bottom-right-radius: 25px;
   border-bottom-left-radius: 25px;
@@ -85,6 +85,7 @@ Styles the black background for Sign out
   display: block;
   float: right;
   width: auto;
+  margin-top: -50px;
   height: 50px;
   background-color: rgba(0, 0, 0, 0.5);
   border-bottom-left-radius: 10px;
@@ -96,6 +97,7 @@ Styles the sign out text
 */
 #signOutContainer{
 
+  display: inline;
    float:left;
    height: 24px;
    text-align: center;
@@ -149,4 +151,11 @@ Start for everything After the Header
   margin-right: auto;
   color: white;
   width: 223px;
+}
+
+.error_message{
+
+  color: red;
+  font-style: oblique;
+  font-weight: bold;
 }
