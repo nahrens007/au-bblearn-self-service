@@ -6,16 +6,13 @@ from learn import manipulate, addusers
 
 #Create your views here.
 def index(request):
-    print("INDEX")
     if request.method == "POST":
-        print("POST")
-        sessionEnabled = False
+        #make sure cookies are enabled
         if request.session.test_cookie_worked():
             request.session.delete_test_cookie()
-            sessionEnabled = True
-            print('Test cookie worked')
         else:
-            print("test cookie didn't work")
+            return render(request, 'cookies_not_enabled.html', {})
+
         user_name = request.POST.get('username')
         path = '/learn/api/public/v1/users/userName:' + user_name + '/courses'
         r = interface.get(path)
@@ -89,10 +86,8 @@ def index(request):
         else:
             print("[DEBUG] r.status_code for courses get(): " + str(r.status_code))
     else: # regular index : sign in page
-        context ={
-            'error_message' : ''
-        }
-        request.session.set_test_cookie() #prepare for use of sessions
+        context = {}
+        request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
         return render(request, 'learn/index.html', context)
 
 
