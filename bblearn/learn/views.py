@@ -90,9 +90,6 @@ def index(request):
 
 def update(request):
     if request.method == "POST":
-        print("update:\n")
-        print(request.POST)
-        print()
         action = request.POST.get('action')
         if action == 'addUsers':
             return addusers.addUsers(request)
@@ -101,4 +98,5 @@ def update(request):
         elif action == 'removeUsers':
             return manipulate.removeUsers(request)
 
+    # In production, we should never get to this part!!!!
     return render(request, 'learn/courses.html', {'error_message':'Must select an action!'}) # will have to change
