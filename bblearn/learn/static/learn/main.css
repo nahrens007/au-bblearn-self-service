@@ -2,7 +2,7 @@
 #body{
   margin: 0;
   background-color: #F9F1FD;
-  min-width: 900px;
+  min-width: 1135px;
   overflow: scroll;
 }
 
@@ -15,6 +15,9 @@ Start for everything in the Header
   text-align: center;
   width: 100%;
   height: 91px;
+  border-bottom: solid;
+  border-color: #917e1f;
+  border-width: 1px;
 
 }
 
@@ -28,6 +31,9 @@ Styles the black background for the service and subTitle
   width: 210px;
   height:100%;
   background-color: rgba(0, 0, 0, 0.3);
+  border-right: solid;
+  border-color: #917e1f;
+  border-width: thin;
   border-bottom-right-radius: 25px;
   border-top-right-radius: 25px;
 }
@@ -62,6 +68,10 @@ img{
   left: 15px;
   margin: auto;
   background-color: rgba(0, 0, 0, 0.4);
+  border: solid;
+  border-top: none;
+  border-color: #917e1f;
+  border-width: .5px;
   border-bottom-right-radius: 25px;
   border-bottom-left-radius: 25px;
 }
@@ -88,6 +98,10 @@ Styles the black background for Sign out
   margin-top: -50px;
   height: 50.5px;
   background-color: rgba(0, 0, 0, 0.4);
+  border-left: solid;
+  border-bottom: solid;
+  border-color: #917e1f;
+  border-width: .5px;
   border-bottom-left-radius: 10px;
 
 }
@@ -112,22 +126,23 @@ Styles the sign out text
 #signOut{
 
   float: right;
-  background-color: black;
   padding-left: 10px;
   margin-right: -10px;
   padding-right: 5px;
   text-decoration: underline;
   color: white;
+  border: solid;
+  border-width: thin;
+  border-color: #917e1f;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
 }
 
 #signOut:hover{
 
-  border: solid;
-  border-width: thin;
-  border-color: #E2C536;
 
+  background-color: black;
+  border: none;
   transform: scale(1.01);
 }
 /*
