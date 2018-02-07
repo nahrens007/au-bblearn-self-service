@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from BlackboardLearn import interface
 import json
 from learn import manipulate, addusers
@@ -6,7 +6,8 @@ from learn import manipulate, addusers
 
 #Create your views here.
 def index(request):
-    if request.method == "POST":
+    # IF the user logged in, i.e., there is POST data
+    if request.method == 'POST':
         #make sure cookies are enabled - which they will be if we get this for,
         #since the CSRF token cookie will have been set.
         if request.session.test_cookie_worked():
@@ -14,6 +15,7 @@ def index(request):
         else:
             return render(request, 'cookies_not_enabled.html', {})
 
+        # get the client's username and see if it exists in Bb
         user_name = request.POST.get('username')
         path = '/learn/api/public/v1/users/userName:' + user_name + '/courses'
         r = interface.get(path)
@@ -90,6 +92,39 @@ def index(request):
             return render(request, 'learn/index.html', { 'error_message' : 'There was a Blackboard authentication error!' })
         else:
             print("[DEBUG] r.status_code for courses get(): " + str(r.status_code))
+
+    # if redirected here from another page, i.e., user is already logged in
+    #   and has session data saved.
+    elif 'instructor_courses' in request.session and 'instructor_name' in request.session and 'instructor_username' in request.session:
+
+        name = request.session['instructor_name']
+
+        # Class list for HTML template
+        class_list = ''
+
+        # user is already logged in - generate course list from session
+        for course in request.session['instructor_courses']['courses']:
+            # get the name of the courses for the template
+            path = '/learn/api/public/v1/courses/' + course
+            r1 = interface.get(path)
+            if r1.text:
+                res1 = json.loads(r1.text)
+                class_list += '''<tr>
+                    <td id="checkBoxCell">
+                        <input id="userCheckbox" type="checkbox" name="course" value="''' + course + '''">
+                    </td>
+                    <td>
+                        <span class="courseListing" name="course">''' + res1['name'] + '''</span>
+                    </td>
+                </tr>'''
+
+
+        context ={
+            'name': name,
+            'classes': class_list,
+        }
+        return render(request, 'learn/courses.html', context)
+
     else: # regular index : sign in page - also, should sign out.
         if 'instructor_name' in request.session:
             del request.session['instructor_name']

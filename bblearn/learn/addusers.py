@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from BlackboardLearn import interface
 import json
 
@@ -23,6 +23,9 @@ def addUsers(request):
     #searchBar = request.POST.getlist('searchBar')
     searchKey = str(request.POST.get('searchBy')).lower() # if searchKey is name (first/last), further configuration will be needed.
     searchString = str(request.POST.get('searchBar')).lower()
+    if not course:
+        # no courses selected!
+        return redirect('index')
     print()
     print(request.POST)
     print()
