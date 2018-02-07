@@ -152,5 +152,5 @@ def update(request):
         elif action == 'removeUsers':
             return manipulate.removeUsers(request)
 
-    # In production, we should never get to this part!!!!
-    return render(request, 'learn/courses.html', {'error_message':'Must select an action!'}) # will have to change
+    # Must either log in or go through selecting a course
+    return redirect('index')
