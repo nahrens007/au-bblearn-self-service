@@ -90,7 +90,17 @@ def index(request):
             return render(request, 'learn/index.html', { 'error_message' : 'There was a Blackboard authentication error!' })
         else:
             print("[DEBUG] r.status_code for courses get(): " + str(r.status_code))
-    else: # regular index : sign in page
+    else: # regular index : sign in page - also, should sign out.
+        if 'instructor_name' in request.session:
+            del request.session['instructor_name']
+        if 'instructor_username' in request.session:
+            del request.session['instructor_username']
+        if 'instructor_courses' in request.session:
+            del request.session['instructor_courses']
+        if 'selected_courses' in request.session:
+            del request.session['selected_courses']
+        if 'selected_users' in request.session:
+            del request.session['selected_users']
         context = {}
         request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
         return render(request, 'learn/index.html', context)
