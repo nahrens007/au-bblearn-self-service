@@ -5,10 +5,17 @@ from learn import manipulate, addusers
 
 
 #Create your views here.
-
 def index(request):
+    print("INDEX")
     if request.method == "POST":
-
+        print("POST")
+        sessionEnabled = False
+        if request.session.test_cookie_worked():
+            request.session.delete_test_cookie()
+            sessionEnabled = True
+            print('Test cookie worked')
+        else:
+            print("test cookie didn't work")
         user_name = request.POST.get('username')
         path = '/learn/api/public/v1/users/userName:' + user_name + '/courses'
         r = interface.get(path)
@@ -18,6 +25,7 @@ def index(request):
         elif r.status_code == 200:
             #Success!
             #user exists, log in:
+            request.session['instructor_username'] = user_name
 
             class_list = ''
             isInstructor = False
@@ -84,6 +92,7 @@ def index(request):
         context ={
             'error_message' : ''
         }
+        request.session.set_test_cookie() #prepare for use of sessions
         return render(request, 'learn/index.html', context)
 
 
