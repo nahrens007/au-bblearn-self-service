@@ -119,3 +119,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Delete sessions once browser closes
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# Save sessions everytime they are modified vs having to do it manually
+SESSION_SAVE_EVERY_REQUEST = True
