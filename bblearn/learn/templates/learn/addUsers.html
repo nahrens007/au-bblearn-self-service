@@ -31,7 +31,7 @@
         <div id="signOutContainer">
           <span>Hello, {{name}} </span>
           <br />
-          <a href="{% url 'index' %}" id="signOut"> Sign out</a>
+          <a href="{% url 'signout' %}" id="signOut"> Sign out</a>
         </div>
       </div>
     </div>
@@ -114,7 +114,7 @@
     <div id="footer">
       <span id="footerText">For Assistance Call: 419.289.5405</span>
     </div>
-    
+
         <script type="text/javascript">
 
           document.getElementById('searchOptions').selectedIndex ={{ optionIndex | safe}};

@@ -125,17 +125,8 @@ def index(request):
         }
         return render(request, 'learn/courses.html', context)
 
-    else: # regular index : sign in page - also, should sign out.
-        if 'instructor_name' in request.session:
-            del request.session['instructor_name']
-        if 'instructor_username' in request.session:
-            del request.session['instructor_username']
-        if 'instructor_courses' in request.session:
-            del request.session['instructor_courses']
-        if 'selected_courses' in request.session:
-            del request.session['selected_courses']
-        if 'selected_users' in request.session:
-            del request.session['selected_users']
+    else: # regular index : sign in page
+        clearSession(request) # make sure all current session data is deleted before starting a new session
         context = {}
         request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
         return render(request, 'learn/index.html', context)
@@ -162,3 +153,19 @@ def update(request):
 
     # Must either log in or go through selecting a course
     return redirect('index')
+
+def signout(request):
+    clearSession(request)
+    return redirect('index')
+
+def clearSession(request):
+    if 'instructor_name' in request.session:
+        del request.session['instructor_name']
+    if 'instructor_username' in request.session:
+        del request.session['instructor_username']
+    if 'instructor_courses' in request.session:
+        del request.session['instructor_courses']
+    if 'selected_courses' in request.session:
+        del request.session['selected_courses']
+    if 'selected_users' in request.session:
+        del request.session['selected_users']
