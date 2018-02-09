@@ -36,6 +36,10 @@ def index(request):
                 results = res['results']
                 isInstructor = False
 
+                # Go through all the courses that the user is associated with
+                # and see if the user is an instructor in any of them.
+                # If the user is an instructor in any, then create an
+                # entry for the course for the table in the template.
                 for resu in results:
                     if resu['courseRoleId'] == 'Instructor':
                         isInstructor = True
