@@ -118,8 +118,10 @@ def index(request):
         return render(request, 'learn/index.html', context)
 
 def update(request):
+
     if request.method == "POST":
         courses = None
+
         # See if there are selected courses or if we're receiving selected courses through POST right now
         if 'selected_courses' not in request.session:
             courses = request.POST.getlist('course')
@@ -137,6 +139,9 @@ def update(request):
             return manipulate.viewUsers(request)
         elif action == 'removeUsers':
             return manipulate.removeUsers(request)
+        elif action == 'Add':
+            request.session['selected_users'] = request.POST.getlist('users')
+            return manipulate.addUsers(request)
 
     # Must either log in or go through selecting a course
     return redirect('index')

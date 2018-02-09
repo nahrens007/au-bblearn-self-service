@@ -10,7 +10,7 @@
 Start for everything in the Header
 */
 #heading{
-  background-image: url(texture.png);
+  background-image: url(texture.png); /*Used http://bg.siteorigin.com/ with #66137c and Extra Clean Paper filter*/
   background-repeat: repeat;
   text-align: center;
   width: 100%;

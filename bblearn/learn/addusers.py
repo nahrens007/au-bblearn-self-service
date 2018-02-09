@@ -116,7 +116,7 @@ def buildList(user):
 
     userList = ''
     userList += '<tr>'
-    userList += '<td><input class="userCheckbox" type="checkbox" name="user" value="' + user['userName'] + '"></td>'
+    userList += '<td><input class="userCheckbox" type="checkbox" name="users" value="' + user['userName'] + '"></td>'
     userList += '<td>' + user['userName'] + '</td>'
     if 'name' in user:
         if 'given' in user['name']:

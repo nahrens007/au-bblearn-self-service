@@ -52,6 +52,9 @@ def viewUsers(request):
     return render(request, 'learn/viewUsers.html', context)
 
 def removeUsers(request):
+
+    
+
     context = {
 
     }
