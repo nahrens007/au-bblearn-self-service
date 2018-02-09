@@ -40,18 +40,8 @@ def index(request):
                     if resu['courseRoleId'] == 'Instructor':
                         isInstructor = True
                         courses['courses'].append(resu['courseId'])
-                        path = '/learn/api/public/v1/courses/' + resu['courseId']
-                        r1 = interface.get(path)
-                        if r1.text:
-                            res1 = json.loads(r1.text)
-                            class_list += '''<tr>
-                                <td id="checkBoxCell">
-                                    <input id="userCheckbox" type="checkbox" name="course" value="''' + resu['courseId'] + '''">
-                                </td>
-                                <td>
-                                    <span class="courseListing" name="course">''' + res1['name'] + '''</span>
-                                </td>
-                            </tr>'''
+                        class_list += buildClassEntry(resu['courseId'])
+
 
                         # If user is not an instructor in any course in Blackboard, don't allow the user to log in!
                         if not isInstructor:
@@ -105,19 +95,7 @@ def index(request):
         # user is already logged in - generate course list from session
         for course in request.session['instructor_courses']['courses']:
             # get the name of the courses for the template
-            path = '/learn/api/public/v1/courses/' + course
-            r1 = interface.get(path)
-            if r1.text:
-                res1 = json.loads(r1.text)
-                class_list += '''<tr>
-                    <td id="checkBoxCell">
-                        <input id="userCheckbox" type="checkbox" name="course" value="''' + course + '''">
-                    </td>
-                    <td>
-                        <span class="courseListing" name="course">''' + res1['name'] + '''</span>
-                    </td>
-                </tr>'''
-
+            class_list += buildClassEntry(course)
 
         context ={
             'name': name,
@@ -157,3 +135,18 @@ def update(request):
 def signout(request):
     request.session.flush()
     return redirect('index')
+
+def buildClassEntry(courseId):
+    path = '/learn/api/public/v1/courses/' + courseId
+    response = interface.get(path)
+    if response.text:
+        resJson = json.loads(response.text)
+        return '''<tr>
+            <td id="checkBoxCell">
+                <input id="userCheckbox" type="checkbox" name="course" value="''' + courseId + '''">
+            </td>
+            <td>
+                <span class="courseListing" name="course">''' + resJson['name'] + '''</span>
+            </td>
+        </tr>'''
+    return ''
