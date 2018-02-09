@@ -21,20 +21,20 @@ def index(request):
         r = interface.get(path)
         if r == None:
             #This could be caused when either the server url is incorrect or Python can't connect to Bb at all
+            request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
             return render(request, 'learn/index.html', { 'error_message' : 'Could not connect to Blackboard!' })
         elif r.status_code == 200:
             #Success!
             #user exists, log in:
 
             class_list = ''
-            isInstructor = False
             courses = {'courses':[]}
 
             if r.text:
                 res = json.loads(r.text)
 
                 results = res['results']
-
+                isInstructor = False
 
                 for resu in results:
                     if resu['courseRoleId'] == 'Instructor':
@@ -42,13 +42,14 @@ def index(request):
                         courses['courses'].append(resu['courseId'])
                         class_list += buildClassEntry(resu['courseId'])
 
+                # If user is not an instructor in any course in Blackboard, don't allow the user to log in!
+                if not isInstructor:
+                    context = {
+                    'error_message':"You must be an instructor!",
+                    }
+                    request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
+                    return render(request, 'learn/index.html', context)
 
-                        # If user is not an instructor in any course in Blackboard, don't allow the user to log in!
-                        if not isInstructor:
-                            context = {
-                            'error_message':"You must be an instructor!",
-                            }
-                            return render(request, 'learn/index.html', context)
             # Get the user's name
             path = '/learn/api/public/v1/users/userName:' + user_name + '?fields=name.given,name.family'
             r = interface.get(path)
@@ -73,12 +74,16 @@ def index(request):
             return render(request, 'learn/courses.html', context)
 
         elif r.status_code == 404:
+            request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
             return render(request, 'learn/index.html', { 'error_message' : 'That username is not valid!' })
         elif r.status_code == 403:
+            request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
             return render(request, 'learn/index.html', { 'error_message' : 'You are not authorized!' })
         elif r.status_code == 400:
+            request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
             return render(request, 'learn/index.html', { 'error_message' : 'Blackboard is not available!' })
         elif r.status_code == 401:
+            request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
             return render(request, 'learn/index.html', { 'error_message' : 'There was a Blackboard authentication error!' })
         else:
             print("[DEBUG] r.status_code for courses get(): " + str(r.status_code))
@@ -106,6 +111,7 @@ def index(request):
     else: # regular index : sign in page
         request.session.flush() # make sure all current session data is deleted before starting a new session
         context = {}
+
         request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
         return render(request, 'learn/index.html', context)
 
