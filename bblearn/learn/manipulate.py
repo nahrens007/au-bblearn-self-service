@@ -16,7 +16,7 @@ def viewUsers(request):
 
             res = json.loads(r.text)
             "Grabs all the userId's from the course"
-            members = res['results'][userId]
+            members = res['results']['userId']
 
             for member in members:
 
@@ -28,10 +28,10 @@ def viewUsers(request):
 
                     res = json.loads(r.text)
 
-                    fName = res['name'][given]
-                    lName = res['name'][family]
-                    email = res['contact'][email]
-                    idNumber = res[studentId]
+                    fName = res['name']['given']
+                    lName = res['name']['family']
+                    email = res['contact']['email']
+                    idNumber = res['studentId']
 
                 "Gets current user's role in the course"
                 path = "GET /learn/api/public/v1/courses/"+course+"/users/"+member
@@ -40,10 +40,14 @@ def viewUsers(request):
                 if r.text
 
                     res = json.loads(r.text)
-                    courseRole = res[courseRoleId]
+                    courseRole = res['courseRoleId']
 
     context = {
-
+    'first name': fName,
+    'last name': lName,
+    'email': email,
+    'studentId': idNumber,
+    'courseRoleId': courseRole
     }
     return render(request, 'learn/viewUsers.html', context)
 
