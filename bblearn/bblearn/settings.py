@@ -25,7 +25,7 @@ SECRET_KEY = '279qyov3khb!34p4t36f1^0&g_1y(m@cjhkk3o!)7i53dup+3j'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -119,3 +119,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Delete sessions once browser closes
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# Save sessions everytime they are modified vs having to do it manually
+SESSION_SAVE_EVERY_REQUEST = True

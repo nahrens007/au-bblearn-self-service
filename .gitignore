@@ -101,7 +101,6 @@ ENV/
 .mypy_cache/
 
 keys.py
+db.sqlite3
 
-needAPI.txt
-
-resources/
+.resources/
