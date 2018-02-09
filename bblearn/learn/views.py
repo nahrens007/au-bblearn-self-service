@@ -57,15 +57,12 @@ def index(request):
             # Get the user's name
             path = '/learn/api/public/v1/users/userName:' + user_name + '?fields=name.given,name.family'
             r = interface.get(path)
-
             name = ''
-
             if r.text:
                 res = json.loads(r.text)
-
                 name += res['name']['given'] + " " + res['name']['family']
 
-
+            # Set context for the template
             context ={
                 'name': name,
                 'classes': class_list,
@@ -77,6 +74,7 @@ def index(request):
             request.session['instructor_courses'] = courses
             return render(request, 'learn/courses.html', context)
 
+        ## Handle errors from attempting to get user info from Bb, from the username user entered in login
         elif r.status_code == 404:
             request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
             return render(request, 'learn/index.html', { 'error_message' : 'That username is not valid!' })
@@ -90,7 +88,7 @@ def index(request):
             request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
             return render(request, 'learn/index.html', { 'error_message' : 'There was a Blackboard authentication error!' })
         else:
-            print("[DEBUG] r.status_code for courses get(): " + str(r.status_code))
+            print("[DEBUG] views.py -> index(): r.status_code for courses get(): " + str(r.status_code))
 
     # if redirected here from another page, i.e., user is already logged in
     #   and has session data saved.
@@ -118,8 +116,6 @@ def index(request):
 
         request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
         return render(request, 'learn/index.html', context)
-
-
 
 def update(request):
     if request.method == "POST":
