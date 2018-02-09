@@ -14,11 +14,9 @@ def addUsers(request):
         searchBar - string with searchString
         action - dict with the specified action (addUsers, viewUsers, removeUsers) (handled in views.update())
     '''
-
-    # NO NEED TO CHECK if request.method == 'POST' BECAUSE THE ONLY
-    # WAY WE GET HERE IS FROM THE update() VIEW, WHICH VERIFIES POST
     user = None
     courses = None
+
     user = request.POST.getlist('user')
     if 'selected_courses' in request.session:
         courses = request.session['selected_courses']
@@ -26,14 +24,15 @@ def addUsers(request):
     searchKey = str(request.POST.get('searchBy'))
     searchString = str(request.POST.get('searchBar')).lower()
 
+
     if not courses:
         # no courses selected!
         return redirect('index')
 
-    print()
-    print(request.POST)
-    print()
 
+    return search(request, searchKey, searchString)
+
+def search(request, searchKey, searchString):
     path = '/learn/api/public/v1/users?fields=userName,name.given,name.family,contact.email,studentId,availability'
     r = interface.get(path)
     if r == None:
@@ -112,7 +111,6 @@ def addUsers(request):
         return render(request, 'learn/addUsers.html', { 'error_message' : 'There was a Blackboard authentication error!', 'name': request.session['instructor_name'] })
     else:
         print("[DEBUG] r.status_code for courses get(): " + str(r.status_code))
-
 
 def buildList(user):
 
