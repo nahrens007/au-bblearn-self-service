@@ -103,4 +103,4 @@ ENV/
 keys.py
 db.sqlite3
 
-.resources/
+resources/
