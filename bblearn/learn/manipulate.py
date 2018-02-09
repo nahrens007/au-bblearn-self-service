@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from BlackboardLearn import interface
+from learn import confirmUsers
 import json
 
+'''
 def viewUsers(request):
     courses = request.POST.getlist('course')
 
@@ -50,12 +52,26 @@ def viewUsers(request):
     'courseRoleId': courseRole
     }
     return render(request, 'learn/viewUsers.html', context)
+'''
 
 def removeUsers(request):
 
-    
+
 
     context = {
 
     }
     return render(request, 'learn/removeUsers.html', context)
+
+def addUsers(request):
+
+    selectedUsers = request.session['selected_users']
+
+    userList = confirmUsers.search(selectedUsers)
+
+
+    context = {
+
+        'addedUser': userList,
+    }
+    return render(request, 'learn/confirmAddedUsers.html', context)
