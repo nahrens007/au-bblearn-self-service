@@ -53,7 +53,7 @@ def viewUsers(request):
     }
     return render(request, 'learn/viewUsers.html', context)
 '''
-
+'''
 def removeUsers(request):
 
         courses = request.POST.getlist('course')
@@ -122,6 +122,7 @@ def removeUsers(request):
     'courseRoleId': courseRole,
     }
     return render(request, 'learn/removeUsers.html', context)
+'''
 
 def addUsers(request):
 
