@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Confirm</title>
+
+    <!-- load css pages -->
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'learn/main.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'learn/confirmAddedUsers.css' %}" />
+
+    <script type="text/javascript" href="{% static 'learn/main.js' %}"> </script>
+
+  </head>
+
+  <body id="body">
+
+    <!-- Contains Everything in the Purple Header -->
+    <div id="heading">
+      <div id="serviceContainer">
+        <img src="{% static 'learn/blackboard.png' %}" alt="oops">
+        <div id="subTitle">
+          <span>Ashland University</span>
+        </div>
+      </div>
+      <div id="titleContainer">
+        <div id="title">
+          <span>Self Service Tool 1000</span>
+        </div>
+      </div>
+      <div id="signOutBackground">
+        <div id="signOutContainer">
+          <span>Hello, {{name}} </span>
+          <br />
+          <a href="{% url 'signout' %}" id="signOut"> Sign out</a>
+        </div>
+      </div>
+    </div>
+    <!-- Contains everything below the header, it includes footer. -->
+    <div id="midSection">
+      <div id="pageContainer">
+        <div id="pageLabelBackground">
+          <div id="pageLabelContainer">
+            <span id="pageLabel">Are these the users you wish to add?</span>
+          </div>
+        </div>
+
+        <table class="userTable">
+          <tr>
+            <th></th>
+            <th>User Name</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>E-Mail</th>
+            <th>User ID</th>
+          </tr>
+          {{ addedUser | safe }}
+          <tr id="submitRow">
+            <td><input id="checkAll" type="checkbox" onclick="check()" ></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><input id="submit" type="button" value="Confirm"></td>
+          </tr>
+        </table>
+
+      </div>
+    </div>
+
+    <div id="footer">
+      <span id="footerText">For Assistance Call: 419.289.5405</span>
+    </div>
+  </body>
+
+</html>
