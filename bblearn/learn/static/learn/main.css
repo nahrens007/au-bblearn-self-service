@@ -128,14 +128,16 @@ Styles the sign out text
   float: right;
   padding-left: 10px;
   margin-right: -10px;
+  margin-bottom: -5px;
   padding-right: 5px;
   text-decoration: underline;
   color: white;
   border: solid;
+  border-bottom: none;
   border-width: thin;
   border-color: #917e1f;
   border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+  /*border-bottom-left-radius: 10px;*/
 }
 
 #signOut:hover{
