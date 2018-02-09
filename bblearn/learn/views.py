@@ -120,11 +120,14 @@ def index(request):
 def update(request):
     if request.method == "POST":
         courses = None
+        # See if there are selected courses or if we're receiving selected courses through POST right now
         if 'selected_courses' not in request.session:
             courses = request.POST.getlist('course')
-            #no courses selected!
+            # No courses selected!
             if not courses:
+                # Eventually display error message? Or nah?
                 return redirect('index')
+            # Put selected courses in the session
             request.session['selected_courses'] = courses
 
         action = request.POST.get('action')
