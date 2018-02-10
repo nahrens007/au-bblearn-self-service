@@ -3,10 +3,15 @@ from BlackboardLearn import interface
 import json
 from learn import manipulate, addusers, confirmUsers
 
-
-#Create your views here.
+'''
+    index view is for login screen and list of courses; main/initial view.
+'''
 def index(request):
-    # IF the user logged in, i.e., there is POST data
+    '''
+        If there is POST data, varify that the user has access (is an instructor)
+        and, if so, display list of courses. If the user doesn't have access or
+        there was an error, send the user to the login screen again. 
+    '''
     if request.method == 'POST':
         #make sure cookies are enabled - which they will be if we get this for,
         #since the CSRF token cookie will have been set.
