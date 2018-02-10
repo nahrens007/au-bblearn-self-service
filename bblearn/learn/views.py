@@ -13,7 +13,8 @@ def index(request):
         if request.session.test_cookie_worked():
             request.session.delete_test_cookie()
         else:
-            return render(request, 'cookies_not_enabled.html', {})
+            # will probably never get here since template 403_csrf.html template will be displayed
+            return loginError(request, 'You must have browser cookies enabled!')
 
         # get the client's username and see if it exists in Bb
         user_name = request.POST.get('username')
@@ -21,8 +22,7 @@ def index(request):
         r = interface.get(path)
         if r == None:
             #This could be caused when either the server url is incorrect or Python can't connect to Bb at all
-            request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
-            return render(request, 'learn/index.html', { 'error_message' : 'Could not connect to Blackboard!' })
+            return loginError(request, 'Could not connect to Blackboard!')
         elif r.status_code == 200:
             #Success!
             #user exists, log in:
@@ -48,11 +48,7 @@ def index(request):
 
                 # If user is not an instructor in any course in Blackboard, don't allow the user to log in!
                 if not isInstructor:
-                    context = {
-                    'error_message':"You must be an instructor!",
-                    }
-                    request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
-                    return render(request, 'learn/index.html', context)
+                    return loginError(request, "You must be an instructor!")
 
             # Get the user's name
             path = '/learn/api/public/v1/users/userName:' + user_name + '?fields=name.given,name.family'
@@ -76,19 +72,16 @@ def index(request):
 
         ## Handle errors from attempting to get user info from Bb, from the username user entered in login
         elif r.status_code == 404:
-            request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
-            return render(request, 'learn/index.html', { 'error_message' : 'That username is not valid!' })
+            return loginError(request, 'That username is not valid!')
         elif r.status_code == 403:
-            request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
-            return render(request, 'learn/index.html', { 'error_message' : 'You are not authorized!' })
+            return loginError(request, 'You are not authorized!')
         elif r.status_code == 400:
-            request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
-            return render(request, 'learn/index.html', { 'error_message' : 'Blackboard is not available!' })
+            return loginError(request, 'Blackboard is not available!')
         elif r.status_code == 401:
-            request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
-            return render(request, 'learn/index.html', { 'error_message' : 'There was a Blackboard authentication error!' })
+            return loginError(request, 'There was a Blackboard authentication error!')
         else:
             print("[DEBUG] views.py -> index(): r.status_code for courses get(): " + str(r.status_code))
+            return loginError(request, 'Unknown error!')
 
     # if redirected here from another page, i.e., user is already logged in
     #   and has session data saved.
@@ -112,14 +105,12 @@ def index(request):
 
     else: # regular index : sign in page
         request.session.flush() # make sure all current session data is deleted before starting a new session
-        context = {}
-
         request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
-        return render(request, 'learn/index.html', context)
+        return render(request, 'learn/index.html', {})
 
 '''
     This view is responsible for managing which view is displayed based on which form action is being performed.
-    The URL will remain in update() 
+    The URL will remain in update()
 '''
 def update(request):
 
@@ -129,8 +120,8 @@ def update(request):
         # See if there are selected courses or if we're receiving selected courses through POST right now
         if 'selected_courses' not in request.session:
             courses = request.POST.getlist('course')
-            # No courses selected!
             if not courses:
+                # No courses selected!
                 # Eventually display error message? Or nah?
                 return redirect('index')
             # Put selected courses in the session
@@ -144,8 +135,14 @@ def update(request):
         elif action == 'removeUsers':
             return manipulate.removeUsers(request)
         elif action == 'Add':
-            request.session['selected_users'] = request.POST.getlist('users')
-            return confirmUsers.confirmAddUsers(request)
+            # Confirming selected users! What if no users have been selected?
+            selectedUsers = request.POST.getlist('users')
+            if selectedUsers:
+                request.session['selected_users'] = selectedUsers
+                return confirmUsers.confirmAddUsers(request)
+            else:
+                # No selected users, send back to list of users to select some
+                return addusers.addUsers(request)
 
     # Must either log in or go through selecting a course
     return redirect('index')
@@ -174,3 +171,7 @@ def buildClassEntry(courseId):
             </td>
         </tr>'''
     return ''
+
+def loginError(request, message):
+    request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
+    return render(request, 'learn/index.html', { 'error_message' : message })
