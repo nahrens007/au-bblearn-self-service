@@ -60,3 +60,17 @@ def buildList(user):
     userList += '</tr>'
 
     return userList
+
+
+def confirmAddUsers(request):
+
+    selectedUsers = request.session['selected_users']
+
+    userList = confirmUsers.search(selectedUsers)
+
+
+    context = {
+
+        'addedUser': userList,
+    }
+    return render(request, 'learn/confirmAddedUsers.html', context)

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from BlackboardLearn import interface
 import json
-from learn import manipulate, addusers
+from learn import manipulate, addusers, confirmUsers
 
 
 #Create your views here.
@@ -141,7 +141,7 @@ def update(request):
             return manipulate.removeUsers(request)
         elif action == 'Add':
             request.session['selected_users'] = request.POST.getlist('users')
-            return manipulate.addUsers(request)
+            return confirmUsers.confirmAddUsers(request)
 
     # Must either log in or go through selecting a course
     return redirect('index')
