@@ -5,12 +5,23 @@ import json
 def addUsers(request, error_message=None):
     '''
     request.POST contains:
-        user - dict with list of selected users to add to said courses.
-            If empty: display empty list with search results (if search isn't empty)
-            Else: create course memebership to add user to course as either guest or TA
-        searchBy - string with category to search by
-        searchBar - string with searchString
-        action - dict with the specified action (addUsers, viewUsers, removeUsers) (handled in views.update())
+        if from course selection page (views.index()):
+            action - value='addUsers' - used by views.update()
+                no use here
+            course - value='courseId' - list of courses selected
+                use courses=request.POST.getlist('course')
+        if from this page (search form):
+            action - value='addUsers' - used by views.update()
+                no use here
+            searchBy - value='None', 'userName', 'firstName', 'lastName',
+                                'contact', 'studentId'
+                use searchKey=request.POST.get('searchBy')
+            searchBar - value='searchString'
+                use searchString=request.POST.get('searchBar')
+    request.session contains:
+        key='instructor_name', 'instructor_courses', 'instructor_username',
+        or 'selected_courses'
+        use: value=request.session[key]
     '''
 
     ''' If we are displaying an error message, then display blank page w/ no users '''
@@ -30,11 +41,6 @@ def addUsers(request, error_message=None):
             'userList': '',
         }
         return render(request, 'learn/addUsers.html', context)
-
-    user = None
-
-    if 'selected_users' in request.session:
-        user = request.session['selected_users']
 
     searchKey = str(request.POST.get('searchBy'))
     searchString = str(request.POST.get('searchBar')).lower()

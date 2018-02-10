@@ -119,13 +119,21 @@ def update(request):
 
         #Ensure that at this point we have selected courses! And always
         #use the selected courses from POST before SESSION
-        courses = request.POST.getlist('course')
-        if not courses and 'selected_courses' not in request.session:
-            #NO COURSES SELECTED!
-            return redirect('index')
 
-        # Put selected courses in the session
-        request.session['selected_courses'] = courses
+        #if selected courses aren't in POST
+        if not request.POST.getlist('course'):
+            #if selected courses aren't in SESSION
+            if 'selected_courses' not in request.session or not request.session['selected_courses']:
+                #NO COURSES SELECTED!
+                return redirect('index')
+            # selected courses must be in SESSION already.
+            # No need for further action.
+        else:
+            # Selected courses must be in POST, put them in SESSION
+            request.session['selected_courses'] = request.POST.getlist('course')
+
+        #possibility selected courses aren't in POST but in SESSION?
+        print(request.session['selected_courses'])
 
         action = request.POST.get('action')
         if action == 'addUsers':
