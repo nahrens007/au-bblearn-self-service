@@ -100,6 +100,7 @@ def index(request):
         context ={
             'name': name,
             'classes': class_list,
+            'error_message': 'You must select at least one course and an action before continuing.',
         }
         return render(request, 'learn/courses.html', context)
 
@@ -115,17 +116,16 @@ def index(request):
 def update(request):
 
     if request.method == "POST":
-        courses = None
 
-        # See if there are selected courses or if we're receiving selected courses through POST right now
-        if 'selected_courses' not in request.session:
-            courses = request.POST.getlist('course')
-            if not courses:
-                # No courses selected!
-                # Eventually display error message? Or nah?
-                return redirect('index')
-            # Put selected courses in the session
-            request.session['selected_courses'] = courses
+        #Ensure that at this point we have selected courses! And always
+        #use the selected courses from POST before SESSION
+        courses = request.POST.getlist('course')
+        if not courses and 'selected_courses' not in request.session:
+            #NO COURSES SELECTED!
+            return redirect('index')
+
+        # Put selected courses in the session
+        request.session['selected_courses'] = courses
 
         action = request.POST.get('action')
         if action == 'addUsers':
@@ -135,14 +135,14 @@ def update(request):
         elif action == 'removeUsers':
             return manipulate.removeUsers(request)
         elif action == 'Add':
-            # Confirming selected users! What if no users have been selected?
+            # Confirming selected users!
             selectedUsers = request.POST.getlist('users')
             if selectedUsers:
                 request.session['selected_users'] = selectedUsers
                 return confirmUsers.confirmAddUsers(request)
             else:
                 # No selected users, send back to list of users to select some
-                return addusers.addUsers(request)
+                return addusers.addUsers(request, error_message="No users selected!")
 
     # Must either log in or go through selecting a course
     return redirect('index')

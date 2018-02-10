@@ -39,7 +39,6 @@
 
     <!-- Contains everything below the header, it includes footer. -->
     <div id="midSection">
-        <span class='error_message'>{{error_message}}</span>
         <form id='course_selection' method='post' action='{% url "update" %}'>{% csrf_token %}
           <div id="pageContainer">
             <div id="pageLabelBackground">
@@ -47,6 +46,7 @@
                 <span id="pageLabel">Select one or more courses to add or remove a Teaching Assistant or Guest from a course or courses</span>
               </div>
             </div>
+            <span class='error_message'>{{error_message}}</span>
             <div id="courseActionsContainer">
               <div class="selectdiv">
                 <label>
