@@ -61,16 +61,17 @@ def buildList(user):
 
     return userList
 
-
+''' Returns the view for confirming adding the selected users to the courses '''
 def confirmAddUsers(request):
 
     selectedUsers = request.session['selected_users']
 
-    userList = confirmUsers.search(selectedUsers)
+    userList = search(selectedUsers)
 
 
     context = {
 
         'addedUser': userList,
+        'name': request.session['instructor_name'],
     }
     return render(request, 'learn/confirmAddedUsers.html', context)

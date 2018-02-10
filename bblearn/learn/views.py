@@ -117,6 +117,10 @@ def index(request):
         request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
         return render(request, 'learn/index.html', context)
 
+'''
+    This view is responsible for managing which view is displayed based on which form action is being performed.
+    The URL will remain in update() 
+'''
 def update(request):
 
     if request.method == "POST":
@@ -146,10 +150,16 @@ def update(request):
     # Must either log in or go through selecting a course
     return redirect('index')
 
+''' The view which doesn't have a view, per say, but deletes the session data and redirects to the login page. '''
 def signout(request):
     request.session.flush()
     return redirect('index')
 
+'''
+    Get's a course ID (primary ID for the course) and returns a string with HTML tags
+    which fit into the HTML table for the list of courses that the user is an instructor of.
+    - Used in index() only (only view to display the instructor's courses)
+'''
 def buildClassEntry(courseId):
     path = '/learn/api/public/v1/courses/' + courseId
     response = interface.get(path)
