@@ -5,7 +5,8 @@ import json
 
 
 def viewUsers(request):
-    courses = request.POST.getlist('course')
+    # not possible to get here without selected courses in SESSION from views.update()
+    courses = request.session['selected_courses']
 
     userList = ''
     for course in courses:
