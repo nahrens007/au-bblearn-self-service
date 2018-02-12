@@ -48,7 +48,7 @@
         <table class="userTable">
           <tr>
             <th></th>
-            <th>User Name</th>
+            <th class="userNameColumn">User Name</th>
             <th>First Name</th>
             <th>Last Name</th>
             <th>E-Mail</th>
@@ -56,8 +56,8 @@
           </tr>
           {{ addedUser | safe }}
           <tr id="submitRow">
-            <td><input id="checkAll" type="checkbox" onclick="check()" ></td>
             <td></td>
+            <td class="userNameColumn"></td>
             <td></td>
             <td></td>
             <td></td>
