@@ -207,3 +207,39 @@ def buildClassEntry(courseId):
 def loginError(request, message):
     request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
     return render(request, 'learn/index.html', { 'error_message' : message })
+
+'''
+View for showing stats of the selected courses.
+Initial view, when there is no POST, displays the list of instructor's courses.
+View when there is POST of selected users, stats are displayed.
+Description of requirment:
+    For each instructor, create a tool to generate statistics showing the number of
+    unique students that instructor has enrolled in all selected courses.
+    (E.g. If the instructor is presented with a list of all courses, and checks the
+    five courses that are taught this term, this tool should be able to show them
+    the number of unique students they have enrolled in those five checked courses.
+    A unique student count does not count a student who is taking multiple course
+    from the same instructor twice.)
+
+'''
+def stats(request):
+    # Class list for HTML template
+    class_list = ''
+
+    # Generate course list from session
+    for course in request.session['instructor_courses']['courses']:
+        # get the name of the courses for the template
+        class_list += buildClassEntry(course)
+
+    error_message = ''
+    # if we were redirected here with an error:
+    if 'courses_error_message' in request.session:
+        error_message = request.session['courses_error_message']
+        del request.session['courses_error_message']
+
+    context ={
+        'name': request.session['instructor_name'],
+        'classes': class_list,
+        'error_message': error_message,
+    }
+    return render(request, 'learn/stats.html', context)

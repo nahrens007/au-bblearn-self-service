@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Courses</title>
+
+    <!-- load css pages -->
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'learn/main.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'learn/courses.css' %}" />
+
+    <script type="text/javascript" href="{% static 'learn/main.js' %}"> </script>
+
+  </head>
+
+  <body id="body">
+
+    <!-- Contains Everything in the Purple Header -->
+    <div id="heading">
+      <div id="serviceContainer">
+        <img src="{% static 'learn/blackboard.png' %}" alt="oops">
+        <div id="subTitle">
+          <span>Ashland University</span>
+        </div>
+      </div>
+      <div id="titleContainer">
+        <div id="title">
+            <a href="{% url 'index' %}">
+              <span >Self Service Tool 1000</span>
+            </a>
+        </div>
+      </div>
+      <div id="signOutBackground">
+        <div id="signOutContainer">
+          <span>Hello, {{name}} </span>
+          <br />
+          <a href="{% url 'signout' %}" id="signOut"> Sign out</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contains everything below the header, it includes footer. -->
+    <div id="midSection">
+        <form id='course_selection' method='post' action='{% url "stats" %}'>{% csrf_token %}
+          <div id="pageContainer">
+            <div id="pageLabelBackground">
+              <div id="pageLabelContainer">
+                <span id="pageLabel">Select one or more courses to view the statistics of the class.</span>
+              </div>
+            </div>
+            <span class='error_message'>{{error_message}}</span>
+            <div id="courseActionsContainer">
+              <input id ="submit" type="submit" value="View Stats" />
+            </div>
+
+
+            <div id="coursesContainer">
+              <table class="userTable">
+
+              {{classes | safe}}
+
+              </table>
+            </div>
+          </div>
+        </form>
+    </div>
+
+    <div id="footer">
+      <span id="footerText">For Assistance Call: 419.289.5405</span>
+    </div>
+  </body>
+
+</html>
