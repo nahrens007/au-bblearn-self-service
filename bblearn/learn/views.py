@@ -151,10 +151,7 @@ def update(request):
         action = request.POST.get('action')
         # Could be searching for a user or could be coming straight from course list
 
-        if action == 'returnHome':
-            request.session['courses_error_message'] = ''
-            return redirect('index')
-        elif action == 'addUsers':
+        if action == 'addUsers':
             return addusers.addUsers(request)
         elif action == 'viewUsers':
             return manipulate.viewUsers(request)
@@ -170,7 +167,6 @@ def update(request):
                 # No selected users, send back to list of users to select some
                 return addusers.addUsers(request, error_message="No users selected!")
         elif action == 'Confirm':
-            print("HELLO FROM CONFIRM")
             return confirmUsers.confirmAddUsersSuccess(request)
         else:
             request.session['courses_error_message'] = "You must select an action!"
