@@ -60,7 +60,7 @@ td, th{
   text-align: left;
 }
 
-td.TAColumn, th.TAColumn{
+td.TAColumn, th.TAColumn, td.guestColumn, th.guestColumn, td.cancelColumn, th.cancelColumn{
 
   width: 50px;
 }
