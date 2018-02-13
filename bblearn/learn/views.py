@@ -200,6 +200,9 @@ def buildClassEntry(courseId):
         </tr>'''
     return ''
 
+'''
+This view simply displays an error message on the login screen.
+'''
 def loginError(request, message):
     request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
     return render(request, 'learn/index.html', { 'error_message' : message })
