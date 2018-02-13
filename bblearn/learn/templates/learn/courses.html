@@ -25,7 +25,12 @@
       </div>
       <div id="titleContainer">
         <div id="title">
-          <span>Self Service Tool 1000</span>
+          <form id="homeForm" method="post" action="{% url 'update' %}">{% csrf_token %}
+            <input style='display: none;' name='action' value='returnHome' />
+            <a onclick="submitForm()">
+              <span >Self Service Tool 1000</span>
+            </a>
+          </form>
         </div>
       </div>
       <div id="signOutBackground">
@@ -76,6 +81,16 @@
     <div id="footer">
       <span id="footerText">For Assistance Call: 419.289.5405</span>
     </div>
+
+    <script type="text/javascript">
+
+    function submitForm() {
+
+      document.getElementById('homeForm').submit();
+
+    }
+
+    </script>
   </body>
 
 </html>

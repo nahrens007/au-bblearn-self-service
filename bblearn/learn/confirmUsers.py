@@ -24,18 +24,22 @@ def search(searchString):
                 for user in users:
                     if 'availability' in user and user['availability']['available'] == 'Yes':
                         if('userName' in user and searchItem in user['userName'].lower()):
-                            userList += buildList(user)
+                            userList += buildList(user,index)
+                            index+=1
                             continue
 
 
 
     return userList
 
-def buildList(user):
+def buildList(user,userCount):
+
+    userCount = (str)(userCount)
 
     userList = ''
     userList += '<tr>'
-    userList += '<td><input type="radio" name="user" value="' + user['userName'] + '">Guest<br><input type="radio" name="user" value="' + user['userName'] + '">TA<br>'
+    userList += '<td><input type="radio" name="user' + userCount + '" value="' + user['userName'] + '" checked="checked">Guest<br></td>'
+    userList += '<td><input class="TAColumm"  type="radio" name="user' + userCount + '" value="' + user['userName'] + '">TA<br></td>'
     userList += '<td class="userNameColumn">' + user['userName'] + '</td>'
     if 'name' in user:
         if 'given' in user['name']:
@@ -73,5 +77,19 @@ def confirmAddUsers(request):
 
         'addedUser': userList,
         'name': request.session['instructor_name'],
+        'label': 'Are these the users you wish to add?',
+        'submit': '<table class="userTable" style="display:table;">',
+    }
+    return render(request, 'learn/confirmAddedUsers.html', context)
+
+def confirmAddUsersSuccess(request):
+
+
+    context = {
+
+        'addedUser': '',
+        'name': request.session['instructor_name'],
+        'label': 'Successfully added user!',
+        'submit': '<table class="userTable" style="display:none;">',
     }
     return render(request, 'learn/confirmAddedUsers.html', context)

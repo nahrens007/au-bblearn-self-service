@@ -23,6 +23,11 @@ and Remove button.*/
   line-height: 15px;
 }
 
+#submit:hover{
+  transform: scale(1.01);
+  border-color: black;
+}
+
 input[type=checkbox] {
 
     position: relative;
@@ -55,11 +60,17 @@ td, th{
   text-align: left;
 }
 
+td.TAColumn, th.TAColumn{
+
+  width: 50px;
+}
+
 td.userNameColumn, th.userNameColumn{
 
   border-left:solid;
-  width: 65px;
-
+  border-width: thin;
+  padding-left: 10px;
+  padding-right: 10px;
 
 }
 

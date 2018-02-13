@@ -84,6 +84,12 @@ img{
   font-size: 33px;
   font-weight: bold;
 }
+
+#title:hover{
+
+  cursor: pointer;
+}
+
 /*
 Styles the black background for Sign out
 */
@@ -162,7 +168,7 @@ Start for everything After the Header
   display: block;
   margin:auto;
   margin-bottom: 17px;
-  width: 710px;
+  width: 750px;
   border: solid;
   border-color: #4C3059;
 }
