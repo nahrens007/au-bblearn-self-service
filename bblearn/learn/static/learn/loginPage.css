@@ -42,6 +42,10 @@ Start for everything After the Header
 
 }
 
+#title:hover{
+
+  cursor: default;
+}
 
 #loginContainer{
 

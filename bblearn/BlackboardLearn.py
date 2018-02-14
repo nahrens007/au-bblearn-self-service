@@ -131,6 +131,10 @@ class LearnInterface:
     def patch(self, url, json_data):
         return self.session.patch(self.server_url + url,data=json_data,auth=(self.auth_instance.getKey(),self.auth_instance.getSecret()),verify=False)
 
+    #return the response of the put call
+    def put(self, url, json_data):
+        return self.session.put(self.server_url + url, data=json_data, auth=(self.auth_instance.getKey(), self.auth_instance.getSecret()), verify=False)
+
     def getTokenExpires(self):
         return self.auth_instance.getTokenExpires()
 import keys

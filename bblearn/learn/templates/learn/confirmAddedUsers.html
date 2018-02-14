@@ -25,7 +25,12 @@
       </div>
       <div id="titleContainer">
         <div id="title">
-          <span>Self Service Tool 1000</span>
+          <form id="homeForm" method="post" action="{% url 'update' %}">{% csrf_token %}
+            <input style='display: none;' name='action' value='returnHome' />
+            <a onclick="submitForm()">
+              <span >Self Service Tool 1000</span>
+            </a>
+          </form>
         </div>
       </div>
       <div id="signOutBackground">
@@ -41,29 +46,34 @@
       <div id="pageContainer">
         <div id="pageLabelBackground">
           <div id="pageLabelContainer">
-            <span id="pageLabel">Are these the users you wish to add?</span>
+            <span id="pageLabel">{{ label | safe }}</span>
           </div>
         </div>
 
-        <table class="userTable">
-          <tr>
-            <th></th>
-            <th>User Name</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>E-Mail</th>
-            <th>User ID</th>
-          </tr>
-          {{ addedUser | safe }}
-          <tr id="submitRow">
-            <td><input id="checkAll" type="checkbox" onclick="check()" ></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td><input id="submit" type="button" value="Confirm"></td>
-          </tr>
-        </table>
+        <form method="post" action="{% url 'update' %}">{% csrf_token %}
+          {{ submit | safe }}
+            <tr>
+              <th class="cancelColumn">Cancel</th>
+              <th class="guestColumn">Guest</th>
+              <th class="TAColumn">TA</th>
+              <th class="Column">User Name</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>User ID</th>
+            </tr>
+            {{ addedUser | safe }}
+            <tr id="submitRow">
+
+              <td class="cancelColumm" ></td>
+              <td class="guestColumm"></td>
+              <td class="TAColumm"></td>
+              <td class="userNameColumn"></td>
+              <td></td>
+              <td></td>
+              <td><input id="submit" type="submit" name="action" value="Confirm" /></td>
+            </tr>
+          </table>
+        </form>
 
       </div>
     </div>
@@ -71,6 +81,16 @@
     <div id="footer">
       <span id="footerText">For Assistance Call: 419.289.5405</span>
     </div>
+
+    <script type="text/javascript">
+
+    function submitForm() {
+
+      document.getElementById('homeForm').submit();
+
+    }
+
+    </script>
   </body>
 
 </html>

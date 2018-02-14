@@ -2,12 +2,12 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>View Users</title>
+    <title>Courses</title>
 
     <!-- load css pages -->
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'learn/main.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'learn/viewUsers.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'learn/courses.css' %}" />
 
     <script type="text/javascript" href="{% static 'learn/main.js' %}"> </script>
 
@@ -25,12 +25,9 @@
       </div>
       <div id="titleContainer">
         <div id="title">
-          <form id="homeForm" method="post" action="{% url 'update' %}">{% csrf_token %}
-            <input style='display: none;' name='action' value='returnHome' />
-            <a onclick="submitForm()">
+            <a href="{% url 'index' %}">
               <span >Self Service Tool 1000</span>
             </a>
-          </form>
         </div>
       </div>
       <div id="signOutBackground">
@@ -41,34 +38,17 @@
         </div>
       </div>
     </div>
+
     <!-- Contains everything below the header, it includes footer. -->
     <div id="midSection">
-      <div id="pageContainer">
-        <div id="pageLabelBackground">
-          <div id="pageLabelContainer">
-            <span id="pageLabel">Showing users to from Class (Insert)</span>
-          </div>
-        </div>
-
-          {{tableCreator | safe}}
-
-      </div>
+        <span>Number of unique users: {{ unique }}</span>
+        <span>Total number of users in selected courses: {{ total_users }}</span>
+        
     </div>
 
     <div id="footer">
       <span id="footerText">For Assistance Call: 419.289.5405</span>
     </div>
-
-    <script type="text/javascript">
-
-    function submitForm() {
-
-      document.getElementById('homeForm').submit();
-
-    }
-
-    </script>
-    
   </body>
 
 </html>

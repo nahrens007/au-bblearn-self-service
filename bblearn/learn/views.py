@@ -10,7 +10,7 @@ def index(request):
     '''
         If there is POST data, varify that the user has access (is an instructor)
         and, if so, display list of courses. If the user doesn't have access or
-        there was an error, send the user to the login screen again. 
+        there was an error, send the user to the login screen again.
     '''
     if request.method == 'POST':
         #make sure cookies are enabled - which they will be if we get this for,
@@ -102,10 +102,16 @@ def index(request):
             # get the name of the courses for the template
             class_list += buildClassEntry(course)
 
+        error_message = ''
+        # if we were redirected here with an error:
+        if 'courses_error_message' in request.session:
+            error_message = request.session['courses_error_message']
+            del request.session['courses_error_message']
+
         context ={
             'name': name,
             'classes': class_list,
-            'error_message': 'You must select at least one course and an action before continuing.',
+            'error_message': error_message,
         }
         return render(request, 'learn/courses.html', context)
 
@@ -116,7 +122,8 @@ def index(request):
 
 '''
     This view is responsible for managing which view is displayed based on which form action is being performed.
-    The URL will remain in update()
+    The URL will remain in update().
+    This view also checks for erros, such as making sure courses are selected, etc.. coming from the index view.
 '''
 def update(request):
 
@@ -130,6 +137,7 @@ def update(request):
             #if selected courses aren't in SESSION
             if 'selected_courses' not in request.session or not request.session['selected_courses']:
                 #NO COURSES SELECTED!
+                request.session['courses_error_message'] = "You must select a course!"
                 return redirect('index')
             # selected courses must be in SESSION already.
             # No need for further action.
@@ -141,6 +149,8 @@ def update(request):
         print(request.session['selected_courses'])
 
         action = request.POST.get('action')
+        # Could be searching for a user or could be coming straight from course list
+
         if action == 'addUsers':
             return addusers.addUsers(request)
         elif action == 'viewUsers':
@@ -156,6 +166,11 @@ def update(request):
             else:
                 # No selected users, send back to list of users to select some
                 return addusers.addUsers(request, error_message="No users selected!")
+        elif action == 'Confirm':
+            return confirmUsers.confirmAddUsersSuccess(request)
+        else:
+            request.session['courses_error_message'] = "You must select an action!"
+            return redirect('index')
 
     # Must either log in or go through selecting a course
     return redirect('index')
@@ -188,3 +203,71 @@ def buildClassEntry(courseId):
 def loginError(request, message):
     request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
     return render(request, 'learn/index.html', { 'error_message' : message })
+
+'''
+View for showing stats of the selected courses.
+Initial view, when there is no POST, displays the list of instructor's courses.
+View when there is POST of selected users, stats are displayed.
+Description of requirment:
+    For each instructor, create a tool to generate statistics showing the number of
+    unique students that instructor has enrolled in all selected courses.
+    (E.g. If the instructor is presented with a list of all courses, and checks the
+    five courses that are taught this term, this tool should be able to show them
+    the number of unique students they have enrolled in those five checked courses.
+    A unique student count does not count a student who is taking multiple course
+    from the same instructor twice.)
+
+'''
+def stats(request):
+    if 'selected_users' not in request.session:
+        return redirect('index')
+        
+    if request.method == "POST":
+        selected_courses = request.POST.getlist('course')
+        users = []
+        for course in selected_courses:
+
+            '''Gets all users from course'''
+            path = "/learn/api/public/v1/courses/"+course+"/users"
+            r = interface.get(path)
+
+            if r.text:
+
+                res = json.loads(r.text)
+                '''Grabs all the userId's from the course'''
+                members = res['results']
+
+                # Add each user to the array of users
+                for member in members:
+                    if 'availability' in member and member['availability']['available'] == 'Yes' and 'courseRoleId' in member and member['courseRoleId'] == 'Student':
+                        users.append(member['userId'])
+
+        context = {
+            'name': request.session['instructor_name'],
+            'unique': len(set(users)),
+            'total_users': len(users),
+        }
+
+        return render(request, 'learn/statsResults.html', context)
+
+    ''' No POST, display list of courses '''
+    # Class list for HTML template
+    class_list = ''
+
+    # Generate course list from session
+    for course in request.session['instructor_courses']['courses']:
+        # get the name of the courses for the template
+        class_list += buildClassEntry(course)
+
+    error_message = ''
+    # if we were redirected here with an error:
+    if 'courses_error_message' in request.session:
+        error_message = request.session['courses_error_message']
+        del request.session['courses_error_message']
+
+    context ={
+        'name': request.session['instructor_name'],
+        'classes': class_list,
+        'error_message': error_message,
+    }
+    return render(request, 'learn/stats.html', context)

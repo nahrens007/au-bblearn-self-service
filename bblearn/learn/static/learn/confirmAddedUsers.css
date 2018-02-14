@@ -23,6 +23,11 @@ and Remove button.*/
   line-height: 15px;
 }
 
+#submit:hover{
+  transform: scale(1.01);
+  border-color: black;
+}
+
 input[type=checkbox] {
 
     position: relative;
@@ -51,10 +56,31 @@ table{
   border-collapse: collapse;
 }
 
-td{
-  text-align: center;
+td, th{
+  text-align: left;
 }
 
-td#checkBoxCell{
+td.TAColumn, th.TAColumn, td.guestColumn, th.guestColumn, td.cancelColumn, th.cancelColumn{
+
+  width: 50px;
+}
+
+td.userNameColumn, th.userNameColumn{
+
+  border-left:solid;
+  border-width: thin;
+  padding-left: 10px;
+  padding-right: 10px;
+
+}
+
+td#submit{
+  text-align: center;
   width: 30px;
+}
+
+tr{
+
+  border: solid;
+  border-width: thin;
 }
