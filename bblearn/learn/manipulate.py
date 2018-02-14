@@ -11,8 +11,19 @@ def viewUsers(request):
     tableCreator = ''
     for course in courses:
 
+        path = "/learn/api/public/v1/courses/"+course
+        r = interface.get(path)
+
+        if r.text:
+            res = json.loads(r.text)
+            courseName = res['courseId']
+
         '''Creates table for each course'''
+        tableCreator += '<div class="tables">'
         tableCreator += '<table class="userTable"'
+        tableCreator += '<tr id="courseName">'
+        tableCreator += '<th>'+courseName+'</th>'
+        tableCreator += '</tr>'
         tableCreator += '<tr id="tableHeader">'
         tableCreator += '<th>User Name</th>'
         tableCreator += '<th>First Name</th>'
@@ -38,6 +49,8 @@ def viewUsers(request):
 
         '''Closes Table for the course'''
         tableCreator += '</table>'
+        tableCreator += '</div>'
+
 
     context = {
     'name': request.session['instructor_name'],
