@@ -4,6 +4,7 @@ import json
 
 
 def search(searchString):
+
     path = '/learn/api/public/v1/users?fields=userName,name.given,name.family,contact.email,studentId,availability'
     r = interface.get(path)
     if r == None:
@@ -34,12 +35,13 @@ def search(searchString):
 
 def buildList(user,userCount):
 
-    userCount = (str)(userCount)
+    userCount = 'user' + (str)(userCount)
 
     userList = ''
     userList += '<tr>'
-    userList += '<td><input type="radio" name="user' + userCount + '" value="' + user['userName'] + '" checked="checked">Guest<br></td>'
-    userList += '<td><input class="TAColumm"  type="radio" name="user' + userCount + '" value="' + user['userName'] + '">TA<br></td>'
+    userList += '<td><input class="guestColumn" type="radio" name=""'userCount'" value="cancel" checked="checked"><br></td>'
+    userList += '<td><input class="TAColumm" type="radio" name="'userCount'" value="guest"><br></td>'
+    userList += '<td><input class="cancelColumm" type="radio" name="'userCount'" value="ta"><br></td>'
     userList += '<td class="userNameColumn">' + user['userName'] + '</td>'
     if 'name' in user:
         if 'given' in user['name']:
@@ -53,10 +55,7 @@ def buildList(user,userCount):
     else:
         userList += '<td></td>'
         userList += '<td></td>'
-    if 'contact' in user:
-        userList += '<td>' + user['contact']['email'] + '</td>'
-    else:
-        userList += '<td></td>'
+
     if 'studentId' in user: #guests don't have studentId
         userList += '<td>' + user['studentId'] + '</td>'
     else:
@@ -83,7 +82,6 @@ def confirmAddUsers(request):
     return render(request, 'learn/confirmAddedUsers.html', context)
 
 def confirmAddUsersSuccess(request):
-
 
     context = {
 
