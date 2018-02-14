@@ -7,8 +7,19 @@ import json
 def viewUsers(request):
     courses = request.POST.getlist('course')
 
-    userList = ''
+    tableCreator = ''
     for course in courses:
+
+        '''Creates table for each course'''
+        tableCreator += '<table class="userTable"'
+        tableCreator += '<tr id="tableHeader">'
+        tableCreator += '<th>User Name</th>'
+        tableCreator += '<th>First Name</th>'
+        tableCreator += '<th>Last Name</th>'
+        tableCreator += '<th> Email </th>'
+        tableCreator += '<th>User ID</th>'
+        tableCreator += '<th>Status</th>'
+        tableCreator += '</tr>'
 
         '''Gets all users from course'''
         path = "/learn/api/public/v1/courses/"+course+"/users"
@@ -21,13 +32,15 @@ def viewUsers(request):
             members = res['results']
 
             for member in members:
-                userList += buildViewList(course, member['userId'])
+                '''Adds User Information into the table'''
+                tableCreator += buildViewList(course, member['userId'])
 
-                print(userList)
+        '''Closes Table for the course'''
+        tableCreator += '</table>'
 
     context = {
     'name': request.session['instructor_name'],
-    'userList': userList,
+    'tableCreator': tableCreator,
     }
     return render(request, 'learn/viewUsers.html', context)
 
