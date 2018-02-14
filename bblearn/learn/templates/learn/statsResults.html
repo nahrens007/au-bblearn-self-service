@@ -41,28 +41,9 @@
 
     <!-- Contains everything below the header, it includes footer. -->
     <div id="midSection">
-        <form id='course_selection' method='post' action='{% url "stats" %}'>{% csrf_token %}
-          <div id="pageContainer">
-            <div id="pageLabelBackground">
-              <div id="pageLabelContainer">
-                <span id="pageLabel">Select one or more courses to view the statistics of the class.</span>
-              </div>
-            </div>
-            <span class='error_message'>{{error_message}}</span>
-            <div id="courseActionsContainer">
-              <input id ="submit" type="submit" value="View Statistics" />
-            </div>
-
-
-            <div id="coursesContainer">
-              <table class="userTable">
-
-              {{classes | safe}}
-
-              </table>
-            </div>
-          </div>
-        </form>
+        <span>Number of unique users: {{ unique }}</span>
+        <span>Total number of users in selected courses: {{ total_users }}</span>
+        
     </div>
 
     <div id="footer">

@@ -200,9 +200,6 @@ def buildClassEntry(courseId):
         </tr>'''
     return ''
 
-'''
-This view simply displays an error message on the login screen.
-'''
 def loginError(request, message):
     request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)
     return render(request, 'learn/index.html', { 'error_message' : message })
@@ -222,6 +219,38 @@ Description of requirment:
 
 '''
 def stats(request):
+    if 'selected_users' not in request.session:
+        return redirect('index')
+        
+    if request.method == "POST":
+        selected_courses = request.POST.getlist('course')
+        users = []
+        for course in selected_courses:
+
+            '''Gets all users from course'''
+            path = "/learn/api/public/v1/courses/"+course+"/users"
+            r = interface.get(path)
+
+            if r.text:
+
+                res = json.loads(r.text)
+                '''Grabs all the userId's from the course'''
+                members = res['results']
+
+                # Add each user to the array of users
+                for member in members:
+                    if 'availability' in member and member['availability']['available'] == 'Yes' and 'courseRoleId' in member and member['courseRoleId'] == 'Student':
+                        users.append(member['userId'])
+
+        context = {
+            'name': request.session['instructor_name'],
+            'unique': len(set(users)),
+            'total_users': len(users),
+        }
+
+        return render(request, 'learn/statsResults.html', context)
+
+    ''' No POST, display list of courses '''
     # Class list for HTML template
     class_list = ''
 
