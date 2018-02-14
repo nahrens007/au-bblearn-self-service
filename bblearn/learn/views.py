@@ -219,9 +219,9 @@ Description of requirment:
 
 '''
 def stats(request):
-    if 'selected_users' not in request.session:
+    if 'instructor_courses' not in request.session:
         return redirect('index')
-        
+
     if request.method == "POST":
         selected_courses = request.POST.getlist('course')
         users = []
