@@ -98,11 +98,7 @@ def addToCourse(request):
         for user in request.session['selected_users']:
             path = '/learn/api/public/v1/courses/'+ course +'/users/userName:'+ user
             choice = 'C'
-            payload = {
-            "courseRoleId": "Guest"
-            }
-            print()
-            print(request.POST)
+
             if user in request.POST:
                 choice = request.POST.get(user)
             if choice == 'G':
@@ -110,11 +106,31 @@ def addToCourse(request):
                 payload = {
                 "courseRoleId": "Guest"
                 }
+                r = interface.put(path, json.dumps(payload))
+                print(r.text)
+                if r == None:
+                    #This could be caused when either the server url is incorrect or Python can't connect to Bb at all
+                    return render(request, 'learn/addUsers.html', { 'error_message' : 'Could not connect to Blackboard!', 'name':request.session['instructor_name'] })
+                elif r.status_code != 200:
+                    print('error adding a user!')
+                    print(r.status_code)
+                else:
+                    print('success!')
             elif choice == 'TA':
                 # Add user role to json as a TA
                 payload = {
                 "courseRoleId": "TeachingAssistant"
                 }
+                r = interface.put(path, json.dumps(payload))
+                print(r.text)
+                if r == None:
+                    #This could be caused when either the server url is incorrect or Python can't connect to Bb at all
+                    return render(request, 'learn/addUsers.html', { 'error_message' : 'Could not connect to Blackboard!', 'name':request.session['instructor_name'] })
+                elif r.status_code != 200:
+                    print('error adding a user!')
+                    print(r.status_code)
+                else:
+                    print('success!')
             # add user to course
             r = interface.put(path, json.dumps(payload))
             print(r.text)
