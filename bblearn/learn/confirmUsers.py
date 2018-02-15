@@ -39,9 +39,9 @@ def buildList(user,userCount):
 
     userList = ''
     userList += '<tr>'
-    userList += '<td><input class="guestColumn" type="radio" name=""'userCount'" value="cancel" checked="checked"><br></td>'
-    userList += '<td><input class="TAColumm" type="radio" name="'userCount'" value="guest"><br></td>'
-    userList += '<td><input class="cancelColumm" type="radio" name="'userCount'" value="ta"><br></td>'
+    userList += '<td><input class="guestColumn" type="radio" name="'+userCount+'" value="cancel" checked="checked"><br></td>'
+    userList += '<td><input class="TAColumm" type="radio" name="'+userCount+'" value="guest"><br></td>'
+    userList += '<td><input class="cancelColumm" type="radio" name="'+userCount+'" value="ta"><br></td>'
     userList += '<td class="userNameColumn">' + user['userName'] + '</td>'
     if 'name' in user:
         if 'given' in user['name']:

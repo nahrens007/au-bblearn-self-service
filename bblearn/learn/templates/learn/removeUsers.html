@@ -50,50 +50,7 @@
           </div>
         </div>
 
-        <table class="userTable">
-          <tr>
-            <th></th>
-            <th>User Name</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>User ID</th>
-          </tr>
-          <tr>
-            <td><input class="userCheckbox" type="checkbox" ></td>
-            <td>cclayton</td>
-            <td>Carr</td>
-            <td>Clayton</td>
-            <td>1234567</td>
-          </tr>
-          <tr>
-            <td><input class="userCheckbox" type="checkbox" ></td>
-            <td>eberger3</td>
-            <td>Erich</td>
-            <td>Berger</td>
-            <td>9999999</td>
-          </tr>
-          <tr>
-            <td><input class="userCheckbox" type="checkbox" ></td>
-            <td>nahrens</td>
-            <td>Nathan</td>
-            <td>Ahrens</td>
-            <td>8888888</td>
-          </tr>
-          <tr>
-            <td><input class="userCheckbox" type="checkbox" ></td>
-            <td>nahrens</td>
-            <td>Nathan</td>
-            <td>Ahrens</td>
-            <td>8888888</td>
-          </tr>
-          <tr id="submitRow">
-            <td><input id="checkAll" type="checkbox" onclick="check()" ></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td><input id="submit" type="button" value="Remove"></td>
-          </tr>
-        </table>
+          {{tableCreator | safe}}
 
       </div>
     </div>

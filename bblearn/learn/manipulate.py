@@ -11,6 +11,7 @@ def viewUsers(request):
     tableCreator = ''
     for course in courses:
 
+        '''Gets the course name'''
         path = "/learn/api/public/v1/courses/"+course
         r = interface.get(path)
 
@@ -60,71 +61,75 @@ def viewUsers(request):
 
 '''def removeUsers(request):
 
-        courses = request.POST.getlist('course')
+    courses = request.POST.getlist('course')
 
+    tableCreator = ''
 
-        for course in courses:
+    for course in courses:
+
+        '''Gets the course name'''
+        path = "/learn/api/public/v1/courses/"+course
+        r = interface.get(path)
+
+        if r.text:
+            res = json.loads(r.text)
+            courseName = res['courseId']
+
+            '''Creates table for each course'''
+            tableCreator += '<div class="tables">'
+            tableCreator += '<table class="userTable"'
+            tableCreator += '<tr id="courseName">'
+            tableCreator += '<th>'+courseName+'</th>'
+            tableCreator += '</tr>'
+            tableCreator += '<tr id="tableHeader">'
+            tableCreator += '<tr></tr>'
+            tableCreator += '<th>User Name</th>'
+            tableCreator += '<th>First Name</th>'
+            tableCreator += '<th>Last Name</th>'
+            tableCreator += '<th> Email </th>'
+            tableCreator += '<th>User ID</th>'
+            tableCreator += '<th>Status</th>'
+            tableCreator += '</tr>'
 
             "Gets all users from course"
             path = "/learn/api/public/v1/courses/"+course+"/users"
             r = interface.get(path)
 
-            if r.text
-
+            if r.text:
                 res = json.loads(r.text)
+
                 "Grabs all the userId's from the course"
-                members = res['results']['userId']
+                members = res['results']
 
                 for member in members:
 
-                        "Gets current user's role in the course"
-                        path = "GET /learn/api/public/v1/courses/"+course+"/users/"+member
-                        r = interface.get(path)
+                    "Gets current user's role in the course"
+                    path = "GET /learn/api/public/v1/courses/"+course+"/users/"+member
+                    r = interface.get(path)
 
-                        if r.text
+                    if r.text:
+                        res = json.loads(r.text)
+                        courseRole = res[courseRoleId]
 
-                            res = json.loads(r.text)
-                            courseRole = res['courseRoleId']
-
-                            "Check to see if the user is a TA or Guest since those will be the only"
-                            "Users that can be removed."
-                            if(courseRole == "teaching assistant")
-
-                                    "Grabs individual user information to display"
-                                    path = "/learn/api/public/v1/users/"+member
-                                    r = interface.get(path)
-
-                                    if r.text
-
-                                        res = json.loads(r.text)
-
-                                        fName = res['name']['given']
-                                        lName = res['name']['family']
-                                        email = res['contact']['email']
-                                        idNumber = res['studentId']
-
-                            elif(courseRole == "guest")
-
-                                    "Grabs individual user information to display"
-                                    path = "/learn/api/public/v1/users/"+member
-                                    r = interface.get(path)
-
-                                    if r.text
-
-                                        res = json.loads(r.text)
-
-                                        fName = res['name']['given']
-                                        lName = res['name']['family']
-                                        email = res['contact']['email']
-                                        idNumber = res['studentId']
-
+                        '''Checks for all teaching assistants and guests in the selected courses'''
+                        if(courseRole == 'TeachingAssistant'):
+                            tableCreator += buildRemoveList(course, member['userId'], 'Teaching Assistant')
+                        elif(courseRole == 'Guest'):
+                            tableCreator += buildRemoveList(course, member['userId'], 'Guest')
+                        tableCreator += '<tr id="submitRow">'
+                        tableCreator += '<td><input id="checkAll" type="checkbox" onclick="check()" ></td>'
+                        tableCreator += '<td></td>'
+                        tableCreator += '<td></td>'
+                        tableCreator += '<td></td>'
+                        tableCreator += '<td><input id="submit" type="button" value="Remove"></td>'
+                        tableCreator += '</tr>'
+                        tableCreator += '</table>'
+                        tableCreator += '</div>'
     context = {
-    'first name': fName,
-    'last name': lName,
-    'email': email,
-    'studentId': idNumber,
-    'courseRoleId': courseRole,
+    'name': request.session['instructor_name'],
+    'tableCreator': tableCreator,
     }
+
     return render(request, 'learn/removeUsers.html', context)'''
 
 def buildViewList(course, member):
@@ -173,6 +178,49 @@ def buildViewList(course, member):
             userList +=  '<td>' + courseRole + '</td>'
 
 
+        userList += '</tr>'
+
+    return userList
+
+def buildRemoveList(course, member, role):
+
+
+
+    userList = ''
+
+    '''Grabs individual user information to display'''
+    path = "/learn/api/public/v1/users/"+member
+    r = interface.get(path)
+
+    if r.text:
+
+        res = json.loads(r.text)
+
+        userList += '<tr>'
+        userList += '<td><input class="userCheckbox" type="checkbox" ></td>'
+        userList += '<td>' + res['userName'] + '</td>'
+        if 'name' in res:
+            if 'given' in res['name']:
+                userList += '<td>' + res['name']['given'] + '</td>'
+            else:
+                userList += '<td></td>'
+            if 'family' in res['name']:
+                userList += '<td>' + res['name']['family'] + '</td>'
+            else:
+                userList += '<td></td>'
+        else:
+            userList += '<td></td>'
+            userList += '<td></td>'
+        if 'contact' in res:
+            userList += '<td>' + res['contact']['email'] + '</td>'
+        else:
+            userList += '<td></td>'
+        if 'studentId' in res: #guests don't have studentId
+            userList += '<td>' + res['studentId'] + '</td>'
+        else:
+            userList += '<td> NA </td>'
+
+            userList +=  '<td>' + role + '</td>'
         userList += '</tr>'
 
     return userList
