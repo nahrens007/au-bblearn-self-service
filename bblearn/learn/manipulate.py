@@ -184,8 +184,6 @@ def buildViewList(course, member):
 
 def buildRemoveList(course, member, role):
 
-
-
     userList = ''
 
     '''Grabs individual user information to display'''
