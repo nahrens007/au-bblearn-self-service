@@ -94,7 +94,7 @@ def confirmAddUsersSuccess(request):
     }
     return render(request, 'learn/confirmAddedUsers.html', context)
 def addToCourse(request):
-for course in request.session['selected_courses']:
+    for course in request.session['selected_courses']:
         for user in request.session['selected_users']:
             path = '/learn/api/public/v1/courses/'+ course +'/users/userName:'+ user
             choice = 'C'
