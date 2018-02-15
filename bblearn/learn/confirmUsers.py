@@ -98,7 +98,7 @@ def addToCourse(request):
     for course in request.session['selected_courses']:
         for user in request.session['selected_users']:
             path = '/learn/api/public/v1/courses/'+ course +'/users/'+ user
-            choice = 'C'
+            choice = 'G'
             if user in request.session:
                 choice = request.session[user]
             if choice == 'G':
