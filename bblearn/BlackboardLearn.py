@@ -114,7 +114,7 @@ class LearnInterface:
 
     #return the response from the post call
     def post(self, url, json_data):
-        return self.session.post(self.server_url + url,data=json_data,auth=(self.auth_instance.getKey(),self.auth_instance.getSecret()),verify=False)
+        return self.session.post(self.server_url + url,data=json_data,headers={'Authorization':'Bearer ' + self.auth_instance.getToken(), 'Content-Type':'application/json'},verify=False)
 
     #return the response of the get call
     def get(self, url):
@@ -125,15 +125,15 @@ class LearnInterface:
             return None
     #return the response of the delete call
     def delete(self, url):
-        return self.session.delete(self.server_url + url, auth=(self.auth_instance.getKey(),self.auth_instance.getSecret()), verify=False)
+        return self.session.delete(self.server_url + url, headers={'Authorization':'Bearer ' + self.auth_instance.getToken(), 'Content-Type':'application/json'}, verify=False)
 
     #return the response of the patch call
     def patch(self, url, json_data):
-        return self.session.patch(self.server_url + url,data=json_data,auth=(self.auth_instance.getKey(),self.auth_instance.getSecret()),verify=False)
+        return self.session.patch(self.server_url + url,data=json_data,headers={'Authorization':'Bearer ' + self.auth_instance.getToken(), 'Content-Type':'application/json'},verify=False)
 
     #return the response of the put call
     def put(self, url, json_data):
-        return self.session.put(self.server_url + url, data=json_data, auth=(self.auth_instance.getKey(), self.auth_instance.getSecret()), verify=False)
+        return self.session.put(self.server_url + url, data=json_data, headers={'Authorization':'Bearer ' + self.auth_instance.getToken(), 'Content-Type':'application/json'}, verify=False)
 
     def getTokenExpires(self):
         return self.auth_instance.getTokenExpires()
