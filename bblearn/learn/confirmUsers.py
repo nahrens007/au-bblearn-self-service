@@ -119,4 +119,5 @@ def addToCourse(request):
             if r == None:
                 #This could be caused when either the server url is incorrect or Python can't connect to Bb at all
                 return render(request, 'learn/addUsers.html', { 'error_message' : 'Could not connect to Blackboard!', 'name':request.session['instructor_name'] })
-            elif r.status_code == 200:
+            elif r.status_code != 200:
+                print("Could not add user!")
