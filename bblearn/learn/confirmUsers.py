@@ -54,10 +54,6 @@ def buildList(user,userCount):
     else:
         userList += '<td></td>'
         userList += '<td></td>'
-    if 'contact' in user:
-        userList += '<td>' + user['contact']['email'] + '</td>'
-    else:
-        userList += '<td></td>'
     if 'studentId' in user: #guests don't have studentId
         userList += '<td>' + user['studentId'] + '</td>'
     else:

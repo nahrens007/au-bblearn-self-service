@@ -77,16 +77,15 @@ def removeUsers(request):
 
             '''Creates table for each course'''
             tableCreator += '<div class="tables">'
-            tableCreator += '<table class="userTable"'
-            tableCreator += '<tr id="courseName">'
-            tableCreator += '<th>'+courseName+'</th>'
+            tableCreator += '<table class="userTable">'
+            tableCreator += '<tr class="courseNameRow">'
+            tableCreator += '<div class="courseName">'+ courseName + '</div>'
             tableCreator += '</tr>'
             tableCreator += '<tr id="tableHeader">'
-            tableCreator += '<tr></tr>'
+            tableCreator += '<th class="checkBoxCell"></th>'
             tableCreator += '<th>User Name</th>'
             tableCreator += '<th>First Name</th>'
             tableCreator += '<th>Last Name</th>'
-            tableCreator += '<th> Email </th>'
             tableCreator += '<th>User ID</th>'
             tableCreator += '<th>Status</th>'
             tableCreator += '</tr>'
@@ -117,7 +116,8 @@ def removeUsers(request):
                         elif(courseRole == 'Guest'):
                             tableCreator += buildRemoveList(course, member['userId'], 'Guest')
                 tableCreator += '<tr id="submitRow">'
-                tableCreator += '<td><input id="checkAll" type="checkbox" onclick="check()" ></td>'
+                tableCreator += '<td class="checkBoxCell"><input id="checkAll" type="checkbox" onclick="check()" ></td>'
+                tableCreator += '<td></td>'
                 tableCreator += '<td></td>'
                 tableCreator += '<td></td>'
                 tableCreator += '<td></td>'
@@ -195,7 +195,7 @@ def buildRemoveList(course, member, role):
         res = json.loads(r.text)
 
         userList += '<tr>'
-        userList += '<td><input class="userCheckbox" type="checkbox" ></td>'
+        userList += '<td class="checkBoxCell"><input class="userCheckbox" type="checkbox" ></td>'
         userList += '<td>' + res['userName'] + '</td>'
         if 'name' in res:
             if 'given' in res['name']:
@@ -209,16 +209,12 @@ def buildRemoveList(course, member, role):
         else:
             userList += '<td></td>'
             userList += '<td></td>'
-        if 'contact' in res:
-            userList += '<td>' + res['contact']['email'] + '</td>'
-        else:
-            userList += '<td></td>'
         if 'studentId' in res: #guests don't have studentId
             userList += '<td>' + res['studentId'] + '</td>'
         else:
-            userList += '<td> NA </td>'
+            userList += '<td></td>'
 
-            userList +=  '<td>' + role + '</td>'
+        userList +=  '<td>' + role + '</td>'
         userList += '</tr>'
 
     return userList

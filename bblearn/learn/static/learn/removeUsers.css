@@ -49,12 +49,20 @@ input[type=checkbox] {
 table{
   width: 100%;
   border-collapse: collapse;
+
 }
 
-td{
+.courseName{
   text-align: center;
+  font-weight: bold;
+  border-bottom: solid;
+  border-width: medium;
+}
+th,td{
+  text-align: left;
 }
 
-td#checkBoxCell{
-  width: 30px;
+td.checkBoxCell, th.checkBoxCell{
+
+  width: 20px;
 }
