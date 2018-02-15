@@ -84,7 +84,7 @@ def confirmAddUsers(request):
 
 def confirmAddUsersSuccess(request):
 
-
+    addToCourse(request)
     context = {
 
         'addedUser': '',
@@ -98,9 +98,9 @@ def addToCourse(request):
     for course in request.session['selected_courses']:
         for user in request.session['selected_users']:
             path = '/learn/api/public/v1/courses/'+ course +'/users/'+ user
-            choice = 'C'
-            if user in request.session:
-                choice = request.session[user]
+            choice = 'G'
+            if user in request.POST:
+                choice = request.POST.get(user)
             if choice == 'G':
                 # Add user to json as a guest
                 payload = {
@@ -119,4 +119,5 @@ def addToCourse(request):
             if r == None:
                 #This could be caused when either the server url is incorrect or Python can't connect to Bb at all
                 return render(request, 'learn/addUsers.html', { 'error_message' : 'Could not connect to Blackboard!', 'name':request.session['instructor_name'] })
-            elif r.status_code == 200:
+            elif r.status_code != 200:
+                print("Could not add user!")
