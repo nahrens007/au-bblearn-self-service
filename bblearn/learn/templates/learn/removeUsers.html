@@ -25,12 +25,9 @@
       </div>
       <div id="titleContainer">
         <div id="title">
-          <form id="homeForm" method="post" action="{% url 'update' %}">{% csrf_token %}
-            <input style='display: none;' name='action' value='returnHome' />
-            <a onclick="submitForm()">
-              <span >Self Service Tool 1000</span>
-            </a>
-          </form>
+          <a href="{% url 'index' %}">
+            <span >Self Service Tool 1000</span>
+          </a>
         </div>
       </div>
       <div id="signOutBackground">
@@ -40,6 +37,12 @@
           <a href="{% url 'signout' %}" id="signOut"> Sign out</a>
         </div>
       </div>
+        <table id="menu">
+          <tr>
+            <th id="homeCell"><a href="{% url 'index' %}"><span id="homeButton"></span></a></th>
+            <th id="statsCell"><a href="{% url 'stats' %}"><span id="statsButton"></span></a></th>
+          </tr>
+        </table>
     </div>
     <!-- Contains everything below the header, it includes footer. -->
     <div id="midSection">
@@ -58,16 +61,6 @@
     <div id="footer">
       <span id="footerText">For Assistance Call: 419.289.5405</span>
     </div>
-
-    <script type="text/javascript">
-
-    function submitForm() {
-
-      document.getElementById('homeForm').submit();
-
-    }
-
-    </script>
   </body>
 
 </html>

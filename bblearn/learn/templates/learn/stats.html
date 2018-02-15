@@ -37,6 +37,12 @@
           <a href="{% url 'signout' %}" id="signOut"> Sign out</a>
         </div>
       </div>
+        <table id="menu">
+          <tr>
+            <th id="homeCell"><a href="{% url 'index' %}"><span id="homeButton"></span></a></th>
+            <th id="statsCell"><a href="{% url 'stats' %}"><span id="statsButton"></span></a></th>
+          </tr>
+        </table>
     </div>
 
     <!-- Contains everything below the header, it includes footer. -->

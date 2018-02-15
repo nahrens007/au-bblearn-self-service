@@ -1,0 +1,18 @@
+
+.titleCell{
+  width: 150px;
+  height: 22px;
+  padding-top: 0;
+}
+
+table{
+  width: 100%;
+  font-size: 25px;
+  border-collapse: collapse;
+
+}
+
+td{
+  border-top: solid;
+  padding: 5px;
+}
