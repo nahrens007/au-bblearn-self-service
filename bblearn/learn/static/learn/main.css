@@ -12,12 +12,11 @@ Start for everything in the Header
 #heading{
   background-image: url(texture.png); /*Used http://bg.siteorigin.com/ with #66137c and Extra Clean Paper filter*/
   background-repeat: repeat;
+  background-position: 0% 0%;
+  background-attachment: scroll;
   text-align: center;
   width: 100%;
   height: 91px;
-  border-bottom: solid;
-  border-color: #917e1f;
-  border-width: 1px;
 
 }
 
@@ -88,6 +87,12 @@ img{
 #title:hover{
 
   cursor: pointer;
+}
+
+a{
+
+  text-decoration: none;
+  color: inherit;
 }
 
 /*
@@ -170,7 +175,54 @@ Start for everything After the Header
   margin-bottom: 17px;
   width: 750px;
   border: solid;
+  border-top: none;
   border-color: #4C3059;
+}
+
+#menu{
+
+display: block;
+width: 200px;
+padding-left: 45px;
+margin: auto;
+margin-top: -1px;
+
+}
+
+#homeButton{
+
+  display: block;
+  background-image: url(button_menu.png); /*https://dabuttonfactory.com/ width:75px height:25px; Font: Droid Weight:Bold */
+  background-repeat: no-repeat;               /* Background: Pyramid Gradient, Top-Color:#330a3e, Middle Color: #781184*/
+  width: 79px;                                /* Border-Size: 2, Border-Color: #917e1f, Text Shadow: 1*/
+  height: 30px;
+}
+
+#statsButton{
+
+  display: block;                               /*https://dabuttonfactory.com/ width:115px height:25px; Font: Droid Weight:Bold */
+  background-image: url(button_statistics.png);   /* Background: Pyramid Gradient, Top-Color:#330a3e, Middle Color: #781184*/
+  background-repeat: no-repeat;                   /* Border-Size: 2, Border-Color: #917e1f, Text Shadow: 1*/
+  width: 120px;
+  height: 30px;
+}
+
+#homeCell{
+  width: 78px;
+  padding: 0;
+}
+
+#homeCell:hover{
+  transform: scale(1.03);
+}
+
+#statsCell{
+  padding: 0;
+  margin: 0;
+}
+
+#statsCell:hover{
+  transform: scale(1.03);
 }
 
 /*Places the purple background for the Homepage background*/

@@ -7,7 +7,7 @@
     <!-- load css pages -->
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'learn/main.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'learn/courses.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'learn/statsResults.css' %}" />
 
     <script type="text/javascript" href="{% static 'learn/main.js' %}"> </script>
 
@@ -37,13 +37,34 @@
           <a href="{% url 'signout' %}" id="signOut"> Sign out</a>
         </div>
       </div>
+        <table id="menu">
+          <tr>
+            <th id="homeCell"><a href="{% url 'index' %}"><span id="homeButton"></span></a></th>
+            <th id="statsCell"><a href="{% url 'stats' %}"><span id="statsButton"></span></a></th>
+          </tr>
+        </table>
     </div>
 
     <!-- Contains everything below the header, it includes footer. -->
     <div id="midSection">
-        <span>Number of unique users: {{ unique }}</span>
-        <span>Total number of users in selected courses: {{ total_users }}</span>
-        
+      <div id="pageContainer">
+        <div id="pageLabelBackground">
+          <div id="pageLabelContainer">
+            <span id="pageLabel">{{ label | safe }}</span>
+          </div>
+        </div>
+        <table>
+          <tr>
+            <td class="titleCell"><span>Unique Users:</span></td>
+            <td>{{ unique }}</td>
+          </tr>
+          <tr>
+            <td class="titleCell"><span>Total Users:</span></td>
+            <td>{{ total_users }}</td>
+          </tr>
+        </table>
+
+      </div>
     </div>
 
     <div id="footer">
