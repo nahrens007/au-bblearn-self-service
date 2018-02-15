@@ -175,6 +175,9 @@ def buildViewList(course, member):
             res = json.loads(r.text)
             courseRole = res['courseRoleId']
 
+            if(courseRole == 'TeachingAssistant'):
+                courseRole = 'Teaching Assistant'
+
             userList +=  '<td>' + courseRole + '</td>'
 
 
