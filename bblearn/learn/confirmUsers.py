@@ -4,7 +4,6 @@ import json
 
 
 def search(searchString):
-
     path = '/learn/api/public/v1/users?fields=userName,name.given,name.family,contact.email,studentId,availability'
     r = interface.get(path)
     if r == None:
@@ -35,13 +34,12 @@ def search(searchString):
 
 def buildList(user,userCount):
 
-    userCount = 'user' + (str)(userCount)
+    userCount = (str)(userCount)
 
     userList = ''
     userList += '<tr>'
-    userList += '<td><input class="guestColumn" type="radio" name="'+userCount+'" value="cancel" checked="checked"><br></td>'
-    userList += '<td><input class="TAColumm" type="radio" name="'+userCount+'" value="guest"><br></td>'
-    userList += '<td><input class="cancelColumm" type="radio" name="'+userCount+'" value="ta"><br></td>'
+    userList += '<td><input type="radio" name="user' + userCount + '" value="' + user['userName'] + '" checked="checked">Guest<br></td>'
+    userList += '<td><input class="TAColumm"  type="radio" name="user' + userCount + '" value="' + user['userName'] + '">TA<br></td>'
     userList += '<td class="userNameColumn">' + user['userName'] + '</td>'
     if 'name' in user:
         if 'given' in user['name']:
@@ -55,7 +53,10 @@ def buildList(user,userCount):
     else:
         userList += '<td></td>'
         userList += '<td></td>'
-
+    if 'contact' in user:
+        userList += '<td>' + user['contact']['email'] + '</td>'
+    else:
+        userList += '<td></td>'
     if 'studentId' in user: #guests don't have studentId
         userList += '<td>' + user['studentId'] + '</td>'
     else:
@@ -83,6 +84,7 @@ def confirmAddUsers(request):
 
 def confirmAddUsersSuccess(request):
 
+
     context = {
 
         'addedUser': '',
@@ -91,3 +93,30 @@ def confirmAddUsersSuccess(request):
         'submit': '<table class="userTable" style="display:none;">',
     }
     return render(request, 'learn/confirmAddedUsers.html', context)
+def addToCourse(request):
+
+    for course in request.session['selected_courses']:
+        for user in request.session['selected_users']:
+            path = '/learn/api/public/v1/courses/'+ course +'/users/'+ user
+            choice = 'C'
+            if user in request.session:
+                choice = request.session[user]
+            if choice == 'G':
+                # Add user to json as a guest
+                payload = {
+                "courseRoleId": "Guest"
+                }
+            elif choice == 'TA':
+                # Add user role to json as a TA
+                payload = {
+                "courseRoleId": "TeachingAssistant"
+                }
+            else:
+                # Do not add user to json
+                continue
+            # add user to course
+            r = interface.put(path, payload)
+            if r == None:
+                #This could be caused when either the server url is incorrect or Python can't connect to Bb at all
+                return render(request, 'learn/addUsers.html', { 'error_message' : 'Could not connect to Blackboard!', 'name':request.session['instructor_name'] })
+            elif r.status_code == 200:
