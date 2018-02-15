@@ -84,7 +84,7 @@ def confirmAddUsers(request):
 
 def confirmAddUsersSuccess(request):
 
-
+    addToCourse(request)
     context = {
 
         'addedUser': '',
@@ -99,8 +99,8 @@ def addToCourse(request):
         for user in request.session['selected_users']:
             path = '/learn/api/public/v1/courses/'+ course +'/users/'+ user
             choice = 'G'
-            if user in request.session:
-                choice = request.session[user]
+            if user in request.POST:
+                choice = request.POST.get(user)
             if choice == 'G':
                 # Add user to json as a guest
                 payload = {
