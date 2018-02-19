@@ -46,7 +46,11 @@ def viewUsers(request):
 
             for member in members:
                 '''Adds User Information into the table'''
-                tableCreator += buildViewList(course, member['userId'])
+                if(member['courseRoleId'] == 'TeachingAssistant'):
+                    courseRole = 'Teaching Assistant'
+                else:
+                    courseRole = member['courseRoleId']
+                tableCreator += buildViewList(course, member['userId'], courseRole)
 
         '''Closes Table for the course'''
         tableCreator += '</table>'
@@ -90,7 +94,7 @@ def removeUsers(request):
             tableCreator += '<th>Status</th>'
             tableCreator += '</tr>'
 
-            "Gets all users from course"
+            '''Gets all users from course'''
             path = "/learn/api/public/v1/courses/"+course+"/users"
             r = interface.get(path)
 
@@ -103,18 +107,12 @@ def removeUsers(request):
                 for member in members:
 
                     "Gets current user's role in the course"
-                    path = "/learn/api/public/v1/courses/"+course+"/users/"+member['userId']
-                    r = interface.get(path)
-
-                    if r.text:
-                        res = json.loads(r.text)
-                        courseRole = res['courseRoleId']
-
-                        '''Checks for all teaching assistants and guests in the selected courses'''
-                        if(courseRole == 'TeachingAssistant'):
-                            tableCreator += buildRemoveList(course, member['userId'], 'Teaching Assistant')
-                        elif(courseRole == 'Guest'):
-                            tableCreator += buildRemoveList(course, member['userId'], 'Guest')
+                    courseRole = member['courseRoleId']
+                    '''Checks for all teaching assistants and guests in the selected courses'''
+                    if(courseRole == 'TeachingAssistant'):
+                        tableCreator += buildRemoveList(member['userId'], 'Teaching Assistant')
+                    elif(courseRole == 'Guest'):
+                        tableCreator += buildRemoveList(member['userId'], 'Guest')
                 tableCreator += '<tr id="submitRow">'
                 tableCreator += '<td class="checkBoxCell"><input id="checkAll" type="checkbox" onclick="check()" ></td>'
                 tableCreator += '<td></td>'
@@ -132,7 +130,7 @@ def removeUsers(request):
 
     return render(request, 'learn/removeUsers.html', context)
 
-def buildViewList(course, member):
+def buildViewList(course, member, role):
 
     userList = ''
     '''Grabs individual user information to display'''
@@ -165,27 +163,12 @@ def buildViewList(course, member):
             userList += '<td>' + res['studentId'] + '</td>'
         else:
             userList += '<td></td>'
-
-        '''Gets current user's role in the course'''
-        path = "/learn/api/public/v1/courses/"+course+"/users/"+member
-        r = interface.get(path)
-
-        if r.text:
-
-            res = json.loads(r.text)
-            courseRole = res['courseRoleId']
-
-            if(courseRole == 'TeachingAssistant'):
-                courseRole = 'Teaching Assistant'
-
-            userList +=  '<td>' + courseRole + '</td>'
-
-
+        userList +=  '<td>' + role + '</td>'
         userList += '</tr>'
 
     return userList
 
-def buildRemoveList(course, member, role):
+def buildRemoveList(member, role):
 
     userList = ''
 
