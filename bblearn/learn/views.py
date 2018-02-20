@@ -208,6 +208,7 @@ def loginError(request, message):
 View for showing stats of the selected courses.
 Initial view, when there is no POST, displays the list of instructor's courses.
 View when there is POST of selected users, stats are displayed.
+
 Description of requirment:
     For each instructor, create a tool to generate statistics showing the number of
     unique students that instructor has enrolled in all selected courses.
@@ -216,6 +217,10 @@ Description of requirment:
     the number of unique students they have enrolled in those five checked courses.
     A unique student count does not count a student who is taking multiple course
     from the same instructor twice.)
+
+Recommended by Brady:
+    Could have a count of the number of students, ta's, and guests in each course
+    And eventually dropped students
 
 '''
 def stats(request):
