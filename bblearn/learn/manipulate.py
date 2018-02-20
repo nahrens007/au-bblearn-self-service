@@ -17,7 +17,7 @@ def viewUsers(request):
 
         if r.text:
             res = json.loads(r.text)
-            courseName = res['courseId']
+            courseName = res['name']
 
         '''Creates table for each course'''
         tableCreator += '<div class="tables">'
@@ -77,7 +77,7 @@ def removeUsers(request):
 
         if r.text:
             res = json.loads(r.text)
-            courseName = res['courseId']
+            courseName = res['name']
 
             '''Creates table for each course'''
             tableCreator += '<div class="tables">'
