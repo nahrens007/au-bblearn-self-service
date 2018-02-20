@@ -50,37 +50,37 @@ def addUsers(request, error_message=None):
     }
     return render(request, 'learn/addUsers.html', context)
 
-''' Given a dict of users (key of 'users'), this method returns the same dict, but sorted according to searchKey '''
+''' Given a list of users, this method returns the same dict, but sorted according to searchKey '''
 def sortUsers(searchKey, users, reverse):
-    user_results = {'users':[]}
+    user_results = []
     if searchKey == 'userName':
         from operator import itemgetter
-        user_results['users'] = sorted(users['users'], key=itemgetter('userName'), reverse=reverse)
+        user_results = sorted(users, key=itemgetter('userName'), reverse=reverse)
     elif searchKey == 'firstName':
-        user_results['users'] = sorted(users['users'], key=lambda e: e.get('name', {}).get('given'), reverse=reverse)
+        user_results = sorted(users, key=lambda e: e.get('name', {}).get('given'), reverse=reverse)
     elif searchKey == 'lastName':
-        user_results['users'] = sorted(users['users'], key=lambda e: e.get('name', {}).get('family'), reverse=reverse)
+        user_results = sorted(users, key=lambda e: e.get('name', {}).get('family'), reverse=reverse)
     elif searchKey == 'contact':
-        user_results['users'] = sorted(users['users'], key=lambda e: e.get('contact', {}).get('email'), reverse=reverse)
+        user_results = sorted(users, key=lambda e: e.get('contact', {}).get('email'), reverse=reverse)
     elif searchKey == 'studentId':
         from operator import itemgetter
-        user_results['users'] = sorted(users['users'], key=itemgetter('studentId'), reverse=reverse)
+        user_results = sorted(users, key=itemgetter('studentId'), reverse=reverse)
     else:
         from operator import itemgetter
-        user_results['users'] = sorted(users['users'], key=itemgetter('userName'), reverse=reverse)
+        user_results = sorted(users, key=itemgetter('userName'), reverse=reverse)
     return user_results
 
-''' given a dict of users, this method builds an html list of them. '''
+''' given a list of users, this method builds an html list of them. '''
 def buildHtmlUserList(request, users):
     userList = ''
-    for user in users['users']:
+    for user in users:
         userList += buildUserListEntry(user)
     return userList
 
 
-''' create a dict list of users from search info. key to list in dict is 'users' '''
+''' create a list of users from search info. '''
 def search(request, searchKey, searchString):
-    user_results = {'users':[]}
+    user_results = []
     print(searchString)
     path = '/learn/api/public/v1/users?fields=userName,name.given,name.family,contact.email,studentId,availability'
     print(path)
@@ -103,45 +103,45 @@ def search(request, searchKey, searchString):
                         index = 1
                         if 'userName' not in user and searchString == '':
                             user['userName'] = ''
-                            user_results['users'].append(user)
+                            user_results.append(user)
                         elif 'userName' in user and searchString in user['userName'].lower():
-                            user_results['users'].append(user)
+                            user_results.append(user)
                         continue
                     elif searchKey == 'firstName':
                         index = 2
                         if 'name' not in user and searchString == '':
                             user['name'] = {'family':'','given':''}
-                            user_results['users'].append(user)
+                            user_results.append(user)
                         elif 'name' in user and searchString in user['name']['given'].lower():
-                            user_results['users'].append(user)
+                            user_results.append(user)
                         continue
                     elif searchKey == 'lastName':
                         index = 3
                         if 'name' not in user and searchString == '':
                             user['name'] = {'family':'','given':''}
-                            user_results['users'].append(user)
+                            user_results.append(user)
                         elif 'name' in user and searchString in user['name']['family'].lower():
-                            user_results['users'].append(user)
+                            user_results.append(user)
                         continue
                     elif searchKey == 'contact':
                         index = 4
                         if 'contact' not in user and (not searchString or not searchString.strip()):
                             user['contact'] = {'email':''}
-                            user_results['users'].append(user)
+                            user_results.append(user)
                         elif 'contact' in user and searchString in user['contact']['email'].lower():
-                            user_results['users'].append(user)
+                            user_results.append(user)
                         continue
                     elif searchKey == 'studentId':
                         index = 5
                         if 'studentId' not in user and searchString.strip() == '':
                             user['studentId'] = ''
-                            user_results['users'].append(user)
+                            user_results.append(user)
                         elif 'studentId' in user and searchString in user['studentId']:
-                            user_results['users'].append(user)
+                            user_results.append(user)
                         continue
                     else:
                         index = 0
-                        user_results['users'].append(user)
+                        user_results.append(user)
                         continue
         request.session['index'] = index
         return user_results
