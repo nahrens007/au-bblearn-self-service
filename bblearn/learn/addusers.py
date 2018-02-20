@@ -3,27 +3,6 @@ from BlackboardLearn import interface
 import json
 
 def addUsers(request, error_message=None):
-    '''
-    request.POST contains:
-        if from course selection page (views.index()):
-            action - value='addUsers' - used by views.update()
-                no use here
-            course - value='courseId' - list of courses selected
-                use courses=request.POST.getlist('course')
-        if from this page (search form):
-            action - value='addUsers' - used by views.update()
-                no use here
-            searchBy - value='None', 'userName', 'firstName', 'lastName',
-                                'contact', 'studentId'
-                use searchKey=request.POST.get('searchBy')
-            searchBar - value='searchString'
-                use searchString=request.POST.get('searchBar')
-    request.session contains:
-        key='instructor_name', 'instructor_courses', 'instructor_username',
-        or 'selected_courses'
-        use: value=request.session[key]
-    '''
-
     ''' If we are displaying an error message, then display blank page w/ no users '''
     if error_message is not None:
         context = {
