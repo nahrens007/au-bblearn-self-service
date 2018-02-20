@@ -45,76 +45,124 @@ def addUsers(request, error_message=None):
     searchKey = str(request.POST.get('searchBy'))
     searchString = str(request.POST.get('searchBar')).lower()
 
-    return search(request, searchKey, searchString)
+    users = search(request, searchKey, searchString)
+    users = sortUsers(searchKey, users, False)
+    userList = buildHtmlUserList(request, users)
 
+    index = 0
+    if 'index' in request.session:
+        index = request.session['index']
+        del request.session['index']
+
+    if userList == '':
+        context = {
+            'name':request.session['instructor_name'],
+            'error_message':"No users found!",
+            'userList': '',
+            'optionIndex': index,
+        }
+        return render(request, 'learn/addUsers.html', context)
+    context ={
+        'name': request.session['instructor_name'],
+        'error_message': '',
+        'userList': userList,
+        'optionIndex': index,
+    }
+    return render(request, 'learn/addUsers.html', context)
+
+''' Given a dict of users (key of 'users'), this method returns the same dict, but sorted according to searchKey '''
+def sortUsers(searchKey, users, reverse):
+    from operator import itemgetter
+    user_results = {'users':[]}
+    if searchKey == 'userName':
+        user_results['users'] = sorted(users['users'], key=itemgetter('userName'), reverse=reverse)
+    elif searchKey == 'firstName':
+        user_results['users'] = sorted(users['users'], key=lambda e: e.get('name', {}).get('given'), reverse=reverse)
+    elif searchKey == 'lastName':
+        user_results['users'] = sorted(users['users'], key=lambda e: e.get('name', {}).get('family'), reverse=reverse)
+    elif searchKey == 'contact':
+        user_results['users'] = sorted(users['users'], key=lambda e: e.get('contact', {}).get('email'), reverse=reverse)
+    elif searchKey == 'studentId':
+        user_results['users'] = sorted(users['users'], key=itemgetter('studentId'), reverse=reverse)
+    else:
+        user_results['users'] = sorted(users['users'], key=itemgetter('userName'), reverse=reverse)
+    return user_results
+
+''' given a dict of users, this method builds an html list of them. '''
+def buildHtmlUserList(request, users):
+    userList = ''
+    for user in users['users']:
+        userList += buildList(user)
+    return userList
+
+
+''' create a dict list of users from search info. key to list in dict is 'users' '''
 def search(request, searchKey, searchString):
+    user_results = {'users':[]}
+    print(searchString)
     path = '/learn/api/public/v1/users?fields=userName,name.given,name.family,contact.email,studentId,availability'
+    print(path)
     r = interface.get(path)
     if r == None:
         #This could be caused when either the server url is incorrect or Python can't connect to Bb at all
         return render(request, 'learn/addUsers.html', { 'error_message' : 'Could not connect to Blackboard!', 'name':request.session['instructor_name'] })
     elif r.status_code == 200:
         #Success!
-
-        userList = ''
+        index = 0
         if r.text:
             res = json.loads(r.text)
 
             users = res['results']
 
             # build list of users to display
-            index = 0
             for user in users:
                 if 'availability' in user and user['availability']['available'] == 'Yes':
                     if searchKey == 'userName':
                         index = 1
-                        if('userName' in user and searchString in user['userName'].lower()):
-                            userList += buildList(user)
+                        if 'userName' not in user and searchString == '':
+                            user['userName'] = ''
+                            user_results['users'].append(user)
+                        elif 'userName' in user and searchString in user['userName'].lower():
+                            user_results['users'].append(user)
                         continue
                     elif searchKey == 'firstName':
                         index = 2
-                        if('name' in user and searchString in user['name']['given'].lower()):
-                            userList += buildList(user)
+                        if 'name' not in user and searchString == '':
+                            user['name'] = {'family':'','given':''}
+                            user_results['users'].append(user)
+                        elif 'name' in user and searchString in user['name']['given'].lower():
+                            user_results['users'].append(user)
                         continue
                     elif searchKey == 'lastName':
                         index = 3
-                        if('name' in user and searchString in user['name']['family'].lower()):
-                            userList += buildList(user)
+                        if 'name' not in user and searchString == '':
+                            user['name'] = {'family':'','given':''}
+                            user_results['users'].append(user)
+                        elif 'name' in user and searchString in user['name']['family'].lower():
+                            user_results['users'].append(user)
                         continue
                     elif searchKey == 'contact':
                         index = 4
-                        if('contact' in user and searchString in user['contact']['email'].lower()):
-                            userList += buildList(user)
+                        if 'contact' not in user and (not searchString or not searchString.strip()):
+                            user['contact'] = {'email':''}
+                            user_results['users'].append(user)
+                        elif 'contact' in user and searchString in user['contact']['email'].lower():
+                            user_results['users'].append(user)
                         continue
                     elif searchKey == 'studentId':
                         index = 5
-                        if('studentId' in user and searchString in user['studentId']):
-                            userList += buildList(user)
+                        if 'studentId' not in user and searchString.strip() == '':
+                            user['studentId'] = ''
+                            user_results['users'].append(user)
+                        elif 'studentId' in user and searchString in user['studentId']:
+                            user_results['users'].append(user)
                         continue
                     else:
                         index = 0
-                        userList += buildList(user)
+                        user_results['users'].append(user)
                         continue
-
-
-        if userList == '':
-            context = {
-                'name':request.session['instructor_name'],
-                'error_message':"No users found!",
-                'userList': '',
-                'optionIndex': index,
-            }
-            return render(request, 'learn/addUsers.html', context)
-
-        context ={
-            'name': request.session['instructor_name'],
-            'error_message': '',
-            'userList': userList,
-            'optionIndex': index,
-        }
-
-        return render(request, 'learn/addUsers.html', context)
-
+        request.session['index'] = index
+        return user_results
     elif r.status_code == 403:
         return render(request, 'learn/addUsers.html', { 'error_message' : 'You are not authorized!', 'name': request.session['instructor_name'] })
     elif r.status_code == 400:
