@@ -45,6 +45,7 @@ def addUsers(request, error_message=None):
     searchKey = str(request.POST.get('searchBy'))
     searchString = str(request.POST.get('searchBar')).lower()
 
+    # search for users based on criteria, then sort the results, then build an HTML list of them.
     users = search(request, searchKey, searchString)
     users = sortUsers(searchKey, users, False)
     userList = buildHtmlUserList(request, users)
@@ -72,9 +73,9 @@ def addUsers(request, error_message=None):
 
 ''' Given a dict of users (key of 'users'), this method returns the same dict, but sorted according to searchKey '''
 def sortUsers(searchKey, users, reverse):
-    from operator import itemgetter
     user_results = {'users':[]}
     if searchKey == 'userName':
+        from operator import itemgetter
         user_results['users'] = sorted(users['users'], key=itemgetter('userName'), reverse=reverse)
     elif searchKey == 'firstName':
         user_results['users'] = sorted(users['users'], key=lambda e: e.get('name', {}).get('given'), reverse=reverse)
@@ -83,8 +84,10 @@ def sortUsers(searchKey, users, reverse):
     elif searchKey == 'contact':
         user_results['users'] = sorted(users['users'], key=lambda e: e.get('contact', {}).get('email'), reverse=reverse)
     elif searchKey == 'studentId':
+        from operator import itemgetter
         user_results['users'] = sorted(users['users'], key=itemgetter('studentId'), reverse=reverse)
     else:
+        from operator import itemgetter
         user_results['users'] = sorted(users['users'], key=itemgetter('userName'), reverse=reverse)
     return user_results
 
@@ -92,7 +95,7 @@ def sortUsers(searchKey, users, reverse):
 def buildHtmlUserList(request, users):
     userList = ''
     for user in users['users']:
-        userList += buildList(user)
+        userList += buildUserListEntry(user)
     return userList
 
 
@@ -172,7 +175,7 @@ def search(request, searchKey, searchString):
     else:
         print("[DEBUG] r.status_code for courses get(): " + str(r.status_code))
 
-def buildList(user):
+def buildUserListEntry(user):
 
     userList = ''
     userList += '<tr>'
