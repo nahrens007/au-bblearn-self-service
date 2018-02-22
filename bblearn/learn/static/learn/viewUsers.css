@@ -55,10 +55,14 @@ table{
   border-bottom: solid;
 }
 
-td{
+.courseName{
   text-align: center;
+  font-weight: bold;
+  border-bottom: solid;
+  border-top: solid;
+  border-width: medium;
 }
 
-td#checkBoxCell{
-  width: 30px;
+td,tr{
+  text-align: left;
 }
