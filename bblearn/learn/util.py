@@ -10,7 +10,7 @@ def loadUsersIntoSession(request):
         r = interface.get(path)
         if r == None:
             #This could be caused when either the server url is incorrect or Python can't connect to Bb at all
-            return render(request, 'learn/addUsers.html', { 'error_message' : 'Could not connect to Blackboard!', 'name':request.session['instructor_name'] })
+            return None
         elif r.status_code == 200 and r.text:
             #Success!
             if r.text:

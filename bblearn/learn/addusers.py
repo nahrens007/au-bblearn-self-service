@@ -27,7 +27,9 @@ def addUsers(request, error_message=None):
 
     # Load users into sessions
     status = util.loadUsersIntoSession(request)
-    if status == 403:
+    if status == None:
+        return render(request, 'learn/addUsers.html', { 'error_message' : 'Could not connect to Blackboard!', 'name':request.session['instructor_name'] })
+    elif status == 403:
         return render(request, 'learn/addUsers.html', { 'error_message' : 'You are not authorized!', 'name': request.session['instructor_name'] })
     elif status == 400:
         return render(request, 'learn/addUsers.html', { 'error_message' : 'Bad request!', 'name': request.session['instructor_name'] })

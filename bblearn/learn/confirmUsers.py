@@ -1,35 +1,34 @@
 from django.shortcuts import render, redirect
 from BlackboardLearn import interface
+from . import util
 import json
 
 
-def search(searchString):
-    path = '/learn/api/public/v1/users?fields=userName,name.given,name.family,contact.email,studentId,availability'
-    r = interface.get(path)
-    if r == None:
-        #This could be caused when either the server url is incorrect or Python can't connect to Bb at all
+def search(request, searchString):
+    # Ensure users are loaded from Bb
+    status = util.loadUsersIntoSession(request)
+    if status == None:
         return render(request, 'learn/addUsers.html', { 'error_message' : 'Could not connect to Blackboard!', 'name':request.session['instructor_name'] })
-    elif r.status_code == 200:
-        #Success!
+    elif status == 403:
+        return render(request, 'learn/addUsers.html', { 'error_message' : 'You are not authorized!', 'name': request.session['instructor_name'] })
+    elif status == 400:
+        return render(request, 'learn/addUsers.html', { 'error_message' : 'Bad request!', 'name': request.session['instructor_name'] })
+    elif status == 401:
+        return render(request, 'learn/addUsers.html', { 'error_message' : 'There was a Blackboard authentication error!', 'name': request.session['instructor_name'] })
+    elif status != 200:
+        return render(request, 'learn/addUsers.html', { 'error_message' : 'Error! Status code: ' + str(status), 'name': request.session['instructor_name'] })
 
-        userList = ''
-        if r.text:
-            res = json.loads(r.text)
-
-            users = res['results']
-
-            # build list of users to display
-            index = 0
-            for searchItem in searchString:
-                for user in users:
-                    if 'availability' in user and user['availability']['available'] == 'Yes':
-                        if('userName' in user and searchItem in user['userName'].lower()):
-                            userList += buildList(user,index)
-                            index+=1
-                            continue
-
-
-
+    users = request.session['all_users']
+    # build list of users to display
+    index = 0
+    userList = ''
+    for searchItem in searchString:
+        for user in users:
+            if 'availability' in user and user['availability']['available'] == 'Yes':
+                if('userName' in user and searchItem in user['userName'].lower()):
+                    userList += buildList(user,index)
+                    index+=1
+                    continue
     return userList
 
 def buildList(user,userCount):
@@ -66,8 +65,7 @@ def buildList(user,userCount):
 def confirmAddUsers(request):
 
     selectedUsers = request.session['selected_users']
-
-    userList = search(selectedUsers)
+    userList = search(request, selectedUsers)
 
 
     context = {
