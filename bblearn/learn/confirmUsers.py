@@ -81,17 +81,43 @@ def confirmAddUsers(request):
 
 def confirmAddUsersSuccess(request):
 
-    addToCourse(request)
+    htmlResponse = addToCourse(request)
     context = {
 
         'addedUser': '',
         'name': request.session['instructor_name'],
-        'label': 'Successfully added user!',
+        'label': htmlResponse,
         'submit': '<table class="userTable" style="display:none;">',
     }
     return render(request, 'learn/confirmAddedUsers.html', context)
+
+''' This function builds an HTML view of the users that were added to which courses. '''
 def addToCourse(request):
+    html = ''
     for course in request.session['selected_courses']:
+        '''Gets the course name'''
+        path = "/learn/api/public/v1/courses/"+course+'?fields=name'
+        r = interface.get(path)
+        if r.status_code != 200 or not r.text:
+            html += '<p>Course with ID: ' + course + ' could not be retrieved!</p>'
+            continue
+        res = json.loads(r.text)
+        courseName = res['name']
+
+        '''Creates table for each course'''
+        html += '<div class="tables">'
+        html += '<table class="userTable"'
+        html += '<tr class="courseNameRow">'
+        html += '<div class="courseName">'+ courseName + '</div>'
+        html += '</tr>'
+        html += '<tr id="tableHeader">'
+        html += '<th>User Name</th>'
+        html += '<th>First Name</th>'
+        html += '<th>Last Name</th>'
+        html += '<th> Email </th>'
+        html += '<th>User ID</th>'
+        html += '<th>Status</th>'
+        html += '</tr>'
         for user in request.session['selected_users']:
             path = '/learn/api/public/v1/courses/'+ course +'/users/userName:'+ user
             choice = 'C'
@@ -109,7 +135,7 @@ def addToCourse(request):
                 payload = {
                 "courseRoleId": "TeachingAssistant"
                 }
-            if choice == 'C':
+            else:
                 continue
 
 
@@ -119,8 +145,12 @@ def addToCourse(request):
             if r == None:
                 #This could be caused when either the server url is incorrect or Python can't connect to Bb at all
                 return render(request, 'learn/addUsers.html', { 'error_message' : 'Could not connect to Blackboard!', 'name':request.session['instructor_name'] })
+            elif r.status_code == 409:
+                # User already enrolled in the course as a student, TA, Guest, or Instructor.
+                print("User already enrolled!")
             elif r.status_code != 201:
                 print('error adding a user!')
                 print(r.status_code)
             else:
                 print('success!')
+    return html
