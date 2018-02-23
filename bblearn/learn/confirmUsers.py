@@ -91,7 +91,7 @@ def confirmAddUsersSuccess(request):
 
 ''' This function builds an HTML view of the users that were added to which courses. '''
 def addToCourse(request):
-    html = ''
+    html = '<h2>Here are the results of adding the users:<h2>'
     for course in request.session['selected_courses']:
         '''Gets the course name'''
         path = "/learn/api/public/v1/courses/"+course+'?fields=name'
@@ -151,4 +151,5 @@ def addToCourse(request):
                 print(r.status_code)
             else:
                 print('success!')
+        html += '</table></div>'
     return html
