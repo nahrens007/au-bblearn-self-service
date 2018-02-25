@@ -168,6 +168,9 @@ def update(request):
                 return addusers.addUsers(request, error_message="No users selected!")
         elif action == 'Confirm':
             return confirmUsers.confirmAddUsersSuccess(request)
+
+        elif action == 'Remove':
+            return manipulate.submitRemoveUsers(request)
         else:
             request.session['courses_error_message'] = "You must select an action!"
             return redirect('index')

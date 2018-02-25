@@ -64,10 +64,13 @@ def viewUsers(request):
     return render(request, 'learn/viewUsers.html', context)
 
 def removeUsers(request):
-
-    courses = request.POST.getlist('course')
+    courses = request.session['selected_courses']
 
     tableCreator = ''
+    errorMessage = ''
+
+    if('removeUserError' in request.session):
+        errorMessage = request.session['removeUserError']
 
     for course in courses:
 
@@ -119,13 +122,13 @@ def removeUsers(request):
                 tableCreator += '<td></td>'
                 tableCreator += '<td></td>'
                 tableCreator += '<td></td>'
-                tableCreator += '<td><input id="submit" type="button" value="Remove"></td>'
                 tableCreator += '</tr>'
                 tableCreator += '</table>'
                 tableCreator += '</div>'
     context = {
     'name': request.session['instructor_name'],
     'tableCreator': tableCreator,
+    'error_message': errorMessage,
     }
 
     return render(request, 'learn/removeUsers.html', context)
@@ -171,7 +174,6 @@ def buildViewList(course, member, role):
 def buildRemoveList(member, role):
 
     userList = ''
-
     '''Grabs individual user information to display'''
     path = "/learn/api/public/v1/users/"+member
     r = interface.get(path)
@@ -181,7 +183,7 @@ def buildRemoveList(member, role):
         res = json.loads(r.text)
 
         userList += '<tr>'
-        userList += '<td class="checkBoxCell"><input class="userCheckbox" type="checkbox" ></td>'
+        userList += '<td class="checkBoxCell"><input class="userCheckbox" type="checkbox" value ='+res['userName']+' name = "users" ></td>'
         userList += '<td>' + res['userName'] + '</td>'
         if 'name' in res:
             if 'given' in res['name']:
@@ -204,3 +206,13 @@ def buildRemoveList(member, role):
         userList += '</tr>'
 
     return userList
+
+def submitRemoveUsers (request):
+
+    selectedUsers = request.POST.getlist("users")
+
+    if(not selectedUsers):
+        request.session['removeUserError'] = "Must select a user to remove!"
+        return removeUsers(request)
+    # not possible to get here without selected courses in SESSION from views.update()
+    courses = request.session['selected_courses']
