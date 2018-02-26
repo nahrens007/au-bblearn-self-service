@@ -20,20 +20,16 @@ def search(request, searchString):
 
     users = request.session['all_users']
     # build list of users to display
-    index = 0
     userList = ''
     for searchItem in searchString:
         for user in users:
             if 'availability' in user and user['availability']['available'] == 'Yes':
                 if('userName' in user and searchItem in user['userName'].lower()):
-                    userList += buildList(user,index)
-                    index+=1
+                    userList += buildUserListEntry(user)
                     continue
     return userList
 
-def buildList(user,userCount):
-
-    userCount = (str)(userCount)
+def buildUserListEntry(user):
 
     userList = ''
     userList += '<tr>'
@@ -84,20 +80,20 @@ def confirmAddUsersSuccess(request):
 
         'addedUser': '',
         'name': request.session['instructor_name'],
-        'label': htmlResponse,
+        'add_results': htmlResponse,
         'submit': '<table class="userTable" style="display:none;">',
     }
     return render(request, 'learn/confirmAddedUsers.html', context)
 
-''' This function builds an HTML view of the users that were added to which courses. '''
+''' This function builds an HTML view of the users that were added to which courses, or not added. '''
 def addToCourse(request):
-    html = '<h2>Here are the results of adding the users:<h2>'
+    html = '<h2>Here are the results of adding the users:</h2>'
     for course in request.session['selected_courses']:
         '''Gets the course name'''
         path = "/learn/api/public/v1/courses/"+course+'?fields=name'
         r = interface.get(path)
         if r.status_code != 200 or not r.text:
-            html += '<p>Course with ID: ' + course + ' could not be retrieved!</p>'
+            html += '<div class="courseName">Course with ID: ' + course + ' could not be retrieved!</div>'
             continue
         res = json.loads(r.text)
         courseName = res['name']
@@ -117,6 +113,7 @@ def addToCourse(request):
         html += '<th>Status</th>'
         html += '</tr>'
         for user in request.session['selected_users']:
+            userInfo = util.getUser(request, user)
             path = '/learn/api/public/v1/courses/'+ course +'/users/userName:'+ user
             choice = 'C'
             payload = None
@@ -134,22 +131,103 @@ def addToCourse(request):
                 "courseRoleId": "TeachingAssistant"
                 }
             else:
+                html += '<tr>'
+                html += '<td>' + user + '</td>'
+                if 'name' in userInfo and 'given' in userInfo['name']:
+                    html += '<td>' + userInfo['name']['given'] + '</td>'
+                else:
+                    html += '<td></td>'
+                if 'name' in userInfo and 'family' in userInfo['name']:
+                    html += '<td>' + userInfo['name']['family'] + '</td>'
+                else:
+                    html += '<td></td>'
+                if 'contact' in userInfo and 'email' in userInfo['contact']:
+                    html += '<td> ' + userInfo['contact']['email'] + ' </td>'
+                else:
+                    html += '<td></td>'
+                if 'studentId' in userInfo:
+                    html += '<td>' + userInfo['studentId'] + '</td>'
+                else:
+                    html += '<td></td>'
+                html += '<td>Cancelled</td>'
+                html += '</tr>'
                 continue
-
 
             # add user to course
             r = interface.put(path, json.dumps(payload))
-            print(r.text)
+            response = json.loads(r.text)
             if r == None:
                 #This could be caused when either the server url is incorrect or Python can't connect to Bb at all
-                return render(request, 'learn/addUsers.html', { 'error_message' : 'Could not connect to Blackboard!', 'name':request.session['instructor_name'] })
-            elif r.status_code == 409:
-                # User already enrolled in the course as a student, TA, Guest, or Instructor.
-                print("User already enrolled!")
+                html += '<tr>'
+                html += '<td>' + user + '</td>'
+                if 'name' in userInfo and 'given' in userInfo['name']:
+                    html += '<td>' + userInfo['name']['given'] + '</td>'
+                else:
+                    html += '<td></td>'
+                if 'name' in userInfo and 'family' in userInfo['name']:
+                    html += '<td>' + userInfo['name']['family'] + '</td>'
+                else:
+                    html += '<td></td>'
+                if 'contact' in userInfo and 'email' in userInfo['contact']:
+                    html += '<td> ' + userInfo['contact']['email'] + ' </td>'
+                else:
+                    html += '<td></td>'
+                if 'studentId' in userInfo:
+                    html += '<td>' + userInfo['studentId'] + '</td>'
+                else:
+                    html += '<td></td>'
+                html += '<td>Blackboard Error!</td>'
+                html += '</tr>'
             elif r.status_code != 201:
-                print('error adding a user!')
-                print(r.status_code)
+                # 400 - Invalid request, logged in user not in same domain as user trying to add, or user is observer
+                # 403 - User is system admin and logged in user isn't
+                # 404 - User doesn't exist or course doesn't exist
+                # 409 - User already enrolled in the course as a student, TA, Guest, or Instructor.
+                html += '<tr>'
+                html += '<td>' + user + '</td>'
+                if 'name' in userInfo and 'given' in userInfo['name']:
+                    html += '<td>' + userInfo['name']['given'] + '</td>'
+                else:
+                    html += '<td></td>'
+                if 'name' in userInfo and 'family' in userInfo['name']:
+                    html += '<td>' + userInfo['name']['family'] + '</td>'
+                else:
+                    html += '<td></td>'
+                if 'contact' in userInfo and 'email' in userInfo['contact']:
+                    html += '<td> ' + userInfo['contact']['email'] + ' </td>'
+                else:
+                    html += '<td></td>'
+                if 'studentId' in userInfo:
+                    html += '<td>' + userInfo['studentId'] + '</td>'
+                else:
+                    html += '<td></td>'
+                html += '<td>' + response['message'] + '</td>'
+                html += '</tr>'
             else:
-                print('success!')
+                # 201 - Successful enrollment
+                html += '<tr>'
+                html += '<td>' + user + '</td>'
+                if 'name' in userInfo and 'given' in userInfo['name']:
+                    html += '<td>' + userInfo['name']['given'] + '</td>'
+                else:
+                    html += '<td></td>'
+                if 'name' in userInfo and 'family' in userInfo['name']:
+                    html += '<td>' + userInfo['name']['family'] + '</td>'
+                else:
+                    html += '<td></td>'
+                if 'contact' in userInfo and 'email' in userInfo['contact']:
+                    html += '<td> ' + userInfo['contact']['email'] + ' </td>'
+                else:
+                    html += '<td></td>'
+                if 'studentId' in userInfo:
+                    html += '<td>' + userInfo['studentId'] + '</td>'
+                else:
+                    html += '<td></td>'
+                if response['courseRoleId'] == 'TeachingAssistant':
+                    html += '<td>Teaching Assistant</td>'
+                else:
+                    html += '<td>' + response['courseRoleId'] + '</td>'
+                html += '</tr>'
+
         html += '</table></div>'
     return html

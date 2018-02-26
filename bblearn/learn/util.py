@@ -18,3 +18,8 @@ def loadUsersIntoSession(request):
                 request.session['all_users'] = res['results']
         return r.status_code
     return 200 # users already in session
+
+def getUser(request, userName):
+    for user in request.session['all_users']:
+        if user['userName'] == userName:
+            return user
