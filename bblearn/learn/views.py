@@ -173,6 +173,8 @@ def update(request):
             return manipulate.submitRemoveUsers(request)
         else:
             request.session['courses_error_message'] = "You must select an action!"
+            if 'selected_courses' in request.session:
+                del request.session['selected_courses']
             return redirect('index')
 
     # Must either log in or go through selecting a course
