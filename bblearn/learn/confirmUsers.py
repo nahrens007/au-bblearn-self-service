@@ -130,7 +130,8 @@ def addToCourse(request):
                 payload = {
                 "courseRoleId": "TeachingAssistant"
                 }
-            else:
+            else: 
+                ## We no longer want to add the user to the course
                 html += '<tr>'
                 html += '<td>' + user + '</td>'
                 if 'name' in userInfo and 'given' in userInfo['name']:
