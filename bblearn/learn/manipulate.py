@@ -2,6 +2,7 @@ from django.shortcuts import render
 from BlackboardLearn import interface
 from learn import confirmUsers
 import json
+from . import util
 
 
 def viewUsers(request):
@@ -50,7 +51,8 @@ def viewUsers(request):
                     courseRole = 'Teaching Assistant'
                 else:
                     courseRole = member['courseRoleId']
-                tableCreator += buildViewList(course, member['userId'], courseRole)
+                user = util.getUserById(request, member['userId'])
+                tableCreator += buildViewList(course, user, courseRole)
 
         '''Closes Table for the course'''
         tableCreator += '</table>'
@@ -113,9 +115,11 @@ def removeUsers(request):
                     courseRole = member['courseRoleId']
                     '''Checks for all teaching assistants and guests in the selected courses'''
                     if(courseRole == 'TeachingAssistant'):
-                        tableCreator += buildRemoveList(member['userId'], 'Teaching Assistant')
+                        user = util.getUserById(request, member['userId'])
+                        tableCreator += buildRemoveList(course, user, 'Teaching Assistant')
                     elif(courseRole == 'Guest'):
-                        tableCreator += buildRemoveList(member['userId'], 'Guest')
+                        user = util.getUserById(request, member['userId'])
+                        tableCreator += buildRemoveList(course, user, 'Guest')
                 tableCreator += '<tr id="submitRow">'
                 tableCreator += '<td class="checkBoxCell"><input id="checkAll" type="checkbox" onclick="check()" ></td>'
                 tableCreator += '<td></td>'
@@ -133,86 +137,81 @@ def removeUsers(request):
 
     return render(request, 'learn/removeUsers.html', context)
 
-def buildViewList(course, member, role):
+def buildViewList(course, res, role):
 
     userList = ''
-    '''Grabs individual user information to display'''
-    path = "/learn/api/public/v1/users/"+member
-    r = interface.get(path)
-
-    if r.text:
-
-        res = json.loads(r.text)
-
-        userList += '<tr>'
-        userList += '<td>' + res['userName'] + '</td>'
-        if 'name' in res:
-            if 'given' in res['name']:
-                userList += '<td>' + res['name']['given'] + '</td>'
-            else:
-                userList += '<td></td>'
-            if 'family' in res['name']:
-                userList += '<td>' + res['name']['family'] + '</td>'
-            else:
-                userList += '<td></td>'
+    userList += '<tr>'
+    userList += '<td>' + res['userName'] + '</td>'
+    if 'name' in res:
+        if 'given' in res['name']:
+            userList += '<td>' + res['name']['given'] + '</td>'
         else:
             userList += '<td></td>'
-            userList += '<td></td>'
-        if 'contact' in res:
-            userList += '<td>' + res['contact']['email'] + '</td>'
+        if 'family' in res['name']:
+            userList += '<td>' + res['name']['family'] + '</td>'
         else:
             userList += '<td></td>'
-        if 'studentId' in res: #guests don't have studentId
-            userList += '<td>' + res['studentId'] + '</td>'
-        else:
-            userList += '<td></td>'
-        userList +=  '<td>' + role + '</td>'
-        userList += '</tr>'
+    else:
+        userList += '<td></td>'
+        userList += '<td></td>'
+    if 'contact' in res:
+        userList += '<td>' + res['contact']['email'] + '</td>'
+    else:
+        userList += '<td></td>'
+    if 'studentId' in res: #guests don't have studentId
+        userList += '<td>' + res['studentId'] + '</td>'
+    else:
+        userList += '<td></td>'
+    userList +=  '<td>' + role + '</td>'
+    userList += '</tr>'
 
     return userList
 
-def buildRemoveList(member, role):
+def buildRemoveList(course, res, role):
 
     userList = ''
-    '''Grabs individual user information to display'''
-    path = "/learn/api/public/v1/users/"+member
-    r = interface.get(path)
-
-    if r.text:
-
-        res = json.loads(r.text)
-
-        userList += '<tr>'
-        userList += '<td class="checkBoxCell"><input class="userCheckbox" type="checkbox" value ='+res['userName']+' name = "users" ></td>'
-        userList += '<td>' + res['userName'] + '</td>'
-        if 'name' in res:
-            if 'given' in res['name']:
-                userList += '<td>' + res['name']['given'] + '</td>'
-            else:
-                userList += '<td></td>'
-            if 'family' in res['name']:
-                userList += '<td>' + res['name']['family'] + '</td>'
-            else:
-                userList += '<td></td>'
+    userList += '<tr>'
+    userList += '<td class="checkBoxCell"><input class="userCheckbox" type="checkbox" value ="'+res['userName']+','+course+'" name = "users" ></td>'
+    userList += '<td>' + res['userName'] + '</td>'
+    if 'name' in res:
+        if 'given' in res['name']:
+            userList += '<td>' + res['name']['given'] + '</td>'
         else:
             userList += '<td></td>'
-            userList += '<td></td>'
-        if 'studentId' in res: #guests don't have studentId
-            userList += '<td>' + res['studentId'] + '</td>'
+        if 'family' in res['name']:
+            userList += '<td>' + res['name']['family'] + '</td>'
         else:
             userList += '<td></td>'
+    else:
+        userList += '<td></td>'
+        userList += '<td></td>'
+    if 'studentId' in res: #guests don't have studentId
+        userList += '<td>' + res['studentId'] + '</td>'
+    else:
+        userList += '<td></td>'
 
-        userList +=  '<td>' + role + '</td>'
-        userList += '</tr>'
+    userList +=  '<td>' + role + '</td>'
+    userList += '</tr>'
 
     return userList
 
 def submitRemoveUsers (request):
 
-    selectedUsers = request.POST.getlist("users")
+    selectedValues = request.POST.getlist("users")
 
-    if(not selectedUsers):
+    if(not selectedValues):
         request.session['removeUserError'] = "Must select a user to remove!"
         return removeUsers(request)
-    # not possible to get here without selected courses in SESSION from views.update()
-    courses = request.session['selected_courses']
+
+    for value in selectedValues:
+
+        user = value.split(',')[0]
+        course = value.split(',')[1]
+        print(user)
+        print(course)
+        path = '/learn/api/public/v1/courses/'+course+'/users/userName:'+user
+        r = interface.delete(path)
+
+        print(r.status_code)
+
+    return render(request, 'learn/removeUsers.html', {})

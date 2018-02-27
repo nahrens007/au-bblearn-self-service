@@ -5,7 +5,7 @@ import json
 def loadUsersIntoSession(request):
     # See if all the users are in session. If not, get them from Bb
     if 'all_users' not in request.session:
-        path = '/learn/api/public/v1/users?fields=userName,name.given,name.family,contact.email,studentId,availability'
+        path = '/learn/api/public/v1/users?fields=id,userName,name.given,name.family,contact.email,studentId,availability'
         print(path)
         r = interface.get(path)
         if r == None:
@@ -56,5 +56,5 @@ def getUserById(request, userId):
     if status != 200:
         return None
     for user in request.session['all_users']:
-        if user['userId'] == userId:
+        if user['id'] == userId:
             return user
