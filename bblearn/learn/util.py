@@ -20,6 +20,41 @@ def loadUsersIntoSession(request):
     return 200 # users already in session
 
 def getUser(request, userName):
+    status = loadUsersIntoSession(request)
+    '''
+    if status == None:
+        return render(request, 'learn/addUsers.html', { 'error_message' : 'Could not connect to Blackboard!', 'name':request.session['instructor_name'] })
+    elif status == 403:
+        return render(request, 'learn/addUsers.html', { 'error_message' : 'You are not authorized!', 'name': request.session['instructor_name'] })
+    elif status == 400:
+        return render(request, 'learn/addUsers.html', { 'error_message' : 'Bad request!', 'name': request.session['instructor_name'] })
+    elif status == 401:
+        return render(request, 'learn/addUsers.html', { 'error_message' : 'There was a Blackboard authentication error!', 'name': request.session['instructor_name'] })
+    elif status != 200:
+        return render(request, 'learn/addUsers.html', { 'error_message' : 'Error! Status code: ' + str(status), 'name': request.session['instructor_name'] })
+    '''
+    if status != 200:
+        return None
     for user in request.session['all_users']:
         if user['userName'] == userName:
+            return user
+
+def getUserById(request, userId):
+    status = loadUsersIntoSession(request)
+    '''
+    if status == None:
+        return render(request, 'learn/addUsers.html', { 'error_message' : 'Could not connect to Blackboard!', 'name':request.session['instructor_name'] })
+    elif status == 403:
+        return render(request, 'learn/addUsers.html', { 'error_message' : 'You are not authorized!', 'name': request.session['instructor_name'] })
+    elif status == 400:
+        return render(request, 'learn/addUsers.html', { 'error_message' : 'Bad request!', 'name': request.session['instructor_name'] })
+    elif status == 401:
+        return render(request, 'learn/addUsers.html', { 'error_message' : 'There was a Blackboard authentication error!', 'name': request.session['instructor_name'] })
+    elif status != 200:
+        return render(request, 'learn/addUsers.html', { 'error_message' : 'Error! Status code: ' + str(status), 'name': request.session['instructor_name'] })
+    '''
+    if status != 200:
+        return None
+    for user in request.session['all_users']:
+        if user['userId'] == userId:
             return user
