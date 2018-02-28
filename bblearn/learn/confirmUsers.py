@@ -5,19 +5,6 @@ import json
 
 
 def search(request, searchString):
-    # Ensure users are loaded from Bb
-    status = util.loadUsersIntoSession(request)
-    if status == None:
-        return render(request, 'learn/addUsers.html', { 'error_message' : 'Could not connect to Blackboard!', 'name':request.session['instructor_name'] })
-    elif status == 403:
-        return render(request, 'learn/addUsers.html', { 'error_message' : 'You are not authorized!', 'name': request.session['instructor_name'] })
-    elif status == 400:
-        return render(request, 'learn/addUsers.html', { 'error_message' : 'Bad request!', 'name': request.session['instructor_name'] })
-    elif status == 401:
-        return render(request, 'learn/addUsers.html', { 'error_message' : 'There was a Blackboard authentication error!', 'name': request.session['instructor_name'] })
-    elif status != 200:
-        return render(request, 'learn/addUsers.html', { 'error_message' : 'Error! Status code: ' + str(status), 'name': request.session['instructor_name'] })
-
     users = request.session['all_users']
     # build list of users to display
     userList = ''
@@ -114,6 +101,8 @@ def addToCourse(request):
         html += '</tr>'
         for user in request.session['selected_users']:
             userInfo = util.getUser(request, user)
+            if not userInfo:
+                return render(request, 'learn/addUsers.html', { 'error_message' : 'Could not load Blackboard users!', 'name':request.session['instructor_name'] })
             path = '/learn/api/public/v1/courses/'+ course +'/users/userName:'+ user
             choice = 'C'
             payload = None
@@ -130,7 +119,7 @@ def addToCourse(request):
                 payload = {
                 "courseRoleId": "TeachingAssistant"
                 }
-            else: 
+            else:
                 ## We no longer want to add the user to the course
                 html += '<tr>'
                 html += '<td>' + user + '</td>'

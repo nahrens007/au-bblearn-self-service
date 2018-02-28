@@ -52,6 +52,8 @@ def viewUsers(request):
                 else:
                     courseRole = member['courseRoleId']
                 user = util.getUserById(request, member['userId'])
+                if not user:
+                    return render(request, 'learn/viewUsers.html', { 'error_message' : 'Could not load Blackboard users!', 'name':request.session['instructor_name'] })
                 tableCreator += buildViewList(course, user, courseRole)
 
         '''Closes Table for the course'''
@@ -114,11 +116,12 @@ def removeUsers(request):
                     "Gets current user's role in the course"
                     courseRole = member['courseRoleId']
                     '''Checks for all teaching assistants and guests in the selected courses'''
+                    user = util.getUserById(request, member['userId'])
+                    if not user:
+                        return render(request, 'learn/removeUsers.html', { 'error_message' : 'Could not load Blackboard users!', 'name':request.session['instructor_name'] })
                     if(courseRole == 'TeachingAssistant'):
-                        user = util.getUserById(request, member['userId'])
                         tableCreator += buildRemoveList(course, user, 'Teaching Assistant')
                     elif(courseRole == 'Guest'):
-                        user = util.getUserById(request, member['userId'])
                         tableCreator += buildRemoveList(course, user, 'Guest')
                 tableCreator += '<tr id="submitRow">'
                 tableCreator += '<td class="checkBoxCell"><input id="checkAll" type="checkbox" onclick="check()" ></td>'
