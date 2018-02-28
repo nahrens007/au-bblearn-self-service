@@ -145,9 +145,6 @@ def update(request):
             # Selected courses must be in POST, put them in SESSION
             request.session['selected_courses'] = request.POST.getlist('course')
 
-        #possibility selected courses aren't in POST but in SESSION?
-        print(request.session['selected_courses'])
-
         action = request.POST.get('action')
         # Could be searching for a user or could be coming straight from course list
 
@@ -235,6 +232,8 @@ def stats(request):
     if request.method == "POST":
         selected_courses = request.POST.getlist('course')
         users = []
+        guests = 0
+        tas = 0
         for course in selected_courses:
 
             '''Gets all users from course'''
@@ -249,13 +248,21 @@ def stats(request):
 
                 # Add each user to the array of users
                 for member in members:
-                    if 'availability' in member and member['availability']['available'] == 'Yes' and 'courseRoleId' in member and member['courseRoleId'] == 'Student':
-                        users.append(member['userId'])
+                    if 'availability' in member and member['availability']['available'] == 'Yes':
+                        if 'courseRoleId' in member:
+                            if member['courseRoleId'] == 'Student':
+                                users.append(member['userId'])
+                            elif member['courseRoleId'] == 'TeachingAssistant':
+                                tas += 1
+                            elif member['courseRoleId'] == 'Guest':
+                                guests += 1
 
         context = {
             'name': request.session['instructor_name'],
-            'unique': len(set(users)),
-            'total_users': len(users),
+            'unique_student_count': len(set(users)),
+            'total_student_count': len(users),
+            'total_ta_count': str(tas),
+            'total_guest_count': str(guests),
         }
 
         return render(request, 'learn/statsResults.html', context)
