@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from BlackboardLearn import interface
+from . import util
 import json
 
 def addUsers(request, error_message=None):
@@ -81,78 +82,60 @@ def buildHtmlUserList(request, users):
 ''' create a list of users from search info. '''
 def search(request, searchKey, searchString):
     user_results = []
-    print(searchString)
-    path = '/learn/api/public/v1/users?fields=userName,name.given,name.family,contact.email,studentId,availability'
-    print(path)
-    r = interface.get(path)
-    if r == None:
-        #This could be caused when either the server url is incorrect or Python can't connect to Bb at all
-        return render(request, 'learn/addUsers.html', { 'error_message' : 'Could not connect to Blackboard!', 'name':request.session['instructor_name'] })
-    elif r.status_code == 200:
-        #Success!
-        index = 0
-        if r.text:
-            res = json.loads(r.text)
-
-            users = res['results']
-
-            # build list of users to display
-            for user in users:
-                if 'availability' in user and user['availability']['available'] == 'Yes':
-                    if searchKey == 'userName':
-                        index = 1
-                        if 'userName' not in user and searchString == '':
-                            user['userName'] = ''
-                            user_results.append(user)
-                        elif 'userName' in user and searchString in user['userName'].lower():
-                            user_results.append(user)
-                        continue
-                    elif searchKey == 'firstName':
-                        index = 2
-                        if 'name' not in user and searchString == '':
-                            user['name'] = {'family':'','given':''}
-                            user_results.append(user)
-                        elif 'name' in user and searchString in user['name']['given'].lower():
-                            user_results.append(user)
-                        continue
-                    elif searchKey == 'lastName':
-                        index = 3
-                        if 'name' not in user and searchString == '':
-                            user['name'] = {'family':'','given':''}
-                            user_results.append(user)
-                        elif 'name' in user and searchString in user['name']['family'].lower():
-                            user_results.append(user)
-                        continue
-                    elif searchKey == 'contact':
-                        index = 4
-                        if 'contact' not in user and (not searchString or not searchString.strip()):
-                            user['contact'] = {'email':''}
-                            user_results.append(user)
-                        elif 'contact' in user and searchString in user['contact']['email'].lower():
-                            user_results.append(user)
-                        continue
-                    elif searchKey == 'studentId':
-                        index = 5
-                        if 'studentId' not in user and searchString.strip() == '':
-                            user['studentId'] = ''
-                            user_results.append(user)
-                        elif 'studentId' in user and searchString in user['studentId']:
-                            user_results.append(user)
-                        continue
-                    else:
-                        index = 0
-                        user_results.append(user)
-                        continue
-        request.session['index'] = index
-        return user_results
-    elif r.status_code == 403:
-        return render(request, 'learn/addUsers.html', { 'error_message' : 'You are not authorized!', 'name': request.session['instructor_name'] })
-    elif r.status_code == 400:
-        return render(request, 'learn/addUsers.html', { 'error_message' : 'Bad request!', 'name': request.session['instructor_name'] })
-    elif r.status_code == 401:
-        return render(request, 'learn/addUsers.html', { 'error_message' : 'There was a Blackboard authentication error!', 'name': request.session['instructor_name'] })
-    else:
-        print("[DEBUG] r.status_code for courses get(): " + str(r.status_code))
+    index = 0
+    # build list of users to display
+    if not 'all_users' in request.session:
+        status = util.loadUsersIntoSession(request)
+        if status != 200:
+            return render(request, 'learn/addUsers.html', { 'error_message' : 'Could not load Blackboard users!', 'name':request.session['instructor_name'] })
+    for user in request.session['all_users']:
+        if 'availability' in user and user['availability']['available'] == 'Yes':
+            if searchKey == 'userName':
+                index = 1
+                if 'userName' not in user and searchString == '':
+                    user['userName'] = ''
+                    user_results.append(user)
+                elif 'userName' in user and searchString in user['userName'].lower():
+                    user_results.append(user)
+                continue
+            elif searchKey == 'firstName':
+                index = 2
+                if 'name' not in user and searchString == '':
+                    user['name'] = {'family':'','given':''}
+                    user_results.append(user)
+                elif 'name' in user and searchString in user['name']['given'].lower():
+                    user_results.append(user)
+                continue
+            elif searchKey == 'lastName':
+                index = 3
+                if 'name' not in user and searchString == '':
+                    user['name'] = {'family':'','given':''}
+                    user_results.append(user)
+                elif 'name' in user and searchString in user['name']['family'].lower():
+                    user_results.append(user)
+                continue
+            elif searchKey == 'contact':
+                index = 4
+                if 'contact' not in user and (not searchString or not searchString.strip()):
+                    user['contact'] = {'email':''}
+                    user_results.append(user)
+                elif 'contact' in user and searchString in user['contact']['email'].lower():
+                    user_results.append(user)
+                continue
+            elif searchKey == 'studentId':
+                index = 5
+                if 'studentId' not in user and searchString.strip() == '':
+                    user['studentId'] = ''
+                    user_results.append(user)
+                elif 'studentId' in user and searchString in user['studentId']:
+                    user_results.append(user)
+                continue
+            else:
+                index = 0
+                user_results.append(user)
+                continue
+    request.session['index'] = index
+    return user_results
 
 def buildUserListEntry(user):
 
