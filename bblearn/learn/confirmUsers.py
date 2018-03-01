@@ -4,19 +4,19 @@ from . import util
 import json
 
 
-def search(request, searchString):
-    users = request.session['all_users']
+def buildListWithRadioBoxes(request, searchString):
     # build list of users to display
-    userList = ''
-    for searchItem in searchString:
-        for user in users:
+    for course in request.session['selected_courses']:
+        userList = ''
+        for searchItem in searchString:
+            user = util.getUser(request, searchItem)
             if 'availability' in user and user['availability']['available'] == 'Yes':
                 if('userName' in user and searchItem in user['userName'].lower()):
-                    userList += buildUserListEntry(user)
+                    userList += buildUserListEntry(user, course)
                     continue
     return userList
 
-def buildUserListEntry(user):
+def buildUserListEntry(user, course):
 
     userList = ''
     userList += '<tr>'
@@ -48,7 +48,7 @@ def buildUserListEntry(user):
 def confirmAddUsers(request):
 
     selectedUsers = request.session['selected_users']
-    userList = search(request, selectedUsers)
+    userList = buildListWithRadioBoxes(request, selectedUsers)
 
 
     context = {
@@ -139,7 +139,7 @@ def addToCourse(request):
                     html += '<td>' + userInfo['studentId'] + '</td>'
                 else:
                     html += '<td></td>'
-                html += '<td>Cancelled</td>'
+                html += '<td class="error_message">Cancelled</td>'
                 html += '</tr>'
                 continue
 
@@ -166,7 +166,7 @@ def addToCourse(request):
                     html += '<td>' + userInfo['studentId'] + '</td>'
                 else:
                     html += '<td></td>'
-                html += '<td>Blackboard Error!</td>'
+                html += '<td class="error_message">Blackboard Error!</td>'
                 html += '</tr>'
             elif r.status_code != 201:
                 # 400 - Invalid request, logged in user not in same domain as user trying to add, or user is observer
@@ -191,7 +191,7 @@ def addToCourse(request):
                     html += '<td>' + userInfo['studentId'] + '</td>'
                 else:
                     html += '<td></td>'
-                html += '<td>' + response['message'] + '</td>'
+                html += '<td class="error_message">' + response['message'] + '</td>'
                 html += '</tr>'
             else:
                 # 201 - Successful enrollment
