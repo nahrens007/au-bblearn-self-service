@@ -121,6 +121,35 @@ def index(request):
         return render(request, 'learn/index.html', {})
 
 '''
+    This view searches for a course (that the user is the instructor of) and displays
+    the matching courses.
+'''
+def searchCourse(request):
+    name = request.session['instructor_name']
+    search = request.POST['searchBar']
+
+    # Class list for HTML template
+    class_list = ''
+
+    # user is already logged in - generate course list from session
+    for course in request.session['instructor_courses']['courses']:
+        # get the name of the courses for the template
+        class_list += buildClassEntry(course)
+
+    error_message = ''
+    # if we were redirected here with an error:
+    if 'courses_error_message' in request.session:
+        error_message = request.session['courses_error_message']
+        del request.session['courses_error_message']
+
+    context ={
+        'name': name,
+        'classes': class_list,
+        'error_message': error_message,
+    }
+    return render(request, 'learn/courses.html', context)
+
+'''
     This view is responsible for managing which view is displayed based on which form action is being performed.
     The URL will remain in update().
     This view also checks for erros, such as making sure courses are selected, etc.. coming from the index view.
@@ -128,6 +157,12 @@ def index(request):
 def update(request):
 
     if request.method == "POST":
+        if 'search' in request.POST:
+            # we are searching for course now...
+            if not 'searchBar' in request.POST:
+                request.session['courses_error_message'] = "Enter search criteria."
+                return redirect('index')
+            return searchCourse(request)
 
         #Ensure that at this point we have selected courses! And always
         #use the selected courses from POST before SESSION
@@ -144,6 +179,7 @@ def update(request):
         else:
             # Selected courses must be in POST, put them in SESSION
             request.session['selected_courses'] = request.POST.getlist('course')
+
 
         action = request.POST.get('action')
         # Could be searching for a user or could be coming straight from course list
