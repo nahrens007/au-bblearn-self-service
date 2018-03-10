@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from BlackboardLearn import interface
 import json
-from learn import manipulate, addusers, confirmUsers
+from learn import manipulate, addusers, confirmUsers, util
 
 '''
     index view is for login screen and list of courses; main/initial view.
@@ -47,9 +47,13 @@ def index(request):
                 # entry for the course for the table in the template.
                 for resu in results:
                     if resu['courseRoleId'] == 'Instructor':
+                        courseInfo = util.getCourseInfo(resu['courseId'])
+                        if not courseInfo:
+                            request.session['courses_error_message'] = 'Could not get information for a course!'
+                            continue
                         isInstructor = True
-                        courses['courses'].append(resu['courseId'])
-                        class_list += buildClassEntry(resu['courseId'])
+                        courses['courses'].append(courseInfo)
+                        class_list += buildClassEntry(courseInfo)
 
                 # If user is not an instructor in any course in Blackboard, don't allow the user to log in!
                 if not isInstructor:
@@ -133,8 +137,8 @@ def searchCourse(request):
 
     # user is already logged in - generate course list from session
     for course in request.session['instructor_courses']['courses']:
-        # get the name of the courses for the template
-        class_list += buildClassEntry(course)
+        if search in course['name']:
+            class_list += buildClassEntry(course)
 
     error_message = ''
     # if we were redirected here with an error:
@@ -223,20 +227,15 @@ def signout(request):
     which fit into the HTML table for the list of courses that the user is an instructor of.
     - Used in index() only (only view to display the instructor's courses)
 '''
-def buildClassEntry(courseId):
-    path = '/learn/api/public/v1/courses/' + courseId
-    response = interface.get(path)
-    if response.text:
-        resJson = json.loads(response.text)
-        return '''<tr>
-            <td id="checkBoxCell">
-                <input id="userCheckbox" type="checkbox" name="course" value="''' + courseId + '''">
-            </td>
-            <td>
-                <span class="courseListing" name="course">''' + resJson['name'] + '''</span>
-            </td>
-        </tr>'''
-    return ''
+def buildClassEntry(courseInfo):
+    return '''<tr>
+        <td id="checkBoxCell">
+            <input id="userCheckbox" type="checkbox" name="course" value="''' + courseInfo['courseId'] + '''">
+        </td>
+        <td>
+            <span class="courseListing" name="course">''' + courseInfo['name'] + '''</span>
+        </td>
+    </tr>'''
 
 def loginError(request, message):
     request.session.set_test_cookie() #prepare for use of sessions (testing cookies are enabled)

@@ -58,3 +58,10 @@ def getUserById(request, userId):
     for user in request.session['all_users']:
         if user['id'] == userId:
             return user
+
+def getCourseInfo(courseId):
+    path = '/learn/api/public/v1/courses/' + courseId
+    response = interface.get(path)
+    if response.text:
+        return json.loads(response.text)
+    return None
