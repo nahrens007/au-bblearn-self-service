@@ -59,6 +59,7 @@ def viewUsers(request):
         '''Closes Table for the course'''
         tableCreator += '</table>'
         tableCreator += '</div>'
+        tableCreator +="<div class='tableBreak'></div>"
 
 
     context = {
