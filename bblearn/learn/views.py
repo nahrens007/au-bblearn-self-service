@@ -272,13 +272,14 @@ def stats(request):
         for course in selected_courses:
 
             '''Gets all users from course'''
-            path = "/learn/api/public/v1/courses/"+course+"/users"
+            path = "/learn/api/public/v1/courses/courseId:"+course+"/users"
             r = interface.get(path)
 
             if r.text:
 
                 res = json.loads(r.text)
                 '''Grabs all the userId's from the course'''
+                print(course)
                 members = res['results']
 
                 # Add each user to the array of users
