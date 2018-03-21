@@ -130,14 +130,14 @@ def index(request):
 '''
 def searchCourse(request):
     name = request.session['instructor_name']
-    search = request.POST['searchBar']
+    search = request.POST['searchBar'].lower()
 
     # Class list for HTML template
     class_list = ''
 
     # user is already logged in - generate course list from session
     for course in request.session['instructor_courses']['courses']:
-        if search in course['name']:
+        if search in course['name'].lower():
             class_list += buildClassEntry(course)
 
     error_message = ''
