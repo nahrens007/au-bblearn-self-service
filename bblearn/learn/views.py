@@ -279,7 +279,6 @@ def stats(request):
 
                 res = json.loads(r.text)
                 '''Grabs all the userId's from the course'''
-                print(course)
                 members = res['results']
 
                 # Add each user to the array of users

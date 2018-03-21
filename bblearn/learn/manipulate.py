@@ -13,7 +13,7 @@ def viewUsers(request):
     for course in courses:
 
         '''Gets the course name'''
-        path = "/learn/api/public/v1/courses/"+course
+        path = "/learn/api/public/v1/courses/courseId:"+course
         r = interface.get(path)
 
         if r.text:
@@ -36,7 +36,7 @@ def viewUsers(request):
         tableCreator += '</tr>'
 
         '''Gets all users from course'''
-        path = "/learn/api/public/v1/courses/"+course+"/users"
+        path = "/learn/api/public/v1/courses/courseId:"+course+"/users"
         r = interface.get(path)
 
         if r.text:
@@ -80,7 +80,7 @@ def removeUsers(request):
     for course in courses:
 
         '''Gets the course name'''
-        path = "/learn/api/public/v1/courses/"+course
+        path = "/learn/api/public/v1/courses/courseId:"+course
         r = interface.get(path)
 
         if r.text:
@@ -103,7 +103,7 @@ def removeUsers(request):
             tableCreator += '</tr>'
 
             '''Gets all users from course'''
-            path = "/learn/api/public/v1/courses/"+course+"/users"
+            path = "/learn/api/public/v1/courses/courseId:"+course+"/users"
             r = interface.get(path)
 
             if r.text:
