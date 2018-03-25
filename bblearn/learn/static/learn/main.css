@@ -168,7 +168,7 @@ Start for everything After the Header
 
 
 /*Styles the outer border that contains this pages contents*/
-.pageContainer{
+#pageContainer{
 
   display: block;
   margin:auto;
