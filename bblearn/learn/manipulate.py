@@ -218,4 +218,13 @@ def submitRemoveUsers (request):
 
         print(r.status_code)
 
+        if r.status_code == '404':
+            print("Not Found")
+        elif r.status_code == '403':
+            print("Forbidden")
+        elif r.status_code == '400':
+            print("Bad Request")
+        else:
+            print("Successfully removed "+ user + " from "+course+".")
+
     return render(request, 'learn/removeUsers.html', {})
