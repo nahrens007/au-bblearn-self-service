@@ -6,14 +6,44 @@ import json
 
 def buildListWithRadioBoxes(request, selectedUsers):
     # build list of users to display
+    userList = '<div class="tables">'
     for course in request.session['selected_courses']:
-        userList = ''
-        for user in selectedUsers:
-            user = util.getUser(request, searchItem)
+
+        # Need to create separate tables for each course
+        '''Gets the course name'''
+        path = "/learn/api/public/v1/courses/courseId:"+course+'?fields=name'
+        r = interface.get(path)
+        if r.status_code != 200 or not r.text:
+            courseList += '<div class="courseName">Course with ID: ' + course + ' could not be retrieved!</div>'
+            continue
+        res = json.loads(r.text)
+        courseName = res['name']
+
+
+        '''Creates table for each course'''
+        userList += ''
+        userList += '<table class="userTable" style="display:table;">'
+        userList += '<tr class="courseNameRow">'
+        userList += '<div class="courseName">'+ courseName + '</div>'
+        userList += '</tr>'
+        userList += '<tr id="tableHeader">'
+        userList += '<th class="cancelColumn">Cancel&nbsp&nbsp</th>'
+        userList += '<th class="guestColumn">Guest</th>'
+        userList += '<th class="TAColumn">TA</th>'
+        userList += '<th>User Name</th>'
+        userList += '<th>First Name</th>'
+        userList += '<th>Last Name</th>'
+        userList += '<th>User ID</th>'
+        userList += '</tr>'
+
+        for selectedUser in selectedUsers:
+            user = util.getUser(request, selectedUser)
             if 'availability' in user and user['availability']['available'] == 'Yes':
-                if('userName' in user and searchItem in user['userName'].lower()):
+                if('userName' in user and selectedUser in user['userName'].lower()):
                     userList += buildUserListEntry(user, course)
                     continue
+        userList += '</table>'
+    userList += '</div>'
     return userList
 
 def buildUserListEntry(user, course):

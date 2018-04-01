@@ -56,15 +56,7 @@
 
         <form method="post" action="{% url 'update' %}">{% csrf_token %}
           {{ submit | safe }}
-            <tr>
-              <th class="cancelColumn">Cancel&nbsp&nbsp</th>
-              <th class="guestColumn">Guest</th>
-              <th class="TAColumn">TA</th>
-              <th class="Column">User Name</th>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>User ID</th>
-            </tr>
+            
             {{ addedUser | safe }}
             <tr id="submitRow">
 
