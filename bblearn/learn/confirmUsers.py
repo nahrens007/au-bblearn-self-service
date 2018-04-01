@@ -77,7 +77,7 @@ def addToCourse(request):
     html = '<h2>Here are the results of adding the users:</h2>'
     for course in request.session['selected_courses']:
         '''Gets the course name'''
-        path = "/learn/api/public/v1/courses/"+course+'?fields=name'
+        path = "/learn/api/public/v1/courses/courseId:"+course+'?fields=name'
         r = interface.get(path)
         if r.status_code != 200 or not r.text:
             html += '<div class="courseName">Course with ID: ' + course + ' could not be retrieved!</div>'
@@ -103,7 +103,7 @@ def addToCourse(request):
             userInfo = util.getUser(request, user)
             if not userInfo:
                 return render(request, 'learn/addUsers.html', { 'error_message' : 'Could not load Blackboard users!', 'name':request.session['instructor_name'] })
-            path = '/learn/api/public/v1/courses/'+ course +'/users/userName:'+ user
+            path = '/learn/api/public/v1/courses/courseId:'+ course +'/users/userName:'+ user
             choice = 'C'
             payload = None
             if user in request.POST:
