@@ -55,10 +55,9 @@
         </div>
 
         <form method="post" action="{% url 'update' %}">{% csrf_token %}
-          {{ submit | safe }}
 
             {{ addedUser | safe }}
-            
+
         </form>
         {{ add_results | safe }}
       </div>

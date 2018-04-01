@@ -48,14 +48,14 @@ def buildListWithRadioBoxes(request, selectedUsers):
     userList += '<input id="submit" type="submit" name="action" value="Confirm" />'
     return userList
 
-    
+
 def buildUserListEntry(user, course):
 
     userList = ''
     userList += '<tr>'
-    userList += '<td><input class="guestColumn" type="radio" name="' + user['userName'] + ',' + course + '" value="C,' + course + '" checked="checked"><br></td>'
-    userList += '<td><input class="TAColumm" type="radio" name="' + user['userName'] + ',' + course + '" value="G,' + course + '"><br></td>'
-    userList += '<td><input class="cancelColumm" type="radio" name="' + user['userName'] + ',' + course + '" value="TA,' + course + '"><br></td>'
+    userList += '<td><input class="cancelColumn" type="radio" name="' + user['userName'] + ',' + course + '" value="C,' + course + '" checked="checked"><br></td>'
+    userList += '<td><input class="guestColumm" type="radio" name="' + user['userName'] + ',' + course + '" value="G,' + course + '"><br></td>'
+    userList += '<td><input class="TAColumm" type="radio" name="' + user['userName'] + ',' + course + '" value="TA,' + course + '"><br></td>'
     userList += '<td class="userNameColumn">' + user['userName'] + '</td>'
     if 'name' in user:
         if 'given' in user['name']:
@@ -89,7 +89,6 @@ def confirmAddUsers(request):
         'addedUser': userList,
         'name': request.session['instructor_name'],
         'label': 'Are these the users you wish to add?',
-        'submit': '<table class="userTable" style="display:table;">',
     }
     return render(request, 'learn/confirmAddedUsers.html', context)
 
@@ -101,7 +100,6 @@ def confirmAddUsersSuccess(request):
         'addedUser': '',
         'name': request.session['instructor_name'],
         'add_results': htmlResponse,
-        'submit': '<table class="userTable" style="display:none;">',
     }
     return render(request, 'learn/confirmAddedUsers.html', context)
 
