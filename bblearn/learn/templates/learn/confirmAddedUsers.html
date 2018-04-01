@@ -56,19 +56,9 @@
 
         <form method="post" action="{% url 'update' %}">{% csrf_token %}
           {{ submit | safe }}
-            
-            {{ addedUser | safe }}
-            <tr id="submitRow">
 
-              <td class="cancelColumm" ></td>
-              <td class="guestColumm"></td>
-              <td class="TAColumm"></td>
-              <td class="userNameColumn"></td>
-              <td></td>
-              <td></td>
-              <td><input id="submit" type="submit" name="action" value="Confirm" /></td>
-            </tr>
-          </table>
+            {{ addedUser | safe }}
+            
         </form>
         {{ add_results | safe }}
       </div>

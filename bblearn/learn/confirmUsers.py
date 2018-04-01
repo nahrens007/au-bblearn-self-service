@@ -44,6 +44,8 @@ def buildListWithRadioBoxes(request, selectedUsers):
                     continue
         userList += '</table>'
     userList += '</div>'
+
+    userList += '<input id="submit" type="submit" name="action" value="Confirm" />'
     return userList
 
 def buildUserListEntry(user, course):
@@ -86,7 +88,7 @@ def confirmAddUsers(request):
         'addedUser': userList,
         'name': request.session['instructor_name'],
         'label': 'Are these the users you wish to add?',
-        'submit': '<table class="userTable" style="display:table;">',
+        'submit': '',
     }
     return render(request, 'learn/confirmAddedUsers.html', context)
 
