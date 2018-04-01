@@ -4,48 +4,16 @@ from . import util
 import json
 
 
-def buildListWithRadioBoxes(request, selectedUsers):
+def buildListWithRadioBoxes(request, searchString):
     # build list of users to display
-    userList = '<div class="tables">'
     for course in request.session['selected_courses']:
-
-        # Need to create separate tables for each course
-        '''Gets the course name'''
-        path = "/learn/api/public/v1/courses/courseId:"+course+'?fields=name'
-        r = interface.get(path)
-        if r.status_code != 200 or not r.text:
-            courseList += '<div class="courseName">Course with ID: ' + course + ' could not be retrieved!</div>'
-            continue
-        res = json.loads(r.text)
-        courseName = res['name']
-
-
-        '''Creates table for each course'''
-        userList += ''
-        userList += '<table class="userTable" style="display:table;">'
-        userList += '<tr class="courseNameRow">'
-        userList += '<div class="courseName">'+ courseName + '</div>'
-        userList += '</tr>'
-        userList += '<tr id="tableHeader">'
-        userList += '<th class="cancelColumn">Cancel&nbsp&nbsp</th>'
-        userList += '<th class="guestColumn">Guest</th>'
-        userList += '<th class="TAColumn">TA</th>'
-        userList += '<th>User Name</th>'
-        userList += '<th>First Name</th>'
-        userList += '<th>Last Name</th>'
-        userList += '<th>User ID</th>'
-        userList += '</tr>'
-
-        for selectedUser in selectedUsers:
-            user = util.getUser(request, selectedUser)
+        userList = ''
+        for searchItem in searchString:
+            user = util.getUser(request, searchItem)
             if 'availability' in user and user['availability']['available'] == 'Yes':
-                if('userName' in user and selectedUser in user['userName'].lower()):
+                if('userName' in user and searchItem in user['userName'].lower()):
                     userList += buildUserListEntry(user, course)
                     continue
-        userList += '</table>'
-    userList += '</div>'
-
-    userList += '<input id="submit" type="submit" name="action" value="Confirm" />'
     return userList
 
 def buildUserListEntry(user, course):
@@ -88,7 +56,7 @@ def confirmAddUsers(request):
         'addedUser': userList,
         'name': request.session['instructor_name'],
         'label': 'Are these the users you wish to add?',
-        'submit': '',
+        'submit': '<table class="userTable" style="display:table;">',
     }
     return render(request, 'learn/confirmAddedUsers.html', context)
 
@@ -109,7 +77,7 @@ def addToCourse(request):
     html = '<h2>Here are the results of adding the users:</h2>'
     for course in request.session['selected_courses']:
         '''Gets the course name'''
-        path = "/learn/api/public/v1/courses/courseId:"+course+'?fields=name'
+        path = "/learn/api/public/v1/courses/"+course+'?fields=name'
         r = interface.get(path)
         if r.status_code != 200 or not r.text:
             html += '<div class="courseName">Course with ID: ' + course + ' could not be retrieved!</div>'
@@ -135,7 +103,7 @@ def addToCourse(request):
             userInfo = util.getUser(request, user)
             if not userInfo:
                 return render(request, 'learn/addUsers.html', { 'error_message' : 'Could not load Blackboard users!', 'name':request.session['instructor_name'] })
-            path = '/learn/api/public/v1/courses/courseId:'+ course +'/users/userName:'+ user
+            path = '/learn/api/public/v1/courses/'+ course +'/users/userName:'+ user
             choice = 'C'
             payload = None
             if user in request.POST:
