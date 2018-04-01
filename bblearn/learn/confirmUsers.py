@@ -52,9 +52,9 @@ def buildUserListEntry(user, course):
 
     userList = ''
     userList += '<tr>'
-    userList += '<td><input class="guestColumn" type="radio" name="' + user['userName'] + '" value="C" checked="checked"><br></td>'
-    userList += '<td><input class="TAColumm" type="radio" name="' + user['userName'] + '" value="G"><br></td>'
-    userList += '<td><input class="cancelColumm" type="radio" name="' + user['userName'] + '" value="TA"><br></td>'
+    userList += '<td><input class="guestColumn" type="radio" name="' + user['userName'] + ',' + course + '" value="C,' + course + '" checked="checked"><br></td>'
+    userList += '<td><input class="TAColumm" type="radio" name="' + user['userName'] + ',' + course + '" value="G,' + course + '"><br></td>'
+    userList += '<td><input class="cancelColumm" type="radio" name="' + user['userName'] + ',' + course + '" value="TA,' + course + '"><br></td>'
     userList += '<td class="userNameColumn">' + user['userName'] + '</td>'
     if 'name' in user:
         if 'given' in user['name']:
