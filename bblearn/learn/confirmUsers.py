@@ -4,11 +4,11 @@ from . import util
 import json
 
 
-def buildListWithRadioBoxes(request, searchString):
+def buildListWithRadioBoxes(request, selectedUsers):
     # build list of users to display
     for course in request.session['selected_courses']:
         userList = ''
-        for searchItem in searchString:
+        for user in selectedUsers:
             user = util.getUser(request, searchItem)
             if 'availability' in user and user['availability']['available'] == 'Yes':
                 if('userName' in user and searchItem in user['userName'].lower()):
