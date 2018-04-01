@@ -213,7 +213,7 @@ def submitRemoveUsers (request):
         course = value.split(',')[1]
         print(user)
         print(course)
-        path = '/learn/api/public/v1/courses/'+course+'/users/userName:'+user
+        path = '/learn/api/public/v1/courses/courseId:'+course+'/users/userName:'+user
         r = interface.delete(path)
 
         print(r.status_code)
