@@ -52,10 +52,7 @@
             <span id="pageLabel">Results of Removing Users:</span>
           </div>
         </div>
-        <form method="post" action="{% url 'update' %}">{% csrf_token %}
           {{removeResults | safe}}
-        <span><input id="submit" type="submit" value="removeUsers" name="action"></span>
-        </form>
       </div>
     </div>
 

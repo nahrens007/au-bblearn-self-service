@@ -234,7 +234,7 @@ def submitRemoveUsers (request):
             removeResults += failed (user, course)
         else:
             print("Successfully removed "+ user + " from "+course+".")
-            removeResults += successfullyRemove(user)
+            removeResults += successfullyRemove(user, course)
         removeResults += '</tr>'
     removeResults += '</table>'
 
@@ -243,16 +243,18 @@ def submitRemoveUsers (request):
         'removeResults': removeResults,
     }
 
-    return render(request, 'learn/removeUsers.html', {})
+    return render(request, 'learn/submitRemoveUsers.html', context)
 
-def failedToRemove(user):
+def failedToRemove(user, course):
     userResult = ""
-    userResult += '<td>'+ user + " was not removed from "+ course + '</td>'
+    userResult += '<td>'+ user + '</td>'
+    userResult += '<td>' + " Not removed from "+ course + '</td>'
 
     return userResult
 
-def successfullyRemove(user):
+def successfullyRemove(user, course):
     userResult = ""
-    userResult += '<td>'+ user + " was successfully removed!" + '</td>'
+    userResult += '<td>'+ user + '</td>'
+    userResult += '<td>' " was removed from " + course + '</td>'
 
     return userResult
