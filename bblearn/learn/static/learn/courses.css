@@ -21,6 +21,15 @@ select{
   font-size: 20px;
 }
 
+select:hover{
+
+  border-color: black;
+  background-color: #d8d8d8;
+  transform: scale(1.01);
+  cursor:pointer;
+
+}
+
 .selectdiv{
 
   position: relative;
@@ -47,7 +56,15 @@ select{
 #submit:hover{
 
   border-color: black;
+  background-color: #d8d8d8;
   transform: scale(1.01);
+  cursor:pointer;
+}
+
+#searchBar{
+
+  font-size: 20px;
+
 }
 
 /*contains the course, might not on this page*/
@@ -92,6 +109,18 @@ td{
 
 td#checkBoxCell{
   width: 30px;
+}
+
+td#checkBoxCell:hover{
+
+  border-color: black;
+  background-color: #d8d8d8;
+  transform: scale(1.01);
+  cursor:pointer;
+}
+
+tr{
+  border-bottom: solid;
 }
 
 /* Tooltip container */

@@ -8,6 +8,11 @@ and Remove button.*/
   border-bottom: none;
 }
 
+.pageContainer{
+  border: none;
+
+}
+
 #submit{
 
 
@@ -63,13 +68,19 @@ div.tableBreak{
   border-bottom: solid;
 }
 
+.tables{
+  border: solid;
+  border-color: black;
+}
+
 .courseName{
   text-align: center;
   font-weight: bold;
   border-bottom: solid;
   border-width: medium;
   border-color: black;
-  font-size: 20px;
+  padding-top: 5px;
+  font-size: 25px;
   background-image: url(texture.png);
   color: white;
 }

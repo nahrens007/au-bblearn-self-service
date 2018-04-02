@@ -8,24 +8,39 @@ and Remove button.*/
   border-bottom: none;
 }
 
+.pageContainer{
+  border: none;
+
+}
+
 #submit{
 
 
-  left: 25px;
-  width: 70px;
-  height: 20px;
+  float: right;
+  height: 30px;
+  width: 90px;
   background-color: white;
   border: solid;
   border-width: thin;
   border-color: grey;
-  border-radius: 5px;
-  font-size: 15px;
+  border-bottom-left-radius: 5px;
+  border-top-left-radius: 5px;
+  font-size: 20px;
   line-height: 15px;
 }
 
 #submit:hover{
   transform: scale(1.01);
   border-color: black;
+}
+
+.submitRow{
+
+
+  margin-top: -50px;
+  height: 30px;
+  border: solid;
+
 }
 
 input[type=checkbox] {
@@ -36,6 +51,33 @@ input[type=checkbox] {
     background-color: #eee;
     border-radius: 10%;
 }
+
+.courseName{
+  text-align: center;
+  font-weight: bold;
+  border-bottom: solid;
+  border-width: medium;
+  border-color: black;
+  padding-top: 5px;
+  font-size: 25px;
+  background-image: url(texture.png);
+  color: white;
+}
+
+
+
+.userTable{
+  border: solid;
+  border-color: black;
+}
+
+div.tableBreak{
+
+  display: block;
+  height:50px;
+  width: 100%;
+}
+
 
 .user{
 
@@ -58,6 +100,7 @@ table{
 
 td, th{
   text-align: left;
+  padding: 0;
 }
 
 td.TAColumn, th.TAColumn, td.guestColumn, th.guestColumn, td.cancelColumn, th.cancelColumn{

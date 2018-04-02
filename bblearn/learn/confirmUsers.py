@@ -14,7 +14,7 @@ def buildListWithRadioBoxes(request, selectedUsers):
         path = "/learn/api/public/v1/courses/courseId:"+course+'?fields=name'
         r = interface.get(path)
         if r.status_code != 200 or not r.text:
-            courseList += '<div class="courseName">Course with ID: ' + course + ' could not be retrieved!</div>'
+            userList += '<div class="courseName">Course with ID: ' + course + ' could not be retrieved!</div>'
             continue
         res = json.loads(r.text)
         courseName = res['name']
@@ -22,9 +22,10 @@ def buildListWithRadioBoxes(request, selectedUsers):
 
         '''Creates table for each course'''
         userList += ''
+        #userList += '<div class=tables>'
         userList += '<table class="userTable" style="display:table;">'
         userList += '<tr class="courseNameRow">'
-        userList += '<div class="courseName">'+ courseName + '</div>'
+        userList += '<td colspan="7"><div class="courseName">'+ courseName + '</div></td>'
         userList += '</tr>'
         userList += '<tr id="tableHeader">'
         userList += '<th class="cancelColumn">Cancel&nbsp&nbsp</th>'
@@ -43,9 +44,13 @@ def buildListWithRadioBoxes(request, selectedUsers):
                     userList += buildUserListEntry(user, course)
                     continue
         userList += '</table>'
+        #userList += '</div>'
+        userList += '<div class="tableBreak"></div>'
     userList += '</div>'
 
+    userList += '<div class="submitRow">'
     userList += '<input id="submit" type="submit" name="action" value="Confirm" />'
+    userList += '</div>'
     return userList
 
 
@@ -75,6 +80,7 @@ def buildUserListEntry(user, course):
         userList += '<td></td>'
     userList += '</tr>'
 
+
     return userList
 
 ''' Returns the view for confirming adding the selected users to the courses '''
@@ -100,12 +106,14 @@ def confirmAddUsersSuccess(request):
         'addedUser': '',
         'name': request.session['instructor_name'],
         'add_results': htmlResponse,
+        'label': 'Here are the results of adding the users:',
     }
     return render(request, 'learn/confirmAddedUsers.html', context)
 
 ''' This function builds an HTML view of the users that were added to which courses, or not added. '''
 def addToCourse(request):
-    html = '<h2>Here are the results of adding the users:</h2>'
+    #html = '<h2>Here are the results of adding the users:</h2>'
+    html = ''
     for course in request.session['selected_courses']:
         '''Gets the course name'''
         path = "/learn/api/public/v1/courses/courseId:"+course+'?fields=name'
@@ -120,7 +128,7 @@ def addToCourse(request):
         html += '<div class="tables">'
         html += '<table class="userTable"'
         html += '<tr class="courseNameRow">'
-        html += '<div class="courseName">'+ courseName + '</div>'
+        html += '<td colspan="6"><div class="courseName">'+ courseName + '</div></td>'
         html += '</tr>'
         html += '<tr id="tableHeader">'
         html += '<th>User Name</th>'
@@ -251,4 +259,6 @@ def addToCourse(request):
                 html += '</tr>'
 
         html += '</table></div>'
+
+        html += '<div class="tableBreak"></div>'
     return html

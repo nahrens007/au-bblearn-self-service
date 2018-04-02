@@ -230,7 +230,7 @@ def signout(request):
 def buildClassEntry(courseInfo):
     return '''<tr>
         <td id="checkBoxCell">
-            <input id="userCheckbox" type="checkbox" name="course" value="''' + courseInfo['courseId'] + '''">
+            <input class="userCheckbox" type="checkbox" name="course" value="''' + courseInfo['courseId'] + '''">
         </td>
         <td>
             <span class="courseListing" name="course">''' + courseInfo['name'] + '''</span>
