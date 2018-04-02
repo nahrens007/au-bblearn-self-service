@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Remove Users Results</title>
+
+    <!-- load css pages -->
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'learn/main.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'learn/removeUsers.css' %}" />
+
+    <script type="text/javascript" href="{% static 'learn/main.js' %}"> </script>
+
+  </head>
+
+  <body id="body">
+
+    <!-- Contains Everything in the Purple Header -->
+    <div id="heading">
+      <div id="serviceContainer">
+        <img src="{% static 'learn/blackboard.png' %}" alt="oops">
+        <div id="subTitle">
+          <span>Ashland University</span>
+        </div>
+      </div>
+      <div id="titleContainer">
+        <div id="title">
+          <a href="{% url 'index' %}">
+            <span >Self Service Tool 1000</span>
+          </a>
+        </div>
+      </div>
+      <div id="signOutBackground">
+        <div id="signOutContainer">
+          <span>Hello, {{name}} </span>
+          <br />
+          <a href="{% url 'signout' %}" id="signOut"> Sign out</a>
+        </div>
+      </div>
+        <table id="menu">
+          <tr>
+            <th id="homeCell"><a href="{% url 'index' %}"><span id="homeButton"></span></a></th>
+            <th id="statsCell"><a href="{% url 'stats' %}"><span id="statsButton"></span></a></th>
+          </tr>
+        </table>
+    </div>
+    <!-- Contains everything below the header, it includes footer. -->
+    <div id="midSection">
+      <div class="pageContainer">
+        <div id="pageLabelBackground">
+          <div id="pageLabelContainer">
+            <span id="pageLabel">Results of Removing Users:</span>
+          </div>
+        </div>
+          {{removeResults | safe}}
+      </div>
+    </div>
+
+    <div id="footer">
+      <span id="footerText">For Assistance Call: 419.289.5405</span>
+    </div>
+  </body>
+
+</html>

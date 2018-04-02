@@ -238,12 +238,17 @@ def submitRemoveUsers (request):
         html += '</tr>'
     html += '</table>'
 
+    context = {
+        'name': request.session['instructor_name'],
+        'removeResults': html,
+    }
+
     return render(request, 'learn/removeUsers.html', {})
 
 def failedToRemove(user):
     userResult = ""
     userResult += '<td>'+ user + " was not removed from "+ course + '</td>'
-    
+
     return userResult
 
 def successfullyRemove(user):
