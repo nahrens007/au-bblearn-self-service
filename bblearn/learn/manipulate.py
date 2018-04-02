@@ -201,9 +201,9 @@ def buildRemoveList(course, res, role):
 
 def submitRemoveUsers (request):
 
-    html = '<table class = "userTable">'
-    html += '<th> User Name </th>'
-    html += '<th> Result </th>'
+    removeResults = '<table class = "userTable">'
+    removeResults += '<th> User Name </th>'
+    removeResults += '<th> Result </th>'
 
     selectedValues = request.POST.getlist("users")
 
@@ -222,25 +222,25 @@ def submitRemoveUsers (request):
 
         print(r.status_code)
 
-        html += '<tr>'
+        removeResults += '<tr>'
         if r.status_code == '404':
             print("Not Found")
-            html += failed (user, course)
+            removeResults += failed (user, course)
         elif r.status_code == '403':
             print("Forbidden")
-            html += failed (user, course)
+            removeResults += failed (user, course)
         elif r.status_code == '400':
             print("Bad Request")
-            html += failed (user, course)
+            removeResults += failed (user, course)
         else:
             print("Successfully removed "+ user + " from "+course+".")
-            html += successfullyRemove(user)
-        html += '</tr>'
-    html += '</table>'
+            removeResults += successfullyRemove(user)
+        removeResults += '</tr>'
+    removeResults += '</table>'
 
     context = {
         'name': request.session['instructor_name'],
-        'removeResults': html,
+        'removeResults': removeResults,
     }
 
     return render(request, 'learn/removeUsers.html', {})
