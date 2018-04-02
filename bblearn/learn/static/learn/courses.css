@@ -61,10 +61,40 @@ select:hover{
   cursor:pointer;
 }
 
+#submitSearch{
+    float: right;
+    margin: 2px 0px 0px 2px;
+    left: 25px;
+    height:28px;
+    background-color: white;
+    border: solid;
+    border-width: thin;
+    border-color: grey;
+    border-radius: 5px;
+    font-size: 20px;
+    line-height: 15px;
+  }
+
+  #submitSearch:hover{
+
+    border-color: black;
+    background-color: #d8d8d8;
+    transform: scale(1.01);
+    cursor:pointer;
+  }
+
 #searchBar{
 
   font-size: 20px;
+  float: right;
 
+}
+
+.tooltip{
+  margin-top: 5px;
+  margin-right: 5px;
+  float: right;
+  transform: scale(1.2);
 }
 
 /*contains the course, might not on this page*/
