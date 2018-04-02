@@ -78,10 +78,12 @@
             <div id="coursesContainer">
               <table class="userTable">
 
-              <th><input id="checkAll" type="checkbox" onclick="check()" ></th>
-              <th style=":100%;"></th>
               {{classes | safe}}
 
+              <tr>
+                <td><input id="checkAll" type="checkbox" onclick="check()" ></td>
+                <td style="width:100%; font-weight:bold; ">Check all</td>
+              </tr>
               </table>
             </div>
           </div>
