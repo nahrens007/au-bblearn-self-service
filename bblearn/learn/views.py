@@ -208,6 +208,8 @@ def update(request):
 
         elif action == 'Remove':
             return manipulate.submitRemoveUsers(request)
+        elif action == 'stats':
+            return stats(request)
         else:
             request.session['courses_error_message'] = "You must select an action!"
             if 'selected_courses' in request.session:
@@ -261,36 +263,35 @@ Recommended by Brady:
 
 '''
 def stats(request):
-    if 'instructor_courses' not in request.session:
+    if 'selected_courses' not in request.session:
         return redirect('index')
 
-    if request.method == "POST":
-        selected_courses = request.POST.getlist('course')
-        users = []
-        guests = 0
-        tas = 0
-        for course in selected_courses:
+    selected_courses = request.session['selected_courses']
+    users = []
+    guests = 0
+    tas = 0
+    for course in selected_courses:
 
-            '''Gets all users from course'''
-            path = "/learn/api/public/v1/courses/courseId:"+course+"/users"
-            r = interface.get(path)
+        '''Gets all users from course'''
+        path = "/learn/api/public/v1/courses/courseId:"+course+"/users"
+        r = interface.get(path)
 
-            if r.text:
+        if r.text:
 
-                res = json.loads(r.text)
-                '''Grabs all the userId's from the course'''
-                members = res['results']
+            res = json.loads(r.text)
+            '''Grabs all the userId's from the course'''
+            members = res['results']
 
-                # Add each user to the array of users
-                for member in members:
-                    if 'availability' in member and member['availability']['available'] == 'Yes':
-                        if 'courseRoleId' in member:
-                            if member['courseRoleId'] == 'Student':
-                                users.append(member['userId'])
-                            elif member['courseRoleId'] == 'TeachingAssistant':
-                                tas += 1
-                            elif member['courseRoleId'] == 'Guest':
-                                guests += 1
+            # Add each user to the array of users
+            for member in members:
+                if 'availability' in member and member['availability']['available'] == 'Yes':
+                    if 'courseRoleId' in member:
+                        if member['courseRoleId'] == 'Student':
+                            users.append(member['userId'])
+                        elif member['courseRoleId'] == 'TeachingAssistant':
+                            tas += 1
+                        elif member['courseRoleId'] == 'Guest':
+                            guests += 1
 
         context = {
             'name': request.session['instructor_name'],
