@@ -266,12 +266,11 @@ def stats(request):
     if 'selected_courses' not in request.session:
         return redirect('index')
 
-    selected_courses = request.session['selected_courses']
     users = []
     guests = 0
     tas = 0
-    for course in selected_courses:
-
+    for course in request.session['selected_courses']:
+        print(course)
         '''Gets all users from course'''
         path = "/learn/api/public/v1/courses/courseId:"+course+"/users"
         r = interface.get(path)
@@ -293,34 +292,22 @@ def stats(request):
                         elif member['courseRoleId'] == 'Guest':
                             guests += 1
 
-        context = {
-            'name': request.session['instructor_name'],
-            'unique_student_count': len(set(users)),
-            'total_student_count': len(users),
-            'total_ta_count': str(tas),
-            'total_guest_count': str(guests),
-        }
-
-        return render(request, 'learn/statsResults.html', context)
-
-    ''' No POST, display list of courses '''
-    # Class list for HTML template
-    class_list = ''
-
-    # Generate course list from session
-    for course in request.session['instructor_courses']['courses']:
-        # get the name of the courses for the template
-        class_list += buildClassEntry(course)
-
-    error_message = ''
     # if we were redirected here with an error:
+    error_message = ''
     if 'courses_error_message' in request.session:
         error_message = request.session['courses_error_message']
         del request.session['courses_error_message']
 
-    context ={
+    # clear selected courses
+    del request.session['selected_courses']
+
+    context = {
         'name': request.session['instructor_name'],
-        'classes': class_list,
+        'unique_student_count': len(set(users)),
+        'total_student_count': len(users),
+        'total_ta_count': str(tas),
+        'total_guest_count': str(guests),
         'error_message': error_message,
     }
-    return render(request, 'learn/stats.html', context)
+
+    return render(request, 'learn/statsResults.html', context)
