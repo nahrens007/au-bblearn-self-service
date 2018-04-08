@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from BlackboardLearn import interface
 from . import util
 import json
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def addUsers(request, error_message=None):
     ''' If we are displaying an error message, then display blank page w/ no users '''
@@ -29,6 +30,8 @@ def addUsers(request, error_message=None):
     users = search(request, searchKey, searchString)
     users = sortUsers(searchKey, users, False)
     userList = buildHtmlUserList(request, users)
+
+
 
     index = 0
     if 'index' in request.session:
@@ -74,8 +77,12 @@ def sortUsers(searchKey, users, reverse):
 ''' given a list of users, this method builds an html list of them. '''
 def buildHtmlUserList(request, users):
     userList = ''
+
     for user in users:
         userList += buildUserListEntry(user)
+
+    paging = Paginator(userList, 20)
+
     return userList
 
 
@@ -138,7 +145,6 @@ def search(request, searchKey, searchString):
     return user_results
 
 def buildUserListEntry(user):
-
     userList = ''
     userList += '<tr>'
     userList += '<td><input class="userCheckbox" type="checkbox" name="users" value="' + user['userName'] + '"></td>'
@@ -166,3 +172,17 @@ def buildUserListEntry(user):
     userList += '</tr>'
 
     return userList
+
+def index(request, user_list):
+
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(user_list, 20)
+    try:
+        users = paginator.page(page)
+    except PageNotAnInteger:
+        users = paginator.page(1)
+    except EmptyPage:
+        users = paginator.page(paginator.num_pages)
+
+    return (users)
