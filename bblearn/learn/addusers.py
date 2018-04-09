@@ -4,6 +4,7 @@ from . import util
 import json
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+
 def getPage(request, user_list):
 
     page = request.session.get('page', 1)
@@ -30,29 +31,38 @@ def addUsers(request, error_message=None):
             'name':request.session['instructor_name'],
             'error_message':error_message,
             'userList': '',
+            'pageNumber' : request.session.get('page', 1),
         }
         return render(request, 'learn/addUsers.html', context)
 
     ''' if there is no search bar data then this is coming straight from course selection - display no users '''
-    if 'searchBar' not in request.POST:
+    if 'searchBar' not in request.POST and 'searchResults' not in request.session:
         context = {
             'name':request.session['instructor_name'],
             'error_message': '',
             'userList': '',
+            'pageNumber' : request.session.get('page', 1),
         }
         return render(request, 'learn/addUsers.html', context)
 
-    searchKey = str(request.POST.get('searchBy'))
-    searchString = str(request.POST.get('searchBar')).lower()
+    userList = None
+    # if we are searching for a user/users
+    if 'searchResults' not in request.session or 'searchBy' in request.POST and 'searchBar' in request.POST:
+        request.session['page'] = 1
+        searchKey = str(request.POST.get('searchBy'))
+        searchString = str(request.POST.get('searchBar')).lower()
 
-    # search for users based on criteria, then sort the results, then build an HTML list of them.
-    users = search(request, searchKey, searchString)
-    users = sortUsers(searchKey, users, False)
-    userList = buildHtmlUserList(users)
+        # search for users based on criteria, then sort the results, then build an HTML list of them.
+        users = search(request, searchKey, searchString)
+        users = sortUsers(searchKey, users, False)
+        userList = buildHtmlUserList(users)
+
+        request.session['searchResults'] = userList
+    else:
+        # if we are changing the page
+        userList = request.session['searchResults']
 
     pageContext = getPage(request, userList)
-    print(pageContext)
-
 
     index = 0
     if 'index' in request.session:
@@ -65,6 +75,7 @@ def addUsers(request, error_message=None):
             'error_message':"No users found!",
             'userList': '',
             'optionIndex': index,
+            'pageNumber' : request.session.get('page', 1),
         }
         return render(request, 'learn/addUsers.html', context)
     context ={
@@ -72,6 +83,7 @@ def addUsers(request, error_message=None):
         'error_message': '',
         'userList': pageContext,
         'optionIndex': index,
+        'pageNumber' : request.session.get('page', 1),
     }
     return render(request, 'learn/addUsers.html', context)
 

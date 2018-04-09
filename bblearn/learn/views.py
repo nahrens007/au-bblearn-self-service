@@ -7,6 +7,10 @@ from learn import manipulate, addusers, confirmUsers, util
     index view is for login screen and list of courses; main/initial view.
 '''
 def index(request):
+
+    if 'searchResults' in request.session:
+        del request.session['searchResults']
+
     '''
         If there is POST data, varify that the user has access (is an instructor)
         and, if so, display list of courses. If the user doesn't have access or
@@ -130,7 +134,7 @@ def index(request):
 '''
 def searchCourse(request):
     name = request.session['instructor_name']
-    search = request.POST['searchBar'].lower()
+    search = request.POST['searchBarCourse'].lower()
 
     # Class list for HTML template
     class_list = ''
@@ -163,7 +167,7 @@ def update(request):
     if request.method == "POST":
         if 'search' in request.POST:
             # we are searching for course now...
-            if not 'searchBar' in request.POST:
+            if not 'searchBarCourse' in request.POST:
                 request.session['courses_error_message'] = "Enter search criteria."
                 return redirect('index')
             return searchCourse(request)
@@ -210,14 +214,14 @@ def update(request):
             return manipulate.submitRemoveUsers(request)
         elif action == 'stats':
             return stats(request)
-        elif action == '<'
+        elif action == '<':
             pageNumber = request.session.get('page', 1)
             if pageNumber > 1:
-                request.session['page'] = int(page) - 1
+                request.session['page'] = int(pageNumber) - 1
             return addusers.addUsers(request)
-        elif action == '>'
+        elif action == '>':
             pageNumber = request.session.get('page', 1)
-            request.session['page'] = int(page) + 1
+            request.session['page'] = int(pageNumber) + 1
             return addusers.addUsers(request)
         else:
             request.session['courses_error_message'] = "You must select an action!"
