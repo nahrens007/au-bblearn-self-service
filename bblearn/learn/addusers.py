@@ -4,14 +4,18 @@ from . import util
 import json
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-def getPage(page, user_list):
+def getPage(request, user_list):
+
+    page = request.session.get('page', 1)
 
     paginator = Paginator(user_list, 20)
     try:
         users = paginator.page(page)
     except PageNotAnInteger:
+        request.session['page'] = 1
         users = paginator.page(1)
     except EmptyPage:
+        request.session['page'] = paginator.num_pages
         users = paginator.page(paginator.num_pages)
 
     userList = ''
@@ -46,7 +50,7 @@ def addUsers(request, error_message=None):
     users = sortUsers(searchKey, users, False)
     userList = buildHtmlUserList(users)
 
-    pageContext = getPage(request.GET.get('page', 1), userList)
+    pageContext = getPage(request, userList)
     print(pageContext)
 
 
