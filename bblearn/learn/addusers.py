@@ -29,7 +29,9 @@ def addUsers(request, error_message=None):
     # search for users based on criteria, then sort the results, then build an HTML list of them.
     users = search(request, searchKey, searchString)
     users = sortUsers(searchKey, users, False)
-    userList = buildHtmlUserList(request, users)
+    userList = buildHtmlUserList(users)
+
+    pageContext = index(request.GET.get('page', 1), userList)
 
 
 
@@ -49,7 +51,7 @@ def addUsers(request, error_message=None):
     context ={
         'name': request.session['instructor_name'],
         'error_message': '',
-        'userList': userList,
+        'userList': pageContext,
         'optionIndex': index,
     }
     return render(request, 'learn/addUsers.html', context)
@@ -75,14 +77,11 @@ def sortUsers(searchKey, users, reverse):
     return user_results
 
 ''' given a list of users, this method builds an html list of them. '''
-def buildHtmlUserList(request, users):
-    userList = ''
+def buildHtmlUserList(users):
 
+    userList = []
     for user in users:
-        userList += buildUserListEntry(user)
-
-    paging = Paginator(userList, 20)
-
+        userList.append(buildUserListEntry(user))
     return userList
 
 
@@ -173,9 +172,7 @@ def buildUserListEntry(user):
 
     return userList
 
-def index(request, user_list):
-
-    page = request.GET.get('page', 1)
+def index(page, user_list):
 
     paginator = Paginator(user_list, 20)
     try:
