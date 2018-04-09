@@ -4,6 +4,21 @@ from . import util
 import json
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+def getPage(page, user_list):
+
+    paginator = Paginator(user_list, 20)
+    try:
+        users = paginator.page(page)
+    except PageNotAnInteger:
+        users = paginator.page(1)
+    except EmptyPage:
+        users = paginator.page(paginator.num_pages)
+
+    userList = ''
+    for user in users:
+        userList += user
+    return userList
+
 def addUsers(request, error_message=None):
     ''' If we are displaying an error message, then display blank page w/ no users '''
     if error_message is not None:
@@ -31,8 +46,8 @@ def addUsers(request, error_message=None):
     users = sortUsers(searchKey, users, False)
     userList = buildHtmlUserList(users)
 
-    pageContext = index(request.GET.get('page', 1), userList)
-
+    pageContext = getPage(request.GET.get('page', 1), userList)
+    print(pageContext)
 
 
     index = 0
@@ -171,15 +186,3 @@ def buildUserListEntry(user):
     userList += '</tr>'
 
     return userList
-
-def index(page, user_list):
-
-    paginator = Paginator(user_list, 20)
-    try:
-        users = paginator.page(page)
-    except PageNotAnInteger:
-        users = paginator.page(1)
-    except EmptyPage:
-        users = paginator.page(paginator.num_pages)
-
-    return (users)
