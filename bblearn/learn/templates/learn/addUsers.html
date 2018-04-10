@@ -26,7 +26,7 @@
         <div id="title">
           <form id="homeForm" method="post" action="{% url 'update' %}">{% csrf_token %}
             <input style='display: none;' name='action' value='returnHome' />
-            <a onclick="submitForm()">
+            <a href="{% url 'index' %}">
               <span >Self Service Tool 1000</span>
             </a>
           </form>
