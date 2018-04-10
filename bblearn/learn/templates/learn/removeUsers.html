@@ -37,11 +37,6 @@
           <a href="{% url 'signout' %}" id="signOut"> Sign out</a>
         </div>
       </div>
-        <table id="menu">
-          <tr>
-            <th id="homeCell"><a href="{% url 'index' %}"><span id="homeButton"></span></a></th>
-          </tr>
-        </table>
     </div>
     <!-- Contains everything below the header, it includes footer. -->
     <div id="midSection">
@@ -54,7 +49,7 @@
           <span class='error_message'>{{error_message}}</span>
         <form method="post" action="{% url 'update' %}">{% csrf_token %}
           {{tableCreator | safe}}
-        <span><input id="submit" type="submit" value="Remove" name="action"></span>
+        <div class="submitRow"><input id="submit" type="submit" value="Remove" name="action"></div>
         </form>
       </div>
     </div>

@@ -252,12 +252,8 @@ def submitRemoveUsers (request):
 
 def failedToRemove(user, course):
     userResult = ""
-<<<<<<< HEAD
-    userResult += '<td>'+ user + " was not removed from "+ course + '</td>'
-=======
     userResult += '<td>'+ user + '</td>'
     userResult += '<td>' + " Not removed from "+ course + '</td>'
->>>>>>> origin/master
 
     return userResult
 

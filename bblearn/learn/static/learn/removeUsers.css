@@ -7,17 +7,16 @@ and Remove button.*/
 }
 
 #submit{
-
   float: right;
-  margin-top: -50px;
-  width: 70px;
-  height: 20px;
+  height: 30px;
+  width: 90px;
   background-color: white;
   border: solid;
   border-width: thin;
   border-color: grey;
-  border-radius: 5px;
-  font-size: 15px;
+  border-bottom-left-radius: 5px;
+  border-top-left-radius: 5px;
+  font-size: 20px;
   line-height: 15px;
 }
 
@@ -57,6 +56,19 @@ table{
 
 }
 
+.courseName{
+  text-align: center;
+  font-weight: bold;
+  border-bottom: solid;
+  border-width: medium;
+  border-color: black;
+  padding-top: 5px;
+  font-size: 25px;
+  background-image: url(texture.png);
+  color: white;
+}
+
+
 .tables{
   border: solid;
   border-color: black;
@@ -67,6 +79,15 @@ table{
   font-weight: bold;
   border-bottom: solid;
   border-width: medium;
+}
+
+.submitRow{
+
+
+  margin-top: -50px;
+  height: 30px;
+  border: solid;
+
 }
 th,td{
   text-align: left;
