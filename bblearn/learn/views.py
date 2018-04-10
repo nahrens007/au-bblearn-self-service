@@ -7,6 +7,10 @@ from learn import manipulate, addusers, confirmUsers, util
     index view is for login screen and list of courses; main/initial view.
 '''
 def index(request):
+
+    if 'searchResults' in request.session:
+        del request.session['searchResults']
+
     '''
         If there is POST data, varify that the user has access (is an instructor)
         and, if so, display list of courses. If the user doesn't have access or
@@ -130,7 +134,7 @@ def index(request):
 '''
 def searchCourse(request):
     name = request.session['instructor_name']
-    search = request.POST['searchBar'].lower()
+    search = request.POST['searchBarCourse'].lower()
 
     # Class list for HTML template
     class_list = ''
@@ -163,7 +167,7 @@ def update(request):
     if request.method == "POST":
         if 'search' in request.POST:
             # we are searching for course now...
-            if not 'searchBar' in request.POST:
+            if not 'searchBarCourse' in request.POST:
                 request.session['courses_error_message'] = "Enter search criteria."
                 return redirect('index')
             return searchCourse(request)
@@ -208,6 +212,17 @@ def update(request):
 
         elif action == 'Remove':
             return manipulate.submitRemoveUsers(request)
+        elif action == 'stats':
+            return stats(request)
+        elif action == '<':
+            pageNumber = request.session.get('page', 1)
+            if pageNumber > 1:
+                request.session['page'] = int(pageNumber) - 1
+            return addusers.addUsers(request)
+        elif action == '>':
+            pageNumber = request.session.get('page', 1)
+            request.session['page'] = int(pageNumber) + 1
+            return addusers.addUsers(request)
         else:
             request.session['courses_error_message'] = "You must select an action!"
             if 'selected_courses' in request.session:
@@ -261,65 +276,51 @@ Recommended by Brady:
 
 '''
 def stats(request):
-    if 'instructor_courses' not in request.session:
+    if 'selected_courses' not in request.session:
         return redirect('index')
 
-    if request.method == "POST":
-        selected_courses = request.POST.getlist('course')
-        users = []
-        guests = 0
-        tas = 0
-        for course in selected_courses:
+    users = []
+    guests = 0
+    tas = 0
+    for course in request.session['selected_courses']:
+        print(course)
+        '''Gets all users from course'''
+        path = "/learn/api/public/v1/courses/courseId:"+course+"/users"
+        r = interface.get(path)
 
-            '''Gets all users from course'''
-            path = "/learn/api/public/v1/courses/courseId:"+course+"/users"
-            r = interface.get(path)
+        if r.text:
 
-            if r.text:
+            res = json.loads(r.text)
+            '''Grabs all the userId's from the course'''
+            members = res['results']
 
-                res = json.loads(r.text)
-                '''Grabs all the userId's from the course'''
-                members = res['results']
+            # Add each user to the array of users
+            for member in members:
+                if 'availability' in member and member['availability']['available'] == 'Yes':
+                    if 'courseRoleId' in member:
+                        if member['courseRoleId'] == 'Student':
+                            users.append(member['userId'])
+                        elif member['courseRoleId'] == 'TeachingAssistant':
+                            tas += 1
+                        elif member['courseRoleId'] == 'Guest':
+                            guests += 1
 
-                # Add each user to the array of users
-                for member in members:
-                    if 'availability' in member and member['availability']['available'] == 'Yes':
-                        if 'courseRoleId' in member:
-                            if member['courseRoleId'] == 'Student':
-                                users.append(member['userId'])
-                            elif member['courseRoleId'] == 'TeachingAssistant':
-                                tas += 1
-                            elif member['courseRoleId'] == 'Guest':
-                                guests += 1
-
-        context = {
-            'name': request.session['instructor_name'],
-            'unique_student_count': len(set(users)),
-            'total_student_count': len(users),
-            'total_ta_count': str(tas),
-            'total_guest_count': str(guests),
-        }
-
-        return render(request, 'learn/statsResults.html', context)
-
-    ''' No POST, display list of courses '''
-    # Class list for HTML template
-    class_list = ''
-
-    # Generate course list from session
-    for course in request.session['instructor_courses']['courses']:
-        # get the name of the courses for the template
-        class_list += buildClassEntry(course)
-
-    error_message = ''
     # if we were redirected here with an error:
+    error_message = ''
     if 'courses_error_message' in request.session:
         error_message = request.session['courses_error_message']
         del request.session['courses_error_message']
 
-    context ={
+    # clear selected courses
+    del request.session['selected_courses']
+
+    context = {
         'name': request.session['instructor_name'],
-        'classes': class_list,
+        'unique_student_count': len(set(users)),
+        'total_student_count': len(users),
+        'total_ta_count': str(tas),
+        'total_guest_count': str(guests),
         'error_message': error_message,
     }
-    return render(request, 'learn/stats.html', context)
+
+    return render(request, 'learn/statsResults.html', context)

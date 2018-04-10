@@ -2,12 +2,12 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Courses</title>
+    <title>Remove Users Results</title>
 
     <!-- load css pages -->
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'learn/main.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'learn/statsResults.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'learn/submitRemoveUsers.css' %}" />
 
     <script type="text/javascript" href="{% static 'learn/main.js' %}"> </script>
 
@@ -25,9 +25,9 @@
       </div>
       <div id="titleContainer">
         <div id="title">
-            <a href="{% url 'index' %}">
-              <span >Self Service Tool 1000</span>
-            </a>
+          <a href="{% url 'index' %}">
+            <span >Self Service Tool 1000</span>
+          </a>
         </div>
       </div>
       <div id="signOutBackground">
@@ -43,34 +43,15 @@
           </tr>
         </table>
     </div>
-
     <!-- Contains everything below the header, it includes footer. -->
     <div id="midSection">
       <div class="pageContainer">
         <div id="pageLabelBackground">
           <div id="pageLabelContainer">
-            <span id="pageLabel">{{ label | safe }}</span>
+            <span id="pageLabel">Results of Removing Users:</span>
           </div>
         </div>
-        <table>
-          <tr>
-            <td class="titleCell"><span>Unique Students:</span></td>
-            <td>{{ unique_student_count }}</td>
-          </tr>
-          <tr>
-            <td class="titleCell"><span>Total Students:</span></td>
-            <td>{{ total_student_count }}</td>
-          </tr>
-          <tr>
-            <td class="titleCell"><span>Total Teaching Assistants:</span></td>
-            <td>{{ total_ta_count }}</td>
-          </tr>
-          <tr>
-            <td class="titleCell"><span>Total Guests:</span></td>
-            <td>{{ total_guest_count }}</td>
-          </tr>
-        </table>
-
+          {{removeResults | safe}}
       </div>
     </div>
 
@@ -78,5 +59,4 @@
       <span id="footerText">For Assistance Call: 419.289.5405</span>
     </div>
   </body>
-
 </html>

@@ -2,6 +2,27 @@ from django.shortcuts import render, redirect
 from BlackboardLearn import interface
 from . import util
 import json
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+
+def getPage(request, user_list):
+
+    page = request.session.get('page', 1)
+
+    paginator = Paginator(user_list, 20)
+    try:
+        users = paginator.page(page)
+    except PageNotAnInteger:
+        request.session['page'] = 1
+        users = paginator.page(1)
+    except EmptyPage:
+        request.session['page'] = paginator.num_pages
+        users = paginator.page(paginator.num_pages)
+
+    userList = ''
+    for user in users:
+        userList += user
+    return userList
 
 def addUsers(request, error_message=None):
     ''' If we are displaying an error message, then display blank page w/ no users '''
@@ -10,25 +31,38 @@ def addUsers(request, error_message=None):
             'name':request.session['instructor_name'],
             'error_message':error_message,
             'userList': '',
+            'pageNumber' : request.session.get('page', 1),
         }
         return render(request, 'learn/addUsers.html', context)
 
     ''' if there is no search bar data then this is coming straight from course selection - display no users '''
-    if 'searchBar' not in request.POST:
+    if 'searchBar' not in request.POST and 'searchResults' not in request.session:
         context = {
             'name':request.session['instructor_name'],
             'error_message': '',
             'userList': '',
+            'pageNumber' : request.session.get('page', 1),
         }
         return render(request, 'learn/addUsers.html', context)
 
-    searchKey = str(request.POST.get('searchBy'))
-    searchString = str(request.POST.get('searchBar')).lower()
+    userList = None
+    # if we are searching for a user/users
+    if 'searchResults' not in request.session or 'searchBy' in request.POST and 'searchBar' in request.POST:
+        request.session['page'] = 1
+        searchKey = str(request.POST.get('searchBy'))
+        searchString = str(request.POST.get('searchBar')).lower()
 
-    # search for users based on criteria, then sort the results, then build an HTML list of them.
-    users = search(request, searchKey, searchString)
-    users = sortUsers(searchKey, users, False)
-    userList = buildHtmlUserList(request, users)
+        # search for users based on criteria, then sort the results, then build an HTML list of them.
+        users = search(request, searchKey, searchString)
+        users = sortUsers(searchKey, users, False)
+        userList = buildHtmlUserList(users)
+
+        request.session['searchResults'] = userList
+    else:
+        # if we are changing the page
+        userList = request.session['searchResults']
+
+    pageContext = getPage(request, userList)
 
     index = 0
     if 'index' in request.session:
@@ -41,13 +75,15 @@ def addUsers(request, error_message=None):
             'error_message':"No users found!",
             'userList': '',
             'optionIndex': index,
+            'pageNumber' : request.session.get('page', 1),
         }
         return render(request, 'learn/addUsers.html', context)
     context ={
         'name': request.session['instructor_name'],
         'error_message': '',
-        'userList': userList,
+        'userList': pageContext,
         'optionIndex': index,
+        'pageNumber' : request.session.get('page', 1),
     }
     return render(request, 'learn/addUsers.html', context)
 
@@ -72,10 +108,11 @@ def sortUsers(searchKey, users, reverse):
     return user_results
 
 ''' given a list of users, this method builds an html list of them. '''
-def buildHtmlUserList(request, users):
-    userList = ''
+def buildHtmlUserList(users):
+
+    userList = []
     for user in users:
-        userList += buildUserListEntry(user)
+        userList.append(buildUserListEntry(user))
     return userList
 
 
@@ -138,7 +175,6 @@ def search(request, searchKey, searchString):
     return user_results
 
 def buildUserListEntry(user):
-
     userList = ''
     userList += '<tr>'
     userList += '<td><input class="userCheckbox" type="checkbox" name="users" value="' + user['userName'] + '"></td>'

@@ -206,9 +206,9 @@ def buildRemoveList(course, res, role):
 
 def submitRemoveUsers (request):
 
-    html = '<table class = "userTable">'
-    html += '<th> User Name </th>'
-    html += '<th> Result </th>'
+    removeResults = '<table class = "userTable">'
+    removeResults += '<th> User Name </th>'
+    removeResults += '<th> Result </th>'
 
     selectedValues = request.POST.getlist("users")
 
@@ -227,32 +227,43 @@ def submitRemoveUsers (request):
 
         print(r.status_code)
 
-        html += '<tr>'
+        removeResults += '<tr>'
         if r.status_code == '404':
             print("Not Found")
-            html += failed (user, course)
+            removeResults += failed (user, course)
         elif r.status_code == '403':
             print("Forbidden")
-            html += failed (user, course)
+            removeResults += failed (user, course)
         elif r.status_code == '400':
             print("Bad Request")
-            html += failed (user, course)
+            removeResults += failed (user, course)
         else:
             print("Successfully removed "+ user + " from "+course+".")
-            html += successfullyRemove(user)
-        html += '</tr>'
-    html += '</table>'
+            removeResults += successfullyRemove(user, course)
+        removeResults += '</tr>'
+    removeResults += '</table>'
 
-    return render(request, 'learn/removeUsers.html', {})
+    context = {
+        'name': request.session['instructor_name'],
+        'removeResults': removeResults,
+    }
 
-def failedToRemove(user):
+    return render(request, 'learn/submitRemoveUsers.html', context)
+
+def failedToRemove(user, course):
     userResult = ""
+<<<<<<< HEAD
     userResult += '<td>'+ user + " was not removed from "+ course + '</td>'
+=======
+    userResult += '<td>'+ user + '</td>'
+    userResult += '<td>' + " Not removed from "+ course + '</td>'
+>>>>>>> origin/master
 
     return userResult
 
-def successfullyRemove(user):
+def successfullyRemove(user, course):
     userResult = ""
-    userResult += '<td>'+ user + " was successfully removed!" + '</td>'
+    userResult += '<td>'+ user + '</td>'
+    userResult += '<td>' " was removed from " + course + '</td>'
 
     return userResult
