@@ -125,14 +125,19 @@ def removeUsers(request):
                     elif(courseRole == 'Guest'):
                         tableCreator += buildRemoveList(course, user, 'Guest')
                 tableCreator += '<tr id="submitRow">'
-                tableCreator += '<td class="checkBoxCell"><input id="checkAll" type="checkbox" onclick="check()" ></td>'
                 tableCreator += '<td></td>'
                 tableCreator += '<td></td>'
                 tableCreator += '<td></td>'
                 tableCreator += '<td></td>'
+                tableCreator += '<td></td>'
+                tableCreator +='<td></td>'
                 tableCreator += '</tr>'
                 tableCreator += '</table>'
                 tableCreator += '</div>'
+
+
+                tableCreator +="<div class='tableBreak'></div>"
+
     context = {
     'name': request.session['instructor_name'],
     'tableCreator': tableCreator,
@@ -243,7 +248,7 @@ def submitRemoveUsers (request):
 def failedToRemove(user):
     userResult = ""
     userResult += '<td>'+ user + " was not removed from "+ course + '</td>'
-    
+
     return userResult
 
 def successfullyRemove(user):

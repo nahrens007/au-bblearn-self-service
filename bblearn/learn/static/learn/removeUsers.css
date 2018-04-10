@@ -1,17 +1,15 @@
 
 /*Styles the last row in the table containing the select all
 and Remove button.*/
-#submitRow{
+.pageContainer{
 
-  border: solid;
-  border-width: 2px;
-  border-bottom: none;
+  border: none;
 }
 
 #submit{
 
-
-  left: 25px;
+  float: right;
+  margin-top: -50px;
   width: 70px;
   height: 20px;
   background-color: white;
@@ -46,10 +44,22 @@ input[type=checkbox] {
     border-color: grey;
 }
 
+div.tableBreak{
+
+  display: block;
+  height:50px;
+  width: 100%;
+}
+
 table{
   width: 100%;
   border-collapse: collapse;
 
+}
+
+.tables{
+  border: solid;
+  border-color: black;
 }
 
 .courseName{
