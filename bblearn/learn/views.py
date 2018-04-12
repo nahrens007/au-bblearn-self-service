@@ -25,7 +25,7 @@ def index(request):
             # will probably never get here since template 403_csrf.html template will be displayed
             return loginError(request, 'You must have browser cookies enabled!')
 
-        # get the client's username and see if it exists in Bb
+        # get the client's username and see if it exists in Bb and get user's courses
         user_name = request.POST.get('username')
         path = '/learn/api/public/v1/users/userName:' + user_name + '/courses'
         r = interface.get(path)
@@ -38,6 +38,7 @@ def index(request):
 
             class_list = ''
             courses = {'courses':[]}
+            error_message = ''
 
             if r.text:
                 res = json.loads(r.text)
@@ -53,7 +54,7 @@ def index(request):
                     if resu['courseRoleId'] == 'Instructor':
                         courseInfo = util.getCourseInfo(resu['courseId'])
                         if not courseInfo:
-                            request.session['courses_error_message'] = 'Could not get information for a course!'
+                            error_message = 'Could not get information for a course!'
                             continue
                         isInstructor = True
                         courses['courses'].append(courseInfo)
@@ -75,6 +76,7 @@ def index(request):
             context ={
                 'name': name,
                 'classes': class_list,
+                'error_message': error_message,
             }
 
             # set the session data
@@ -279,31 +281,28 @@ def stats(request):
     if 'selected_courses' not in request.session:
         return redirect('index')
 
+    request.session['courses_error_message'] = ''
     users = []
     guests = 0
     tas = 0
     for course in request.session['selected_courses']:
-        print(course)
+
         '''Gets all users from course'''
-        path = "/learn/api/public/v1/courses/courseId:"+course+"/users"
-        r = interface.get(path)
+        members = util.getUsersFromCourseByCourseId(course)
 
-        if r.text:
+        if not members:
+            request.session['courses_error_message'] += "Could not load " + course + "<br/>"
+            continue
 
-            res = json.loads(r.text)
-            '''Grabs all the userId's from the course'''
-            members = res['results']
-
-            # Add each user to the array of users
-            for member in members:
-                if 'availability' in member and member['availability']['available'] == 'Yes':
-                    if 'courseRoleId' in member:
-                        if member['courseRoleId'] == 'Student':
-                            users.append(member['userId'])
-                        elif member['courseRoleId'] == 'TeachingAssistant':
-                            tas += 1
-                        elif member['courseRoleId'] == 'Guest':
-                            guests += 1
+        # Add each user to the array of users
+        for member in members:
+            if 'courseRoleId' in member:
+                if member['courseRoleId'] == 'Student':
+                    users.append(member['userId'])
+                elif member['courseRoleId'] == 'TeachingAssistant':
+                    tas += 1
+                elif member['courseRoleId'] == 'Guest':
+                    guests += 1
 
     # if we were redirected here with an error:
     error_message = ''
