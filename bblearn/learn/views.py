@@ -11,6 +11,10 @@ def index(request):
     if 'searchResults' in request.session:
         del request.session['searchResults']
 
+    #for debuging
+    if 'all_users' in request.session:
+        del request.session['all_users']
+
     '''
         If there is POST data, varify that the user has access (is an instructor)
         and, if so, display list of courses. If the user doesn't have access or

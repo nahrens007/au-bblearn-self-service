@@ -24,17 +24,29 @@ def addUserToSession(request, user):
 def loadUsersIntoSession(request):
     # See if all the users are in session. If not, get them from Bb
     if 'all_users' not in request.session:
+        print("LOADING USERS FROM Blackboard")
         path = '/learn/api/public/v1/users?fields=id,userName,name.given,name.family,contact.email,studentId,availability'
-        r = interface.get(path)
-        if r == None:
-            #This could be caused when either the server url is incorrect or Python can't connect to Bb at all
-            return None
-        elif r.status_code == 200 and r.text:
+        request.session['all_users'] = []
+        while path:
+            res = getPageOfUsers(path)
+            if not res:
+                return None
             #Success!
-            res = json.loads(r.text)
-            request.session['all_users'] = res['results']
-        return r.status_code
+            request.session['all_users'].extend(res['results'])
+
+            path = None
+            if 'paging' in res:
+                path = res['paging']['nextPage']
     return 200 # users already in session
+
+def getPageOfUsers(path):
+    r = interface.get(path)
+    if r == None:
+        #This could be caused when either the server url is incorrect or Python can't connect to Bb at all
+        return None
+    elif r.status_code == 200 and r.text:
+        #Success!
+        return json.loads(r.text)
 
 def getUser(request, userName):
     status = loadUsersIntoSession(request)

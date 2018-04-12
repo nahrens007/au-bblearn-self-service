@@ -126,51 +126,51 @@ def search(request, searchKey, searchString):
         if status != 200:
             return render(request, 'learn/addUsers.html', { 'error_message' : 'Could not load Blackboard users!', 'name':request.session['instructor_name'] })
     for user in request.session['all_users']:
-        if 'availability' in user and user['availability']['available'] == 'Yes':
-            if searchKey == 'userName':
-                index = 1
-                if 'userName' not in user and searchString == '':
-                    user['userName'] = ''
-                    user_results.append(user)
-                elif 'userName' in user and searchString in user['userName'].lower():
-                    user_results.append(user)
-                continue
-            elif searchKey == 'firstName':
-                index = 2
-                if 'name' not in user and searchString == '':
-                    user['name'] = {'family':'','given':''}
-                    user_results.append(user)
-                elif 'name' in user and searchString in user['name']['given'].lower():
-                    user_results.append(user)
-                continue
-            elif searchKey == 'lastName':
-                index = 3
-                if 'name' not in user and searchString == '':
-                    user['name'] = {'family':'','given':''}
-                    user_results.append(user)
-                elif 'name' in user and searchString in user['name']['family'].lower():
-                    user_results.append(user)
-                continue
-            elif searchKey == 'contact':
-                index = 4
-                if 'contact' not in user and (not searchString or not searchString.strip()):
-                    user['contact'] = {'email':''}
-                    user_results.append(user)
-                elif 'contact' in user and searchString in user['contact']['email'].lower():
-                    user_results.append(user)
-                continue
-            elif searchKey == 'studentId':
-                index = 5
-                if 'studentId' not in user and searchString.strip() == '':
-                    user['studentId'] = ''
-                    user_results.append(user)
-                elif 'studentId' in user and searchString in user['studentId']:
-                    user_results.append(user)
-                continue
-            else:
-                index = 0
+        #if 'availability' in user and user['availability']['available'] == 'Yes':
+        if searchKey == 'userName':
+            index = 1
+            if 'userName' not in user and searchString == '':
+                user['userName'] = ''
                 user_results.append(user)
-                continue
+            elif 'userName' in user and searchString in user['userName'].lower():
+                user_results.append(user)
+            continue
+        elif searchKey == 'firstName':
+            index = 2
+            if 'name' not in user and searchString == '':
+                user['name'] = {'family':'','given':''}
+                user_results.append(user)
+            elif 'name' in user and searchString in user['name']['given'].lower():
+                user_results.append(user)
+            continue
+        elif searchKey == 'lastName':
+            index = 3
+            if 'name' not in user and searchString == '':
+                user['name'] = {'family':'','given':''}
+                user_results.append(user)
+            elif 'name' in user and searchString in user['name']['family'].lower():
+                user_results.append(user)
+            continue
+        elif searchKey == 'contact':
+            index = 4
+            if 'contact' not in user and (not searchString or not searchString.strip()):
+                user['contact'] = {'email':''}
+                user_results.append(user)
+            elif 'contact' in user and searchString in user['contact']['email'].lower():
+                user_results.append(user)
+            continue
+        elif searchKey == 'studentId':
+            index = 5
+            if 'studentId' not in user and searchString.strip() == '':
+                user['studentId'] = ''
+                user_results.append(user)
+            elif 'studentId' in user and searchString in user['studentId']:
+                user_results.append(user)
+            continue
+        else:
+            index = 0
+            user_results.append(user)
+            continue
     request.session['index'] = index
     return user_results
 
