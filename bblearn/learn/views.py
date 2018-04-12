@@ -7,13 +7,9 @@ from learn import manipulate, addusers, confirmUsers, util
     index view is for login screen and list of courses; main/initial view.
 '''
 def index(request):
-
+    # reset the paging searchResults when come to the index page
     if 'searchResults' in request.session:
         del request.session['searchResults']
-
-    #for debuging
-    if 'all_users' in request.session:
-        del request.session['all_users']
 
     '''
         If there is POST data, varify that the user has access (is an instructor)
