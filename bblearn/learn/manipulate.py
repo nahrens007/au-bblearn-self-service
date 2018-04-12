@@ -13,12 +13,8 @@ def viewUsers(request):
     for course in courses:
 
         '''Gets the course name'''
-        path = "/learn/api/public/v1/courses/courseId:"+course
-        r = interface.get(path)
-
-        if r.text:
-            res = json.loads(r.text)
-            courseName = res['name']
+        courseInfo = util.getCourseInfoByCourseId(course)
+        courseName = courseInfo['name']
 
         '''Creates table for each course'''
         tableCreator += '<div class="tables">'
@@ -36,25 +32,23 @@ def viewUsers(request):
         tableCreator += '</tr>'
 
         '''Gets all users from course'''
-        path = "/learn/api/public/v1/courses/courseId:"+course+"/users"
-        r = interface.get(path)
+        members = util.getUsersFromCourseByCourseId(course)
+        if not members:
+            return render(request, 'learn/viewUsers.html', {'error_message': 'Could not recover users from the course.'})
 
-        if r.text:
+        for member in members:
+            '''Adds User Information into the table'''
+            if(member['courseRoleId'] == 'TeachingAssistant'):
+                courseRole = 'Teaching Assistant'
+            else:
+                courseRole = member['courseRoleId']
 
-            res = json.loads(r.text)
-            '''Grabs all the userId's from the course'''
-            members = res['results']
+            # Get the user from session
+            user = util.getUserById(request, member['userId'])
+            if not user:
+                return render(request, 'learn/viewUsers.html', { 'error_message' : 'Could not load Blackboard users!', 'name':request.session['instructor_name'] })
 
-            for member in members:
-                '''Adds User Information into the table'''
-                if(member['courseRoleId'] == 'TeachingAssistant'):
-                    courseRole = 'Teaching Assistant'
-                else:
-                    courseRole = member['courseRoleId']
-                user = util.getUserById(request, member['userId'])
-                if not user:
-                    return render(request, 'learn/viewUsers.html', { 'error_message' : 'Could not load Blackboard users!', 'name':request.session['instructor_name'] })
-                tableCreator += buildViewList(course, user, courseRole)
+            tableCreator += buildViewList(course, user, courseRole)
 
         '''Closes Table for the course'''
         tableCreator += '</table>'
@@ -80,63 +74,55 @@ def removeUsers(request):
     for course in courses:
 
         '''Gets the course name'''
-        path = "/learn/api/public/v1/courses/courseId:"+course
-        r = interface.get(path)
+        courseInfo = util.getCourseInfoByCourseId(course)
+        courseName = courseInfo['name']
 
-        if r.text:
-            res = json.loads(r.text)
-            courseName = res['name']
+        '''Creates table for each course'''
+        tableCreator += '<div class="tables">'
+        tableCreator += '<table class="userTable">'
+        tableCreator += '<tr class="courseNameRow">'
+        tableCreator += '<div class="courseName">'+ courseName + '</div>'
+        tableCreator += '</tr>'
+        tableCreator += '<tr id="tableHeader">'
+        tableCreator += '<th class="checkBoxCell"></th>'
+        tableCreator += '<th>User Name</th>'
+        tableCreator += '<th>First Name</th>'
+        tableCreator += '<th>Last Name</th>'
+        tableCreator += '<th>User ID</th>'
+        tableCreator += '<th>Status</th>'
+        tableCreator += '</tr>'
 
-            '''Creates table for each course'''
-            tableCreator += '<div class="tables">'
-            tableCreator += '<table class="userTable">'
-            tableCreator += '<tr class="courseNameRow">'
-            tableCreator += '<div class="courseName">'+ courseName + '</div>'
-            tableCreator += '</tr>'
-            tableCreator += '<tr id="tableHeader">'
-            tableCreator += '<th class="checkBoxCell"></th>'
-            tableCreator += '<th>User Name</th>'
-            tableCreator += '<th>First Name</th>'
-            tableCreator += '<th>Last Name</th>'
-            tableCreator += '<th>User ID</th>'
-            tableCreator += '<th>Status</th>'
-            tableCreator += '</tr>'
+        '''Gets all users from course'''
+        '''Gets all users from course'''
+        members = util.getUsersFromCourseByCourseId(course)
+        if not members:
+            return render(request, 'learn/removeUsers.html', {'error_message': 'Could not recover users from the course.'})
 
-            '''Gets all users from course'''
-            path = "/learn/api/public/v1/courses/courseId:"+course+"/users"
-            r = interface.get(path)
+        for member in members:
 
-            if r.text:
-                res = json.loads(r.text)
-
-                "Grabs all the userId's from the course"
-                members = res['results']
-
-                for member in members:
-
-                    "Gets current user's role in the course"
-                    courseRole = member['courseRoleId']
-                    '''Checks for all teaching assistants and guests in the selected courses'''
-                    user = util.getUserById(request, member['userId'])
-                    if not user:
-                        return render(request, 'learn/removeUsers.html', { 'error_message' : 'Could not load Blackboard users!', 'name':request.session['instructor_name'] })
-                    if(courseRole == 'TeachingAssistant'):
-                        tableCreator += buildRemoveList(course, user, 'Teaching Assistant')
-                    elif(courseRole == 'Guest'):
-                        tableCreator += buildRemoveList(course, user, 'Guest')
-                tableCreator += '<tr id="submitRow">'
-                tableCreator += '<td></td>'
-                tableCreator += '<td></td>'
-                tableCreator += '<td></td>'
-                tableCreator += '<td></td>'
-                tableCreator += '<td></td>'
-                tableCreator +='<td></td>'
-                tableCreator += '</tr>'
-                tableCreator += '</table>'
-                tableCreator += '</div>'
+            "Gets current user's role in the course"
+            courseRole = member['courseRoleId']
+            '''Checks for all teaching assistants and guests in the selected courses'''
+            user = util.getUserById(request, member['userId'])
+            if not user:
+                return render(request, 'learn/removeUsers.html', { 'error_message' : 'Could not load Blackboard users!', 'name':request.session['instructor_name'] })
+            if(courseRole == 'TeachingAssistant'):
+                tableCreator += buildRemoveList(course, user, 'Teaching Assistant')
+            elif(courseRole == 'Guest'):
+                tableCreator += buildRemoveList(course, user, 'Guest')
+        tableCreator += '<tr id="submitRow">'
+        tableCreator += '<td></td>'
+        tableCreator += '<td></td>'
+        tableCreator += '<td></td>'
+        tableCreator += '<td></td>'
+        tableCreator += '<td></td>'
+        tableCreator +='<td></td>'
+        tableCreator += '</tr>'
+        tableCreator += '</table>'
+        tableCreator += '</div>'
 
 
-                tableCreator +="<div class='tableBreak'></div>"
+        tableCreator +="<div class='tableBreak'></div>"
 
     context = {
     'name': request.session['instructor_name'],

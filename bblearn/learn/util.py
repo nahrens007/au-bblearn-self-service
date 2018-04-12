@@ -1,6 +1,25 @@
 from BlackboardLearn import interface
 import json
 
+def getUserFromBlackboardById(request, id):
+    path = '/learn/api/public/v1/users/' + id + '?fields=id,userName,name.given,name.family,contact.email,studentId,availability'
+    r = interface.get(path)
+    user = None
+    if r == None:
+        #This could be caused when either the server url is incorrect or Python can't connect to Bb at all
+        return None
+    elif r.status_code == 200 and r.text:
+        #Success!
+        user = json.loads(r.text)
+        addUserToSession(request, user)
+    return user
+
+def addUserToSession(request, user):
+    if 'all_users' not in request.session:
+        loadUsersIntoSession(request)
+    request.session['all_users'].append(user)
+    return
+
 # Load all users from Bb into the Session
 def loadUsersIntoSession(request):
     # See if all the users are in session. If not, get them from Bb
@@ -12,9 +31,8 @@ def loadUsersIntoSession(request):
             return None
         elif r.status_code == 200 and r.text:
             #Success!
-            if r.text:
-                res = json.loads(r.text)
-                request.session['all_users'] = res['results']
+            res = json.loads(r.text)
+            request.session['all_users'] = res['results']
         return r.status_code
     return 200 # users already in session
 
@@ -57,10 +75,29 @@ def getUserById(request, userId):
     for user in request.session['all_users']:
         if user['id'] == userId:
             return user
+    #try finding the user from Blackboard
+    return getUserFromBlackboardById(request, userId)
 
 def getCourseInfo(courseId):
     path = '/learn/api/public/v1/courses/' + courseId
     response = interface.get(path)
     if response.text:
         return json.loads(response.text)
+    return None
+
+def getCourseInfoByCourseId(courseId):
+    path = "/learn/api/public/v1/courses/courseId:"+courseId
+    r = interface.get(path)
+    if r.status_code == 200 and r.text:
+        return json.loads(r.text)
+    return None
+
+def getUsersFromCourseByCourseId(courseId):
+    path = "/learn/api/public/v1/courses/courseId:"+courseId+"/users"
+    r = interface.get(path)
+
+    if r.status_code == 200 and r.text:
+        res = json.loads(r.text)
+        '''Grabs all the userId's from the course'''
+        return res['results']
     return None
