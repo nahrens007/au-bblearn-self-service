@@ -195,6 +195,7 @@ def submitRemoveUsers (request):
     removeResults = '<table class = "userTable">'
     removeResults += '<th> User Name </th>'
     removeResults += '<th> Result </th>'
+    removeResults += '<th> Course </th>'
 
     selectedValues = request.POST.getlist("users")
 
@@ -206,25 +207,18 @@ def submitRemoveUsers (request):
 
         user = value.split(',')[0]
         course = value.split(',')[1]
-        print(user)
-        print(course)
+
         path = '/learn/api/public/v1/courses/courseId:'+course+'/users/userName:'+user
         r = interface.delete(path)
 
-        print(r.status_code)
-
         removeResults += '<tr>'
         if r.status_code == '404':
-            print("Not Found")
-            removeResults += failed (user, course)
+            removeResults += failedToRemove(user, course, "Not Found")
         elif r.status_code == '403':
-            print("Forbidden")
-            removeResults += failed (user, course)
+            removeResults += failedToRemove(user, course, "Forbidden")
         elif r.status_code == '400':
-            print("Bad Request")
-            removeResults += failed (user, course)
+            removeResults += failedToRemove(user, course, "Bad Request")
         else:
-            print("Successfully removed "+ user + " from "+course+".")
             removeResults += successfullyRemove(user, course)
         removeResults += '</tr>'
     removeResults += '</table>'
@@ -236,16 +230,19 @@ def submitRemoveUsers (request):
 
     return render(request, 'learn/submitRemoveUsers.html', context)
 
-def failedToRemove(user, course):
+def failedToRemove(user, course, reason):
     userResult = ""
     userResult += '<td>'+ user + '</td>'
-    userResult += '<td>' + " Not removed from "+ course + '</td>'
+    userResult += '<td>' + " not removed from </td>"
+    userResult += '<td>' + course + '</td>'
+    userResult += '<td>Error: ' + reason + '</td>'
 
     return userResult
 
 def successfullyRemove(user, course):
     userResult = ""
     userResult += '<td>'+ user + '</td>'
-    userResult += '<td>' " was removed from " + course + '</td>'
+    userResult += "<td> was removed from </td>"
+    userResult += '<td>' + course + '</td>'
 
     return userResult

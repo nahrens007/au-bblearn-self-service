@@ -24,7 +24,6 @@ def addUserToSession(request, user):
 def loadUsersIntoSession(request):
     # See if all the users are in session. If not, get them from Bb
     if 'all_users' not in request.session:
-        print("LOADING USERS FROM Blackboard")
         path = '/learn/api/public/v1/users?fields=id,userName,name.given,name.family,contact.email,studentId,availability'
         request.session['all_users'] = []
         while path:
