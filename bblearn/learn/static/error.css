@@ -1,0 +1,22 @@
+
+#midSection{
+
+
+  display: block;
+  top:35;
+  margin-left: auto;
+  margin-right: auto;
+  width: 700px;
+  border: solid;
+  border-color: #4C3059;
+  border-width: 2px;
+}
+
+#error_message {
+    color: red;
+    display: block;
+    margin: 5px;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+}

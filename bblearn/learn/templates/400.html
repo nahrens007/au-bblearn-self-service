@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Page Not Found</title>
+
+
+    <!-- load css pages -->
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'learn/main.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'error.css' %}" />
+
+
+    <script type="text/javascript" href="{% static 'learn/main.js' %}"> </script>
+  </head>
+
+  <body id="body">
+
+    <!-- Contains Everything in the Purple Header -->
+    <div id="heading">
+      <div id="serviceContainer">
+        <img src="{% static 'learn/blackboard.png' %}" alt="oops">
+        <div id="subTitle">
+          <span>Ashland University</span>
+        </div>
+      </div>
+      <div id="titleContainer">
+        <div id="title">
+          <span>Self Service Tool 1000</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contains everything below the header, it includes footer. -->
+    <div id="midSection">
+          <span id="error_message">Bad request! Error 400</span>
+    </div>
+
+    <div id="footer">
+      <span id="footerText">For Assistance Call: 419.289.5405</span>
+    </div>
+  </body>
+
+</html>
