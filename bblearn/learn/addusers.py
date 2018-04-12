@@ -5,11 +5,14 @@ import json
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
-def getPage(request, user_list):
+paginator = None
 
-    page = request.session.get('page', 1)
-
+def createPaginator(user_list):
+    global paginator
     paginator = Paginator(user_list, 20)
+
+def getPage(page):
+
     try:
         users = paginator.page(page)
     except PageNotAnInteger:
@@ -18,7 +21,6 @@ def getPage(request, user_list):
     except EmptyPage:
         request.session['page'] = paginator.num_pages
         users = paginator.page(paginator.num_pages)
-
     userList = ''
     for user in users:
         userList += user
@@ -31,7 +33,7 @@ def addUsers(request, error_message=None):
             'name':request.session['instructor_name'],
             'error_message':error_message,
             'userList': '',
-            'pageNumber' : request.session.get('page', 1),
+            'pageNumber' : "1 of 1",
         }
         return render(request, 'learn/addUsers.html', context)
 
@@ -41,7 +43,7 @@ def addUsers(request, error_message=None):
             'name':request.session['instructor_name'],
             'error_message': '',
             'userList': '',
-            'pageNumber' : request.session.get('page', 1),
+            'pageNumber' : "1 of 1",
         }
         return render(request, 'learn/addUsers.html', context)
 
@@ -58,11 +60,16 @@ def addUsers(request, error_message=None):
         userList = buildHtmlUserList(users)
 
         request.session['searchResults'] = userList
+        createPaginator(userList)
     else:
         # if we are changing the page
         userList = request.session['searchResults']
 
-    pageContext = getPage(request, userList)
+    pageRequest = request.session.get('page', 1)
+    if pageRequest == -1:
+        pageRequest = paginator.num_pages
+        request.session['page'] = pageRequest
+    pageContext = getPage(pageRequest)
 
     index = 0
     if 'index' in request.session:
@@ -75,7 +82,7 @@ def addUsers(request, error_message=None):
             'error_message':"No users found!",
             'userList': '',
             'optionIndex': index,
-            'pageNumber' : request.session.get('page', 1),
+            'pageNumber' : "1 of 1",
         }
         return render(request, 'learn/addUsers.html', context)
     context ={
@@ -83,7 +90,7 @@ def addUsers(request, error_message=None):
         'error_message': '',
         'userList': pageContext,
         'optionIndex': index,
-        'pageNumber' : request.session.get('page', 1),
+        'pageNumber' : str(request.session.get('page', 1)) + " of " + str(paginator.num_pages),
     }
     return render(request, 'learn/addUsers.html', context)
 

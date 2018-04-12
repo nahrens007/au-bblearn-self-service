@@ -216,6 +216,9 @@ def update(request):
             return manipulate.submitRemoveUsers(request)
         elif action == 'stats':
             return stats(request)
+        elif action == '<<':
+            request.session['page'] = 1
+            return addusers.addUsers(request)
         elif action == '<':
             pageNumber = request.session.get('page', 1)
             if pageNumber > 1:
@@ -224,6 +227,10 @@ def update(request):
         elif action == '>':
             pageNumber = request.session.get('page', 1)
             request.session['page'] = int(pageNumber) + 1
+            return addusers.addUsers(request)
+        elif action == '>>':
+            #go to last page
+            request.session['page'] = -1
             return addusers.addUsers(request)
         else:
             request.session['courses_error_message'] = "You must select an action!"
